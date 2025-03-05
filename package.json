@@ -4,7 +4,7 @@
   "licence": "MIT",
   "version": "2.0.0",
   "private": false,
-  "homepage": "https://graphtobinary.github.io/material-kit-react",
+  "homepage": "https://graphtobinary.github.io/property-management/",
   "type": "module",
   "scripts": {
     "dev": "vite",
