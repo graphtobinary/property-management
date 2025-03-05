@@ -6,6 +6,7 @@ import LinearProgress, { linearProgressClasses } from '@mui/material/LinearProgr
 
 import { varAlpha } from 'src/theme/styles';
 import { AuthLayout } from 'src/layouts/auth';
+import { useAuthStore } from 'src/store/auth.store';
 import { DashboardLayout } from 'src/layouts/dashboard';
 
 // ----------------------------------------------------------------------
@@ -32,15 +33,39 @@ const renderFallback = (
   </Box>
 );
 
+// Protected Route Component
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
+  if (!isAuthenticated) {
+    return <Navigate to="/sign-in" replace />;
+  }
+
+  return <>{children}</>;
+};
+
 export function Router() {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
   return useRoutes([
     {
+      path: '/',
+      element: isAuthenticated ? (
+        <Navigate to="/dashboard" replace />
+      ) : (
+        <Navigate to="/sign-in" replace />
+      ),
+    },
+    {
+      path: 'dashboard',
       element: (
-        <DashboardLayout>
-          <Suspense fallback={renderFallback}>
-            <Outlet />
-          </Suspense>
-        </DashboardLayout>
+        <ProtectedRoute>
+          <DashboardLayout>
+            <Suspense fallback={renderFallback}>
+              <Outlet />
+            </Suspense>
+          </DashboardLayout>
+        </ProtectedRoute>
       ),
       children: [
         { element: <HomePage />, index: true },
@@ -51,7 +76,9 @@ export function Router() {
     },
     {
       path: 'sign-in',
-      element: (
+      element: isAuthenticated ? (
+        <Navigate to="/dashboard" replace />
+      ) : (
         <AuthLayout>
           <SignInPage />
         </AuthLayout>

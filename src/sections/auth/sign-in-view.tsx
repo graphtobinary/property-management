@@ -11,18 +11,32 @@ import InputAdornment from '@mui/material/InputAdornment';
 
 import { useRouter } from 'src/routes/hooks';
 
+import { useAuthStore } from 'src/store/auth.store';
+
 import { Iconify } from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
 export function SignInView() {
   const router = useRouter();
+  const login = useAuthStore((state) => state.login);
 
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState('hello@gmail.com');
+  const [password, setPassword] = useState('@demo1234');
 
-  const handleSignIn = useCallback(() => {
-    router.push('/');
-  }, [router]);
+  const handleSignIn = useCallback(async () => {
+    try {
+      setLoading(true);
+      await login(email, password);
+      router.push('/dashboard');
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }, [email, password, login, router]);
 
   const renderForm = (
     <Box display="flex" flexDirection="column" alignItems="flex-end">
@@ -30,7 +44,8 @@ export function SignInView() {
         fullWidth
         name="email"
         label="Email address"
-        defaultValue="hello@gmail.com"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
         InputLabelProps={{ shrink: true }}
         sx={{ mb: 3 }}
       />
@@ -43,7 +58,8 @@ export function SignInView() {
         fullWidth
         name="password"
         label="Password"
-        defaultValue="@demo1234"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
         InputLabelProps={{ shrink: true }}
         type={showPassword ? 'text' : 'password'}
         InputProps={{
@@ -64,6 +80,7 @@ export function SignInView() {
         type="submit"
         color="inherit"
         variant="contained"
+        loading={loading}
         onClick={handleSignIn}
       >
         Sign in
@@ -76,7 +93,7 @@ export function SignInView() {
       <Box gap={1.5} display="flex" flexDirection="column" alignItems="center" sx={{ mb: 5 }}>
         <Typography variant="h5">Sign in</Typography>
         <Typography variant="body2" color="text.secondary">
-          Don’t have an account?
+          Don&apos;t have an account?
           <Link variant="subtitle2" sx={{ ml: 0.5 }}>
             Get started
           </Link>
