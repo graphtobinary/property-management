@@ -8,12 +8,13 @@ import react from '@vitejs/plugin-react-swc';
 const PORT = 3039;
 
 export default defineConfig({
+  base: '/property-management/',
   plugins: [
     react(),
     checker({
       typescript: true,
       eslint: {
-        lintCommand: 'eslint "./src/**/*.{js,jsx,ts,tsx}"',
+        lintCommand: 'eslint "./src/**/*.{ts,tsx}"',
         dev: { logLevel: ['error'] },
       },
       overlay: {

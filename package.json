@@ -4,6 +4,7 @@
   "licence": "MIT",
   "version": "2.0.0",
   "private": false,
+  "homepage": "https://graphtobinary.github.io/material-kit-react",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -18,7 +19,9 @@
     "re:build": "yarn rm:all && yarn install && yarn build",
     "re:build-npm": "npm run rm:all && npm install && npm run build",
     "dev:host": "vite --host",
-    "prepare": "husky"
+    "prepare": "husky",
+    "predeploy": "yarn build",
+    "deploy": "gh-pages -d dist"
   },
   "engines": {
     "node": "20.x"
@@ -63,6 +66,7 @@
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-react-hooks": "^4.6.2",
     "eslint-plugin-unused-imports": "^3.2.0",
+    "gh-pages": "^6.3.0",
     "husky": "^9.1.7",
     "lint-staged": "^15.4.3",
     "prettier": "^3.3.3",
