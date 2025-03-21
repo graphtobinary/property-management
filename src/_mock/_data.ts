@@ -74,7 +74,7 @@ const COLORS = [
   '#FFC107',
 ];
 
-export const _products = [...Array(24)].map((_, index) => {
+export const _products = [...Array(8)].map((_, index) => {
   const setIndex = index + 1;
 
   return {

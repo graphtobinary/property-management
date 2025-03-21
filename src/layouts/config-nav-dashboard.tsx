@@ -14,14 +14,19 @@ export const navData = [
     icon: icon('ic-analytics'),
   },
   {
-    title: 'User',
-    path: '/user',
+    title: 'Manage Properties',
+    path: '/manage-properties',
     icon: icon('ic-user'),
   },
   {
-    title: 'Product',
-    path: '/products',
+    title: 'Calendar',
+    path: '/calendar',
     icon: icon('ic-cart'),
+  },
+  {
+    title: 'Reservations',
+    path: '/reservations',
+    icon: icon('ic-blog'),
     info: (
       <Label color="error" variant="inverted">
         +3
@@ -29,9 +34,14 @@ export const navData = [
     ),
   },
   {
-    title: 'Blog',
-    path: '/blog',
-    icon: icon('ic-blog'),
+    title: 'Analytics',
+    path: '/analytics',
+    icon: icon('ic-cart'),
+  },
+  {
+    title: 'Settings',
+    path: '/settings',
+    icon: icon('ic-cart'),
   },
   {
     title: 'Not found',

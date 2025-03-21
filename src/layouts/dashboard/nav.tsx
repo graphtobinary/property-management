@@ -16,7 +16,7 @@ import { varAlpha } from 'src/theme/styles';
 import { Logo } from 'src/components/logo';
 import { Scrollbar } from 'src/components/scrollbar';
 
-// import { NavUpgrade } from '../components/nav-upgrade';
+import { NavUpgrade } from '../components/nav-upgrade';
 // import { WorkspacesPopover } from '../components/workspaces-popover';
 
 import type { WorkspacesPopoverProps } from '../components/workspaces-popover';
@@ -119,7 +119,7 @@ export function NavContent({ data, slots, workspaces, sx }: NavContentProps) {
 
   return (
     <>
-      <Logo />
+      <Logo width={120} height={100} />
 
       {slots?.topArea}
 
@@ -129,7 +129,7 @@ export function NavContent({ data, slots, workspaces, sx }: NavContentProps) {
         <Box component="nav" display="flex" flex="1 1 auto" flexDirection="column" sx={sx}>
           <Box component="ul" gap={0.5} display="flex" flexDirection="column">
             {data.map((item) => {
-              const isActived = item.path === pathname;
+              const isActive = item.path === pathname;
 
               return (
                 <ListItem disableGutters disablePadding key={item.title}>
@@ -147,12 +147,12 @@ export function NavContent({ data, slots, workspaces, sx }: NavContentProps) {
                       fontWeight: 'fontWeightMedium',
                       color: 'var(--layout-nav-item-color)',
                       minHeight: 'var(--layout-nav-item-height)',
-                      ...(isActived && {
+                      ...(isActive && {
                         fontWeight: 'fontWeightSemiBold',
-                        bgcolor: 'var(--layout-nav-item-active-bg)',
+                        bgcolor: 'action.selected', // Changed to use MUI's default selected background
                         color: 'var(--layout-nav-item-active-color)',
                         '&:hover': {
-                          bgcolor: 'var(--layout-nav-item-hover-bg)',
+                          bgcolor: 'action.selected',
                         },
                       }),
                     }}
@@ -176,7 +176,7 @@ export function NavContent({ data, slots, workspaces, sx }: NavContentProps) {
 
       {slots?.bottomArea}
 
-      {/* <NavUpgrade /> */}
+      <NavUpgrade />
     </>
   );
 }
