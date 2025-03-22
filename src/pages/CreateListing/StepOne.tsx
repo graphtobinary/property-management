@@ -1,7 +1,8 @@
 import PageMeta from "../../components/common/PageMeta";
 import { useState } from "react";
 import CreateListingPageLayout from "./CreateListingPageLayout";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
+import Button from "../../components/ui/button/Button";
 const categories = [
   { id: 1, name: "House" },
   { id: 2, name: "Flat/Apartment" },
@@ -18,7 +19,7 @@ const categories = [
 ];
 const StepOne: React.FC = () => {
   const [selected, setSelected] = useState(1);
-
+  const navigate = useNavigate();
   return (
     <>
       <PageMeta
@@ -85,12 +86,9 @@ const StepOne: React.FC = () => {
         </div>
         <div className="flex justify-end mb-3">
           <div className="flex gap-2">
-            <Link
-              to=""
-              className="inline-flex items-center gap-2 rounded-lg bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-theme-xs ring-1 ring-inset ring-gray-300 transition hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03]"
-            >
+            <Button size="sm" variant="outline" onClick={() => navigate(-1)}>
               Back
-            </Link>
+            </Button>
             <Link
               to="/create-listing-step-two"
               className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-primary text-theme-sm hover:bg-primary"
