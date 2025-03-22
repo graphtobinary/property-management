@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -13,18 +13,18 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       isAuthenticated: false,
       user: null,
-      login: async (email: string, password: string) => {
+      login: async (email: string /*password: string */) => {
         // Here you would typically make an API call to your backend
         // For now, we'll just simulate a successful login
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        set({ isAuthenticated: true, user: { id: '1', email } });
+        set({ isAuthenticated: true, user: { id: "1", email } });
       },
       logout: () => {
         set({ isAuthenticated: false, user: null });
       },
     }),
     {
-      name: 'auth-storage',
+      name: "auth-storage",
     }
   )
 );

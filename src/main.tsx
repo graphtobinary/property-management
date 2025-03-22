@@ -1,22 +1,19 @@
-import ReactDOM from 'react-dom/client';
-import { Suspense, StrictMode } from 'react';
-import { BrowserRouter } from 'react-router-dom';
-import { HelmetProvider } from 'react-helmet-async';
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import "swiper/swiper-bundle.css";
+import "simplebar-react/dist/simplebar.min.css";
+import "flatpickr/dist/flatpickr.css";
+import App from "./App.tsx";
+import { AppWrapper } from "./components/common/PageMeta.tsx";
+import { ThemeProvider } from "./context/ThemeContext.tsx";
 
-import App from './app';
-
-// ----------------------------------------------------------------------
-
-const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
-
-root.render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <HelmetProvider>
-      <BrowserRouter>
-        <Suspense>
-          <App />
-        </Suspense>
-      </BrowserRouter>
-    </HelmetProvider>
+    <ThemeProvider>
+      <AppWrapper>
+        <App />
+      </AppWrapper>
+    </ThemeProvider>
   </StrictMode>
 );
