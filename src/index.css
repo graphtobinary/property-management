@@ -51,7 +51,7 @@ layer(base);
   --color-black: #101828;
 
   --color-primary: #F26724;
-  --color-primaryDark: #F26522;
+  --color-primaryDark: #e1510c;
   --color-lightgrey: #B0B0B0;
   --color-darkgrey: #515858;
   --color-brand-25: #f2f7ff;
@@ -531,7 +531,7 @@ span.flatpickr-weekday,
 .flatpickr-day.startRange.nextMonthDay,
 .flatpickr-day.endRange.nextMonthDay {
   background: #465fff;
-  @apply border-primary! bg-primary! hover:border-primary! hover:bg-primary!;
+  @apply border-primary! bg-primary! hover:border-primary! hover:bg-primaryDark!;
 }
 .flatpickr-day.selected.startRange + .endRange:not(:nth-child(7n + 1)),
 .flatpickr-day.startRange.startRange + .endRange:not(:nth-child(7n + 1)),
@@ -595,7 +595,7 @@ span.flatpickr-weekday,
   @apply hidden;
 }
 .fc-addEventButton-button {
-  @apply rounded-lg! border-0! bg-primary! px-4! py-2.5! text-sm! font-medium! hover:bg-primary! focus:shadow-none!;
+  @apply rounded-lg! border-0! bg-primary! px-4! py-2.5! text-sm! font-medium! hover:bg-primaryDark! focus:shadow-none!;
 }
 .fc-toolbar-title {
   @apply text-lg! font-medium! text-gray-800 dark:text-white/90;

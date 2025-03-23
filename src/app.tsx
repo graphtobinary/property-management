@@ -24,6 +24,13 @@ import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
 import StepOne from "./pages/CreateListing/StepOne";
 import StepTwo from "./pages/CreateListing/StepTwo";
+import StepThree from "./pages/CreateListing/StepThree";
+import StepFour from "./pages/CreateListing/StepFour";
+import StepFive from "./pages/CreateListing/StepFive";
+import StepSix from "./pages/CreateListing/StepSix";
+import StepSeven from "./pages/CreateListing/StepSeven";
+import StepEight from "./pages/CreateListing/StepEight";
+import StepNine from "./pages/CreateListing/StepNine";
 
 export default function App() {
   return (
@@ -66,6 +73,13 @@ export default function App() {
           {/* Create Listing Layout */}
           <Route path="/create-listing-step-one" element={<StepOne />} />
           <Route path="/create-listing-step-two" element={<StepTwo />} />
+          <Route path="/create-listing-step-three" element={<StepThree />} />
+          <Route path="/create-listing-step-four" element={<StepFour />} />
+          <Route path="/create-listing-step-five" element={<StepFive />} />
+          <Route path="/create-listing-step-six" element={<StepSix />} />
+          <Route path="/create-listing-step-seven" element={<StepSeven />} />
+          <Route path="/create-listing-step-eight" element={<StepEight />} />
+          <Route path="/create-listing-step-nine" element={<StepNine />} />
 
           {/* Auth Layout */}
           <Route path="/signin" element={<SignIn />} />

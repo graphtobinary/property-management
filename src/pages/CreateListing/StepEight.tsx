@@ -4,20 +4,36 @@ import CreateListingPageLayout from "./CreateListingPageLayout";
 import { Link, useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
 const categories = [
-  { id: 1, name: "House" },
-  { id: 2, name: "Flat/Apartment" },
-  { id: 3, name: "Barn" },
-  { id: 4, name: "Bed & Breakfast" },
-  { id: 5, name: "Boat" },
-  { id: 6, name: "Cabin" },
-  { id: 7, name: "Motorhome" },
-  { id: 8, name: "Castle" },
-  { id: 9, name: "Container" },
-  { id: 10, name: "Guest House" },
-  { id: 11, name: "House Boat" },
-  { id: 12, name: "Tree House" },
+  { id: 1, name: "Wifi" },
+  { id: 2, name: "TV" },
+  { id: 3, name: "Kitchen" },
+  { id: 4, name: "Washing Machine" },
+  { id: 5, name: "Dish Washer" },
+  { id: 6, name: "Free Parking" },
+  { id: 7, name: "Air Conditioning" },
+  { id: 8, name: "Workspace" },
+  { id: 9, name: "Pool" },
+  { id: 10, name: "Hot Tub" },
+  { id: 11, name: "Patio" },
+  { id: 12, name: "BBQ Grill" },
+  { id: 13, name: "Dining Table" },
+  { id: 14, name: "House" },
+  { id: 15, name: "Pool Table" },
+  { id: 16, name: "Fireplace" },
+  { id: 17, name: "Beach Access" },
+  { id: 18, name: "Fire Extinguisher" },
+  { id: 19, name: "Piano" },
+  { id: 20, name: "Guitar" },
+  { id: 21, name: "Closet" },
+  { id: 22, name: "Toilet Paper" },
+  { id: 23, name: "Shower" },
+  { id: 24, name: "Toilet" },
+  { id: 25, name: "Hair Dryer" },
+  { id: 26, name: "Bathtub" },
+  { id: 27, name: "Toiletries" },
+  { id: 28, name: "Bathrobes" },
 ];
-const StepOne: React.FC = () => {
+const StepEight: React.FC = () => {
   const [selected, setSelected] = useState(1);
   const navigate = useNavigate();
   return (
@@ -31,7 +47,7 @@ const StepOne: React.FC = () => {
         <div className="bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-0 mb-5">
           <div className="flex justify-between">
             <h3 className="mb-1 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-2">
-              Step 1
+              Step 8
             </h3>
             <Button size="sm" variant="outline" onClick={() => navigate("/")}>
               Exit
@@ -95,7 +111,7 @@ const StepOne: React.FC = () => {
               Back
             </Button>
             <Link
-              to="/create-listing-step-two"
+              to="/create-listing-step-nine"
               className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-primary text-theme-sm hover:bg-primaryDark"
             >
               Next
@@ -107,4 +123,4 @@ const StepOne: React.FC = () => {
   );
 };
 
-export default StepOne;
+export default StepEight;

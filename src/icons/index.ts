@@ -57,6 +57,8 @@ import { ReactComponent as HomeIcon } from "./home.svg?react";
 import { ReactComponent as ReservationIcon } from "./reservations.svg?react";
 import { ReactComponent as SettingsIcon } from "./settings.svg?react";
 import { ReactComponent as ManagePropertiesIcon } from "./manage-properties.svg?react";
+import { ReactComponent as Plus } from "./plus-icon.svg?react";
+import { ReactComponent as MinusIcon } from "./minus-icon.svg?react";
 
 export {
   ErrorHexaIcon,
@@ -118,4 +120,6 @@ export {
   ReservationIcon,
   SettingsIcon,
   ManagePropertiesIcon,
+  Plus,
+  MinusIcon,
 };
