@@ -64,7 +64,7 @@ const DynamicRoomSelector = () => {
   };
 
   return (
-    <div className="space-y-4 p-4 w-1/2 ">
+    <div className="space-y-4 w-full md:w-1/2 ">
       <div>
         <Label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
           Select property type

@@ -14,7 +14,7 @@ const StepThree: React.FC = () => {
       />
 
       <CreateListingPageLayout>
-        <div className="bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-0 mb-5 h-full">
+        <div className="bg-white p-0 md:p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-0 mb-5 h-full">
           <div className="flex justify-between">
             <h3 className="mb-1 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-2">
               Step 3
@@ -38,7 +38,7 @@ const StepThree: React.FC = () => {
             <span className="mb-3 text-base font-semibold text-gray-800 dark:text-white/90">
               Where's your place located?
             </span>
-            <div className="w-1/2 gap-4 md:gap-6 ">
+            <div className="w-full md:w-1/2 gap-4 md:gap-6 ">
               <div className="col-span-12 space-y-12 ">
                 {/*  */}
                 <AddressForm />

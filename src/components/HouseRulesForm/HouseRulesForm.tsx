@@ -21,7 +21,7 @@ const HouseRulesForm = () => {
     }
   };
   return (
-    <div className="space-y-4 w-1/2 ">
+    <div className="space-y-4 w-full md:w-1/2 ">
       <span className="mb-3 text-base font-semibold text-gray-800 dark:text-white/90">
         What is the checkin time
       </span>
