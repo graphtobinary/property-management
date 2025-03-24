@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router";
+import { useAuthStore } from "./store/auth.store";
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";
 import NotFound from "./pages/OtherPage/NotFound";
@@ -35,61 +36,76 @@ import StepTen from "./pages/CreateListing/StepTen";
 import StepEleven from "./pages/CreateListing/StepEleven";
 import StepTwelve from "./pages/CreateListing/StepTwelve";
 
+// PrivateRoute component to handle authentication
+const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/signin" replace />;
+  }
+
+  return <>{children}</>;
+};
+
 export default function App() {
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
   return (
     <>
       <Router>
         <ScrollToTop />
         <Routes>
-          {/* Dashboard Layout */}
-          <Route element={<AppLayout />}>
-            <Route index path="/" element={<Home />} />
+          {/* Auth Layout - Accessible only when not authenticated */}
+          <Route
+            path="/signin"
+            element={
+              isAuthenticated ? <Navigate to="/" replace /> : <SignIn />
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              isAuthenticated ? <Navigate to="/" replace /> : <SignUp />
+            }
+          />
 
-            {/* Others Page */}
+          {/* Protected Routes - Require Authentication */}
+          <Route element={<PrivateRoute><AppLayout /></PrivateRoute>}>
+            <Route index path="/" element={<Home />} />
             <Route path="/profile" element={<UserProfiles />} />
             <Route path="/calendar" element={<Calendar />} />
             <Route path="/manage-properties" element={<ManageProperties />} />
             <Route path="/reservations" element={<Reservations />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/settings" element={<Settings />} />
-
             <Route path="/blank" element={<Blank />} />
-
-            {/* Forms */}
             <Route path="/form-elements" element={<FormElements />} />
-
-            {/* Tables */}
             <Route path="/basic-tables" element={<BasicTables />} />
-
-            {/* Ui Elements */}
             <Route path="/alerts" element={<Alerts />} />
             <Route path="/avatars" element={<Avatars />} />
             <Route path="/badge" element={<Badges />} />
             <Route path="/buttons" element={<Buttons />} />
             <Route path="/images" element={<Images />} />
             <Route path="/videos" element={<Videos />} />
-
-            {/* Charts */}
             <Route path="/line-chart" element={<LineChart />} />
             <Route path="/bar-chart" element={<BarChart />} />
           </Route>
-          {/* Create Listing Layout */}
-          <Route path="/create-listing-step-one" element={<StepOne />} />
-          <Route path="/create-listing-step-two" element={<StepTwo />} />
-          <Route path="/create-listing-step-three" element={<StepThree />} />
-          <Route path="/create-listing-step-four" element={<StepFour />} />
-          <Route path="/create-listing-step-five" element={<StepFive />} />
-          <Route path="/create-listing-step-six" element={<StepSix />} />
-          <Route path="/create-listing-step-seven" element={<StepSeven />} />
-          <Route path="/create-listing-step-eight" element={<StepEight />} />
-          <Route path="/create-listing-step-nine" element={<StepNine />} />
-          <Route path="/create-listing-step-ten" element={<StepTen />} />
-          <Route path="/create-listing-step-eleven" element={<StepEleven />} />
-          <Route path="/create-listing-step-twelve" element={<StepTwelve />} />
 
-          {/* Auth Layout */}
-          <Route path="/signin" element={<SignIn />} />
-          <Route path="/signup" element={<SignUp />} />
+          {/* Create Listing Routes - Protected */}
+          <Route element={<PrivateRoute><AppLayout /></PrivateRoute>}>
+            <Route path="/create-listing-step-one" element={<StepOne />} />
+            <Route path="/create-listing-step-two" element={<StepTwo />} />
+            <Route path="/create-listing-step-three" element={<StepThree />} />
+            <Route path="/create-listing-step-four" element={<StepFour />} />
+            <Route path="/create-listing-step-five" element={<StepFive />} />
+            <Route path="/create-listing-step-six" element={<StepSix />} />
+            <Route path="/create-listing-step-seven" element={<StepSeven />} />
+            <Route path="/create-listing-step-eight" element={<StepEight />} />
+            <Route path="/create-listing-step-nine" element={<StepNine />} />
+            <Route path="/create-listing-step-ten" element={<StepTen />} />
+            <Route path="/create-listing-step-eleven" element={<StepEleven />} />
+            <Route path="/create-listing-step-twelve" element={<StepTwelve />} />
+          </Route>
 
           {/* Fallback Route */}
           <Route path="*" element={<NotFound />} />
