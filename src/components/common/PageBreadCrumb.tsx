@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+// import { Link } from "react-router";
 
 interface BreadcrumbProps {
   pageTitle: string;
@@ -13,7 +13,7 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle }) => {
       >
         {pageTitle}
       </h2>
-      {pageTitle !== "Dashboard" && (
+      {/* {pageTitle !== "Dashboard" && (
         <nav>
           <ol className="flex items-center gap-1.5">
             <li>
@@ -45,7 +45,7 @@ const PageBreadcrumb: React.FC<BreadcrumbProps> = ({ pageTitle }) => {
             </li>
           </ol>
         </nav>
-      )}
+      )} */}
     </div>
   );
 };
