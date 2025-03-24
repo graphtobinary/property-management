@@ -136,7 +136,7 @@ const StepTwelve: React.FC = () => {
 
           {/* Buttons */}
           <div className="mt-6 flex gap-4">
-            <Button size="sm" variant="outline" onClick={closeModal}>
+            <Button size="sm" variant="outline" onClick={() => navigate("/")}>
               Done for Now
             </Button>
             <Button
