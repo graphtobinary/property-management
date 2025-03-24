@@ -2,10 +2,9 @@ import PageMeta from "../../components/common/PageMeta";
 import CreateListingPageLayout from "./CreateListingPageLayout";
 import { Link, useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
-import Label from "../../components/form/Label";
-import Input from "../../components/form/input/InputField";
+import HouseRulesForm from "../../components/HouseRulesForm";
 
-const StepNine: React.FC = () => {
+const StepTen: React.FC = () => {
   const navigate = useNavigate();
 
   return (
@@ -19,7 +18,7 @@ const StepNine: React.FC = () => {
         <div className="bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-0 mb-5 h-full">
           <div className="flex justify-between">
             <h3 className="mb-1 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-2">
-              Step 9
+              Step 10
             </h3>
             <Button size="sm" variant="outline" onClick={() => navigate("/")}>
               Exit
@@ -37,26 +36,12 @@ const StepNine: React.FC = () => {
           </div>
           <div className="flex flex-col ">
             <span className="mb-3 text-base font-semibold text-gray-800 dark:text-white/90">
-              Now, set your price
+              House rules
             </span>
             <div className=" gap-4 md:gap-6 ">
               <div className="col-span-12 space-y-12 ">
                 {/*  */}
-                <div className="space-y-4 w-1/2 ">
-                  <div>
-                    <Label>Price per night</Label>
-                    <div className="relative">
-                      <Input
-                        placeholder="100"
-                        type="text"
-                        className="pr-[62px]"
-                      />
-                      <small className="absolute right-0 top-1/2 -translate-y-1/2 border-l border-gray-200 px-3.5 py-3 text-gray-500 dark:border-gray-800 dark:text-gray-400">
-                        The guest will pay ₹1,956 before taxes
-                      </small>
-                    </div>
-                  </div>
-                </div>
+                <HouseRulesForm />
                 {/*  */}
               </div>
             </div>
@@ -69,7 +54,7 @@ const StepNine: React.FC = () => {
             </Button>
 
             <Link
-              to="/create-listing-step-ten"
+              to="/create-listing-step-eleven"
               className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-primary text-theme-sm hover:bg-primaryDark"
             >
               Next
@@ -81,4 +66,4 @@ const StepNine: React.FC = () => {
   );
 };
 
-export default StepNine;
+export default StepTen;

@@ -20,11 +20,12 @@ interface MapProps {
 const center = { lat: 20.2961, lng: 85.8245 }; // Bhubaneswar
 
 const AddressPinSelector: React.FC<MapProps> = ({
-  googleMapsApiKey = "AIzaSyByzoofuUbmTPztpBAHPAa2Gz1ZKf4LfTY",
+  googleMapsApiKey = import.meta.env.VITE_GOOGLE_MAP_API_KEY,
 }) => {
   const { isLoaded } = useLoadScript({
     googleMapsApiKey,
   });
+
   const mapRef = useRef<google.maps.Map | null>(null);
   const [mapCenter, setMapCenter] = useState(center);
 

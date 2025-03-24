@@ -31,6 +31,9 @@ import StepSix from "./pages/CreateListing/StepSix";
 import StepSeven from "./pages/CreateListing/StepSeven";
 import StepEight from "./pages/CreateListing/StepEight";
 import StepNine from "./pages/CreateListing/StepNine";
+import StepTen from "./pages/CreateListing/StepTen";
+import StepEleven from "./pages/CreateListing/StepEleven";
+import StepTwelve from "./pages/CreateListing/StepTwelve";
 
 export default function App() {
   return (
@@ -80,6 +83,9 @@ export default function App() {
           <Route path="/create-listing-step-seven" element={<StepSeven />} />
           <Route path="/create-listing-step-eight" element={<StepEight />} />
           <Route path="/create-listing-step-nine" element={<StepNine />} />
+          <Route path="/create-listing-step-ten" element={<StepTen />} />
+          <Route path="/create-listing-step-eleven" element={<StepEleven />} />
+          <Route path="/create-listing-step-twelve" element={<StepTwelve />} />
 
           {/* Auth Layout */}
           <Route path="/signin" element={<SignIn />} />
