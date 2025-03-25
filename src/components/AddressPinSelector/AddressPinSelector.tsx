@@ -25,7 +25,7 @@ const AddressPinSelector: React.FC<MapProps> = ({
   const { isLoaded } = useLoadScript({
     googleMapsApiKey,
   });
-
+  const [address, setAddress] = useState<string>("");
   const mapRef = useRef<google.maps.Map | null>(null);
   const [mapCenter, setMapCenter] = useState(center);
 
@@ -40,10 +40,24 @@ const AddressPinSelector: React.FC<MapProps> = ({
         lng: mapRef.current.getCenter()?.lng() || mapCenter.lng,
       };
       setMapCenter(newCenter);
+      getAddressFromCoordinates(mapCenter.lat, mapCenter.lng);
     }
   }, [mapCenter]);
 
-  console.log(mapCenter, "mapCenter");
+  const getAddressFromCoordinates = (lat: number, lng: number) => {
+    if (!window.google || !window.google.maps) return;
+
+    const geocoder = new window.google.maps.Geocoder();
+    geocoder.geocode({ location: { lat, lng } }, (results, status) => {
+      if (status === "OK" && results?.length) {
+        setAddress(results[0].formatted_address);
+      } else {
+        console.error("Geocoder failed due to: ", status);
+      }
+    });
+  };
+
+  console.log(address, "address", mapCenter, "mapCenter");
   if (!isLoaded) return <p>Loading map...</p>;
 
   return (
@@ -51,7 +65,7 @@ const AddressPinSelector: React.FC<MapProps> = ({
       {/* Address Input */}
       <Input
         type="text"
-        value={"Patia, Bhubaneswar"}
+        value={address || "Patia, Bhubaneswar"}
         className="w-full bg-gray-100 p-3 rounded-md border border-gray-300"
       />
 

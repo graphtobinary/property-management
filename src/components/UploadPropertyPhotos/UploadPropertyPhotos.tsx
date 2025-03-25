@@ -1,9 +1,20 @@
+import { useState } from "react";
 import { useDropzone } from "react-dropzone";
 
 const UploadPropertyPhotos: React.FC = () => {
+  const [images, setImages] = useState<{ id: string; url: string }[]>([]);
+
   const onDrop = (acceptedFiles: File[]) => {
-    console.log("Files dropped:", acceptedFiles);
-    // Handle file uploads here
+    const newImages = acceptedFiles.map((file) => ({
+      id: URL.createObjectURL(file), // Unique ID for preview
+      url: URL.createObjectURL(file),
+    }));
+
+    setImages((prevImages) => [...prevImages, ...newImages]);
+  };
+
+  const removeImage = (id: string) => {
+    setImages((prevImages) => prevImages.filter((image) => image.id !== id));
   };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -14,27 +25,49 @@ const UploadPropertyPhotos: React.FC = () => {
       "image/webp": [],
       "image/svg+xml": [],
     },
+    multiple: true, // Enable multiple image selection
   });
+
   return (
-    <div className="mt-3 transition border border-gray-300 border-dashed cursor-pointer dark:hover:border-primary dark:border-gray-700 rounded-xl hover:border-primary">
+    <div className="mt-3 transition border border-gray-300 border-dashed cursor-pointer dark:hover:border-primary dark:border-gray-700 rounded-xl hover:border-primary p-5">
+      {/* Image Previews */}
+      {images.length > 0 && (
+        <div className="flex gap-4 flex-wrap border border-dashed p-4 rounded-lg bg-gray-100 dark:bg-gray-900">
+          {images.map((image) => (
+            <div key={image.id} className="relative">
+              <img
+                src={image.url}
+                alt="Uploaded Preview"
+                className="w-24 h-24 object-cover rounded-lg border border-gray-300"
+              />
+              {/* Remove Button */}
+              <button
+                onClick={() => removeImage(image.id)}
+                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-black text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg"
+              >
+                ✖
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Drag & Drop Section */}
       <form
         {...getRootProps()}
-        className={`dropzone rounded-xl   border-dashed border-gray-300 p-7 lg:p-10
+        className={` dropzone rounded-xl border-dashed border-gray-300 p-7 lg:p-10 
         ${
           isDragActive
             ? "border-brand-500 bg-gray-100 dark:bg-gray-800"
             : "border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-900"
         }
-      `}
+        `}
         id="demo-upload"
       >
-        {/* Hidden Input */}
         <input {...getInputProps()} />
-
-        <div className="dz-message flex flex-col items-center m-0!">
-          {/* Icon Container */}
+        <div className="dz-message flex flex-col items-center">
           <div className="mb-[22px] flex justify-center">
-            <div className="flex h-[68px] w-[68px]  items-center justify-center rounded-full bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-400">
+            <div className="flex h-[68px] w-[68px] items-center justify-center rounded-full bg-gray-200 text-gray-700 dark:bg-gray-800 dark:text-gray-400">
               <svg
                 className="fill-current"
                 width="29"
@@ -51,17 +84,14 @@ const UploadPropertyPhotos: React.FC = () => {
             </div>
           </div>
 
-          {/* Text Content */}
           <h4 className="mb-3 font-semibold text-gray-800 text-theme-xl dark:text-white/90">
             {isDragActive ? "Drop Files Here" : "Drag & Drop Files Here"}
           </h4>
-
-          <span className=" text-center mb-5 block w-full max-w-[290px] text-sm text-gray-700 dark:text-gray-400">
+          <span className="text-center mb-5 block w-full max-w-[290px] text-sm text-gray-700 dark:text-gray-400">
             Drag and drop your PNG, JPG, WebP, SVG images here or browse
           </span>
-
           <span className="font-medium underline text-theme-sm text-primary">
-            Browse File
+            Browse Files
           </span>
         </div>
       </form>

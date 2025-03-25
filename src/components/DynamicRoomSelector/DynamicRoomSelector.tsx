@@ -23,6 +23,12 @@ const options = [
   { value: "3 BHK", label: "3 BHK" },
 ];
 
+const furnishingTypeOptions = [
+  { value: "fully furnished", label: "Fully Furnished" },
+  { value: "semi furnished", label: "Semi Furnished" },
+  { value: "not furnished", label: "Not Furnished" },
+];
+
 interface Room {
   id: number;
   type: string;
@@ -66,9 +72,7 @@ const DynamicRoomSelector = () => {
   return (
     <div className="space-y-4 w-full md:w-1/2 ">
       <div>
-        <Label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-          Select property type
-        </Label>
+        <Label>Select property type</Label>
         <Select
           options={options}
           placeholder="Select Option"
@@ -80,7 +84,7 @@ const DynamicRoomSelector = () => {
         <div>
           <Label>Select furnishing type</Label>
           <Select
-            options={options}
+            options={furnishingTypeOptions}
             placeholder="Select an option"
             onChange={handleSelectChange}
             className="dark:bg-dark-900"
@@ -103,18 +107,38 @@ const DynamicRoomSelector = () => {
           className="bg-gray-100 p-4 rounded-lg flex justify-between items-center"
         >
           {/* Dropdown */}
-          <select
-            // className="p-3 bg-gray-300 rounded-md border-none w-1/2"
-            className={`h-11 w-1/2 appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 pr-11 text-sm shadow-theme-xs placeholder:text-gray-400 focus:border-brand-300 focus:outline-hidden focus:ring-3 focus:ring-brand-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 text-gray-500 `}
-            value={room.type}
-            onChange={(e) => updateRoom(room.id, e.target.value)}
-          >
-            {roomOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
+          <div className="relative flex">
+            <select
+              // className="p-3 bg-gray-300 rounded-md border-none w-1/2"
+              className={`h-11 appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 pr-11 text-sm shadow-theme-xs placeholder:text-gray-400 focus:border-primaryLight focus:outline-hidden focus:ring-3 focus:ring-primary/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 text-gray-500 `}
+              value={room.type}
+              onChange={(e) => updateRoom(room.id, e.target.value)}
+            >
+              {roomOptions.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+            <span className="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+              <svg
+                className="stroke-current"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396"
+                  stroke=""
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                ></path>
+              </svg>
+            </span>
+          </div>
 
           {/* Counter */}
           <div className="flex items-center space-x-3">

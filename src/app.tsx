@@ -35,11 +35,14 @@ import StepNine from "./pages/CreateListing/StepNine";
 import StepTen from "./pages/CreateListing/StepTen";
 import StepEleven from "./pages/CreateListing/StepEleven";
 import StepTwelve from "./pages/CreateListing/StepTwelve";
+import CreateListingPageLayout from "./pages/CreateListing/CreateListingPageLayout";
+import StepThirteen from "./pages/CreateListing/StepThirteen";
+import PurchasePlan from "./pages/PurchasePlan";
 
 // PrivateRoute component to handle authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-  
+
   if (!isAuthenticated) {
     return <Navigate to="/signin" replace />;
   }
@@ -58,19 +61,21 @@ export default function App() {
           {/* Auth Layout - Accessible only when not authenticated */}
           <Route
             path="/signin"
-            element={
-              isAuthenticated ? <Navigate to="/" replace /> : <SignIn />
-            }
+            element={isAuthenticated ? <Navigate to="/" replace /> : <SignIn />}
           />
           <Route
             path="/signup"
-            element={
-              isAuthenticated ? <Navigate to="/" replace /> : <SignUp />
-            }
+            element={isAuthenticated ? <Navigate to="/" replace /> : <SignUp />}
           />
 
           {/* Protected Routes - Require Authentication */}
-          <Route element={<PrivateRoute><AppLayout /></PrivateRoute>}>
+          <Route
+            element={
+              <PrivateRoute>
+                <AppLayout />
+              </PrivateRoute>
+            }
+          >
             <Route index path="/" element={<Home />} />
             <Route path="/profile" element={<UserProfiles />} />
             <Route path="/calendar" element={<Calendar />} />
@@ -92,7 +97,13 @@ export default function App() {
           </Route>
 
           {/* Create Listing Routes - Protected */}
-          <Route element={<PrivateRoute><AppLayout /></PrivateRoute>}>
+          <Route
+            element={
+              <PrivateRoute>
+                <CreateListingPageLayout />
+              </PrivateRoute>
+            }
+          >
             <Route path="/create-listing-step-one" element={<StepOne />} />
             <Route path="/create-listing-step-two" element={<StepTwo />} />
             <Route path="/create-listing-step-three" element={<StepThree />} />
@@ -103,8 +114,19 @@ export default function App() {
             <Route path="/create-listing-step-eight" element={<StepEight />} />
             <Route path="/create-listing-step-nine" element={<StepNine />} />
             <Route path="/create-listing-step-ten" element={<StepTen />} />
-            <Route path="/create-listing-step-eleven" element={<StepEleven />} />
-            <Route path="/create-listing-step-twelve" element={<StepTwelve />} />
+            <Route
+              path="/create-listing-step-eleven"
+              element={<StepEleven />}
+            />
+            <Route
+              path="/create-listing-step-twelve"
+              element={<StepTwelve />}
+            />
+            <Route
+              path="/create-listing-step-thirteen"
+              element={<StepThirteen />}
+            />
+            <Route path="/purchase-plan" element={<PurchasePlan />} />
           </Route>
 
           {/* Fallback Route */}

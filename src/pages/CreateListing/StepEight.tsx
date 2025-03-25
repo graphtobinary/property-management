@@ -34,8 +34,19 @@ const categories = [
   { id: 28, name: "Bathrobes" },
 ];
 const StepEight: React.FC = () => {
-  const [selected, setSelected] = useState(1);
+  const [selected, setSelected] = useState([1]);
   const navigate = useNavigate();
+  const handleSelect = (id: number) => {
+    setSelected((prev) => {
+      let newSelectedItem = [...prev];
+      if (prev.includes(id)) {
+        newSelectedItem = newSelectedItem.filter((item) => item !== id);
+      } else {
+        newSelectedItem = [...newSelectedItem, id];
+      }
+      return newSelectedItem;
+    });
+  };
   return (
     <>
       <PageMeta
@@ -75,9 +86,9 @@ const StepEight: React.FC = () => {
                   {categories.map((category) => (
                     <div
                       key={category.id}
-                      onClick={() => setSelected(category.id)}
+                      onClick={() => handleSelect(category.id)}
                       className={`border  bg-white shadow-lg cursor-pointer ${
-                        selected === category.id
+                        selected.includes(category.id)
                           ? "border-black"
                           : "border-none"
                       }`}

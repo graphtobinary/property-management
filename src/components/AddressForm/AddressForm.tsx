@@ -8,10 +8,15 @@ import TextArea from "../form/input/TextArea";
 export default function AddressForm() {
   const [addressLine1, setAddressLine1] = useState("");
   const [addressLine2, setAddressLine2] = useState("");
-  const options = [
-    { value: "marketing", label: "Marketing" },
-    { value: "template", label: "Template" },
-    { value: "development", label: "Development" },
+  const countryOptions = [
+    { value: "india", label: "India" },
+    { value: "uae", label: "UAE" },
+    { value: "usa", label: "USA" },
+  ];
+  const stateOptions = [
+    { value: "delhi", label: "New Delhi" },
+    { value: "bihar", label: "Bihar" },
+    { value: "up", label: "Uttar Pradesh" },
   ];
   const handleSelectChange = (value: string) => {
     console.log("Selected value:", value);
@@ -25,7 +30,7 @@ export default function AddressForm() {
             Select Country
           </Label>
           <Select
-            options={options}
+            options={countryOptions}
             placeholder="Select Option"
             onChange={handleSelectChange}
             className="dark:bg-dark-900"
@@ -65,7 +70,7 @@ export default function AddressForm() {
           <div>
             <Label>State</Label>
             <Select
-              options={options}
+              options={stateOptions}
               placeholder="Select an option"
               onChange={handleSelectChange}
               className="dark:bg-dark-900"
