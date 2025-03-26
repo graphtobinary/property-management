@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router";
 
 // Assume these icons are imported from an icon library
 import {
-  AnalyticsIcon,
+  // AnalyticsIcon,
   BoxCubeIcon,
   CalenderIcon,
   ChevronDownIcon,
@@ -13,12 +13,13 @@ import {
   ManagePropertiesIcon,
   PieChartIcon,
   PlugInIcon,
-  ReservationIcon,
-  SettingsIcon,
+  // ReservationIcon,
+  // SettingsIcon,
   // UserCircleIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
+import useOutsideClick from "../hooks/useOutsideClick";
 
 type NavItem = {
   name: string;
@@ -44,39 +45,22 @@ const navItems: NavItem[] = [
     name: "Calendar",
     path: "/calendar",
   },
-  {
-    icon: <ReservationIcon />,
-    name: "Reservations",
-    path: "/reservations",
-  },
-  {
-    icon: <AnalyticsIcon />,
-    name: "Analytics",
-    path: "/analytics",
-  },
-  {
-    icon: <SettingsIcon />,
-    name: "Settings",
-    path: "/settings",
-  },
   // {
-  //   name: "Forms",
-  //   icon: <ListIcon />,
-  //   subItems: [{ name: "Form Elements", path: "/form-elements", pro: false }],
+  //   icon: <ReservationIcon />,
+  //   name: "Reservations",
+  //   path: "/reservations",
   // },
   // {
-  //   name: "Tables",
-  //   icon: <TableIcon />,
-  //   subItems: [{ name: "Basic Tables", path: "/basic-tables", pro: false }],
+  //   icon: <AnalyticsIcon />,
+  //   name: "Analytics",
+  //   path: "/analytics",
   // },
   // {
-  //   name: "Pages",
-  //   icon: <PageIcon />,
-  //   subItems: [
-  //     { name: "Blank Page", path: "/blank", pro: false },
-  //     { name: "404 Error", path: "/error-404", pro: false },
-  //   ],
+  //   icon: <SettingsIcon />,
+  //   name: "Settings",
+  //   path: "/settings",
   // },
+  // {
 ];
 
 const othersItems: NavItem[] = [
@@ -112,7 +96,11 @@ const othersItems: NavItem[] = [
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const location = useLocation();
+  const userMenuRef = useRef<HTMLDivElement | null>(null);
+
+  useOutsideClick(userMenuRef, () => setIsUserDropdownOpen(false));
 
   const [openSubmenu, setOpenSubmenu] = useState<{
     type: "main" | "others";
@@ -383,18 +371,40 @@ const AppSidebar: React.FC = () => {
       </div>
       <div className="hidden absolute bottom-5 md:flex flex-col">
         {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null}
-        <div className=" items-center text-gray-700 dropdown-toggle dark:text-gray-400 flex">
-          <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
-            <img src="/images/user/owner.jpg" alt="User" />
-          </span>
-          <div>
-            <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-              Musharof Chowdhury
+        <div className="relative" ref={userMenuRef}>
+          {/* User Profile Button */}
+          <div
+            className="flex items-center text-gray-700 cursor-pointer dark:text-gray-400"
+            onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
+          >
+            <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
+              <img src="/images/user/owner.jpg" alt="User" />
             </span>
-            <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
-              randomuser@pimjo.com
-            </span>
+            <div>
+              <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
+                Property Manager
+              </span>
+              <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
+                propertymanager@gmail.com
+              </span>
+            </div>
           </div>
+
+          {/* Dropdown Menu */}
+          {isUserDropdownOpen && (
+            <div className="absolute bottom-full mb-2 right-0 w-40 bg-white shadow-lg rounded-md border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+              <ul className="py-2 text-sm text-gray-700 dark:text-gray-300">
+                <li>
+                  <button
+                    className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    onClick={() => console.log("Logout clicked")}
+                  >
+                    Logout
+                  </button>
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     </aside>
