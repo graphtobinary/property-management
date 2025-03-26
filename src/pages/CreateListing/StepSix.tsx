@@ -8,6 +8,7 @@ import { useState } from "react";
 const StepSix: React.FC = () => {
   const [description, setDescription] = useState("");
   const navigate = useNavigate();
+  const maxLength = 500;
   return (
     <>
       <PageMeta
@@ -48,11 +49,14 @@ const StepSix: React.FC = () => {
                     <TextArea
                       value={description}
                       onChange={(value) => setDescription(value)}
+                      maxLength={maxLength}
                       rows={4}
                       placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
                     />
                     {/* Progress */}
-                    <p className="text-gray-500 text-sm">139/500</p>
+                    <p className="text-gray-500 text-sm">
+                      {description.length}/{maxLength}
+                    </p>
                   </div>
                 </div>
                 {/*  */}

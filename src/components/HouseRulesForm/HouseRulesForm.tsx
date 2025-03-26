@@ -1,13 +1,16 @@
 import { useState } from "react";
 import Label from "../../components/form/Label";
-import Input from "../../components/form/input/InputField";
-import { TimeIcon } from "../../icons";
 import Radio from "../form/input/Radio";
+import TimePicker from "../TimePicker/TimePicker";
 
 const HouseRulesForm = () => {
   const [smoking, setSmoking] = useState<string>("");
   const [petFriendly, setPetFriendly] = useState<string>("");
   const [specialNeeds, setSpecialNeeds] = useState<string>("");
+  const [checkInFromTime, setCheckInFromTime] = useState<string>("");
+  const [checkInUntilTime, setCheckInUntilTime] = useState<string>("");
+  const [checkOutFromTime, setCheckOutFromTime] = useState<string>("");
+  const [checkOutUntilTime, setCheckOutUntilTime] = useState<string>("");
 
   const handleRadioChange = (type: string, value: string) => {
     if (type === "smoking") {
@@ -28,31 +31,17 @@ const HouseRulesForm = () => {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
         <div>
           <Label htmlFor="tm">From</Label>
-          <div className="relative">
-            <Input
-              type="time"
-              id="tm"
-              name="tm"
-              onChange={(e) => console.log(e.target.value)}
-            />
-            <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
-              <TimeIcon className="size-6" />
-            </span>
-          </div>
+          <TimePicker
+            selectedTime={checkInFromTime}
+            onTimeChange={setCheckInFromTime}
+          />
         </div>
         <div>
           <Label htmlFor="tm">Until</Label>
-          <div className="relative">
-            <Input
-              type="time"
-              id="tm"
-              name="tm"
-              onChange={(e) => console.log(e.target.value)}
-            />
-            <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
-              <TimeIcon className="size-6" />
-            </span>
-          </div>
+          <TimePicker
+            selectedTime={checkInUntilTime}
+            onTimeChange={setCheckInUntilTime}
+          />
         </div>
       </div>
       <span className="mb-3 text-base font-semibold text-gray-800 dark:text-white/90">
@@ -61,31 +50,17 @@ const HouseRulesForm = () => {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
         <div>
           <Label htmlFor="tm">From</Label>
-          <div className="relative">
-            <Input
-              type="time"
-              id="tm"
-              name="tm"
-              onChange={(e) => console.log(e.target.value)}
-            />
-            <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
-              <TimeIcon className="size-6" />
-            </span>
-          </div>
+          <TimePicker
+            selectedTime={checkOutFromTime}
+            onTimeChange={setCheckOutFromTime}
+          />
         </div>
         <div>
           <Label htmlFor="tm">Until</Label>
-          <div className="relative">
-            <Input
-              type="time"
-              id="tm"
-              name="tm"
-              onChange={(e) => console.log(e.target.value)}
-            />
-            <span className="absolute text-gray-500 -translate-y-1/2 pointer-events-none right-3 top-1/2 dark:text-gray-400">
-              <TimeIcon className="size-6" />
-            </span>
-          </div>
+          <TimePicker
+            selectedTime={checkOutUntilTime}
+            onTimeChange={setCheckOutUntilTime}
+          />
         </div>
       </div>
       <div className="flex flex-wrap justify-between">

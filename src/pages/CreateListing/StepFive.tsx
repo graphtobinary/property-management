@@ -4,10 +4,15 @@ import { Link, useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
 import { useState } from "react";
 import { MinusIcon, Plus } from "../../icons";
+import Label from "../../components/form/Label";
+import Input from "../../components/form/input/InputField";
 
 const StepFive: React.FC = () => {
   const navigate = useNavigate();
   const [guests, setGuests] = useState(4);
+  const [propertyName, setPropertyName] = useState("La -Casa the papel");
+  const maxLength = 32;
+  console.log(propertyName);
   return (
     <>
       <PageMeta
@@ -46,18 +51,21 @@ const StepFive: React.FC = () => {
                 <div className="space-y-6">
                   {/* Property Name Input */}
                   <div>
-                    <label className="text-gray-500 text-sm block mb-1">
-                      Name of your property
-                    </label>
-                    <input
+                    <Label>Name of your property</Label>
+                    <Input
                       type="text"
-                      defaultValue="La -Casa the papel"
-                      className="w-full p-3 bg-gray-100 rounded-md border border-gray-300 focus:outline-none"
+                      id="input"
+                      placeholder="Enter city"
+                      value={propertyName}
+                      onChange={(e) => setPropertyName(e.target.value)}
+                      maxLength={maxLength}
                     />
                   </div>
 
                   {/* Progress */}
-                  <p className="text-gray-500 text-sm">17/32</p>
+                  <p className="text-gray-500 text-sm">
+                    {propertyName.length}/{maxLength}
+                  </p>
 
                   {/* Guest Accommodation Details */}
                   <div>

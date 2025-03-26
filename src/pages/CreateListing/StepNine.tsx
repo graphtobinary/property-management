@@ -4,9 +4,11 @@ import { Link, useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
 import Label from "../../components/form/Label";
 import Input from "../../components/form/input/InputField";
+import { useState } from "react";
 
 const StepNine: React.FC = () => {
   const navigate = useNavigate();
+  const [price, setPrice] = useState<string>();
 
   return (
     <>
@@ -48,8 +50,10 @@ const StepNine: React.FC = () => {
                     <div className="relative">
                       <Input
                         placeholder="100"
-                        type="text"
+                        type="number"
                         className="pr-[62px]"
+                        value={price}
+                        onChange={(e) => setPrice(e.target.value)}
                       />
                       <small className="absolute right-0 top-1/2 -translate-y-1/2 border-l border-gray-200 px-3.5 py-3 text-gray-500 dark:border-gray-800 dark:text-gray-400">
                         The guest will pay ₹1,956 before taxes

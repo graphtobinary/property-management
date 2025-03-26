@@ -5,6 +5,7 @@ import Input from "../form/input/InputField";
 
 const GuestPaymentOption = () => {
   const [creditCard, setCreditCard] = useState<string>("");
+  const [nameOnInvoice, setNameOnInvoice] = useState<string>("");
 
   const handleRadioChange = (value: string) => {
     setCreditCard(value);
@@ -40,7 +41,13 @@ const GuestPaymentOption = () => {
         </span>
         <div>
           <Label>Name on Invoice</Label>
-          <Input type="text" id="input" placeholder="Enter name" />
+          <Input
+            type="text"
+            id="input"
+            placeholder="Enter name"
+            value={nameOnInvoice}
+            onChange={(e) => setNameOnInvoice(e.target.value)}
+          />
         </div>
       </div>
     </>

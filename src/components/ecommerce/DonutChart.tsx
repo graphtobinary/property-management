@@ -1,5 +1,12 @@
-import React from "react";
+import React, { Fragment } from "react";
 import Chart from "react-apexcharts";
+const labels = [
+  "Bookings",
+  "Discounts",
+  "Salaries",
+  "Taxes & Deductions",
+  "Platform Fees",
+];
 
 const DonutChart: React.FC = () => {
   const series = [100000, 15889, 8500, 1200, 300];
@@ -7,13 +14,7 @@ const DonutChart: React.FC = () => {
     chart: {
       type: "donut",
     },
-    labels: [
-      "Bookings",
-      "Discounts",
-      "Salaries",
-      "Taxes & Deductions",
-      "Platform Fees",
-    ],
+    labels: labels,
     colors: ["#F26724", "#B0B0B0", "#515858", "#FCC3AC", "#FFFFFF"], // Updated Colors
     legend: {
       show: false, // Using a custom legend
@@ -24,7 +25,7 @@ const DonutChart: React.FC = () => {
     plotOptions: {
       pie: {
         donut: {
-          size: "65%", // Adjusted thickness
+          size: "75%", // Adjusted thickness
           labels: {
             show: true,
             total: {
@@ -40,7 +41,7 @@ const DonutChart: React.FC = () => {
       },
     },
     tooltip: {
-      enabled: true,
+      enabled: false,
       custom: ({ series, seriesIndex, w }) => {
         return `
           <div class="bg-white rounded-lg px-3 py-2 shadow-md flex items-center text-gray-700 font-semibold text-sm">
@@ -67,36 +68,32 @@ const DonutChart: React.FC = () => {
       <div className="flex flex-col md:flex-row items-center md:items-start">
         {/* Left Side Donut Chart */}
         <div className="flex justify-center items-center">
-          <div className="w-64 h-64">
+          <div className="w-72 h-72">
             <Chart options={options} series={series} type="donut" />
           </div>
         </div>
 
         {/* Right Side Summary */}
-        <div className="ml-6 w-full md:w-auto mt-6 md:mt-0">
+        <div className="ml-6 w-full md:w-auto mt-6 md:mt-0 bg-gray-100 px-6 py-4 rounded-2xl">
           <ul className="space-y-3">
-            {[
-              "Bookings",
-              "Discounts",
-              "Salaries",
-              "Taxes & Deductions",
-              "Platform Fees",
-            ].map((label, index) => (
-              <li
-                key={index}
-                className="flex justify-between text-gray-700 font-medium text-base"
-              >
-                <span className="flex items-center">
-                  <span
-                    className="w-3 h-3 rounded-full inline-block mr-2"
-                    style={{ backgroundColor: options.colors?.[index] }}
-                  ></span>
-                  {label}
-                </span>
-                <span className="font-semibold text-gray-900">
-                  ${series[index].toLocaleString()}
-                </span>
-              </li>
+            {labels.map((label, index) => (
+              <Fragment key={index}>
+                <li className="flex justify-between  gap-5">
+                  <span className="flex items-center text-xs text-gray-500 font-light">
+                    <span
+                      className="w-3 h-3 rounded-full inline-block mr-2 "
+                      style={{ backgroundColor: options.colors?.[index] }}
+                    ></span>
+                    {label}
+                  </span>
+                  <span className=" text-gray-900 text-sm">
+                    ${series[index].toLocaleString()}
+                  </span>
+                </li>
+                {index + 1 !== labels.length && (
+                  <hr className="border-gray-300" />
+                )}
+              </Fragment>
             ))}
           </ul>
         </div>
