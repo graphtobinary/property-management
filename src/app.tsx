@@ -38,6 +38,7 @@ import StepTwelve from "./pages/CreateListing/StepTwelve";
 import CreateListingPageLayout from "./pages/CreateListing/CreateListingPageLayout";
 import StepThirteen from "./pages/CreateListing/StepThirteen";
 import PurchasePlan from "./pages/PurchasePlan";
+import CalendarDetails from "./pages/CalendarDetails";
 
 // PrivateRoute component to handle authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -79,6 +80,7 @@ export default function App() {
             <Route index path="/" element={<Home />} />
             <Route path="/profile" element={<UserProfiles />} />
             <Route path="/calendar" element={<Calendar />} />
+            <Route path="calendar/:id" element={<CalendarDetails />} />
             <Route path="/manage-properties" element={<ManageProperties />} />
             <Route path="/reservations" element={<Reservations />} />
             <Route path="/analytics" element={<Analytics />} />
