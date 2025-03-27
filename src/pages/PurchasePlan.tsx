@@ -2,6 +2,7 @@ import React from "react";
 import Button from "../components/ui/button/Button";
 import { Link, useNavigate } from "react-router";
 import { CheckCircleIcon } from "../icons";
+import CreateListingPageLayout from "./CreateListing/CreateListingPageLayout";
 
 // Subscription details component
 const SubscriptionDetails: React.FC = () => {
@@ -139,7 +140,7 @@ const PricingComparison: React.FC = () => {
 // Main page
 const PurchasePlan: React.FC = () => {
   return (
-    <>
+    <CreateListingPageLayout>
       <SubscriptionDetails />
       <hr className="border-gray-200 my-5" />
       <h1 className="text-2xl font-bold text-center my-5">
@@ -167,7 +168,7 @@ const PurchasePlan: React.FC = () => {
         />
       </div>
       <PricingComparison />
-    </>
+    </CreateListingPageLayout>
   );
 };
 

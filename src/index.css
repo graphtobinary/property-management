@@ -813,3 +813,21 @@ span.flatpickr-weekday,
 .simplebar-scrollbar.simplebar-visible:before {
   @apply opacity-100;
 }
+
+.fc-daygrid-day-events{
+  flex-grow: 1;
+  align-items: flex-end;
+  display: flex;
+}
+.fc-daygrid-day-frame.fc-scrollgrid-sync-inner{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.event-fc-color.fc-event-main.fc-bg-danger{
+  justify-content: center;
+  padding: 5px;
+}
+.fc .fc-daygrid-event-harness-abs{
+  top: 50px
+}
