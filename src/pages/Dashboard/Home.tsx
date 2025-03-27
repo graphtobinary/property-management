@@ -6,9 +6,37 @@ import StatisticsChart from "../../components/ecommerce/StatisticsChart";
 import PageMeta from "../../components/common/PageMeta";
 import DonutChart from "../../components/ecommerce/DonutChart";
 import { Link } from "react-router";
-import { Plus } from "../../icons";
+import { EmptyBlocksIcon, Plus } from "../../icons";
+
+interface EmptyStateProps {
+  title?: string;
+  description?: string;
+}
+
+const EmptyState: React.FC<EmptyStateProps> = ({
+  title = "Nothing to see here",
+  description = "You need to add at least 2-3 properties to be able to view data on dashboard.",
+}) => {
+  return (
+    <div className="flex h-screen flex-col items-center justify-center text-center py-10 px-4">
+      <EmptyBlocksIcon width={70} height={73} />
+      <h2 className="text-lg font-semibold text-gray-900 mt-2">{title}</h2>
+      <p className="text-sm text-gray-500 mt-2 max-w-sm">{description}</p>
+      <div className="flex mt-3">
+        <Link
+          to="/create-listing-step-one"
+          className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-primary text-theme-sm hover:bg-primary"
+        >
+          <Plus stroke="#fff" /> <span className="pl-1"> Create Listing</span>
+        </Link>
+      </div>
+    </div>
+  );
+};
 
 export default function Home() {
+  // eslint-disable-next-line no-constant-condition
+  if (false) return <EmptyState />;
   return (
     <>
       <PageMeta

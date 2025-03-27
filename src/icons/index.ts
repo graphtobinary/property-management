@@ -59,6 +59,7 @@ import { ReactComponent as SettingsIcon } from "./settings.svg?react";
 import { ReactComponent as ManagePropertiesIcon } from "./manage-properties.svg?react";
 import { ReactComponent as Plus } from "./plus-icon.svg?react";
 import { ReactComponent as MinusIcon } from "./minus-icon.svg?react";
+import { ReactComponent as EmptyBlocksIcon } from "./empty-blocks.svg?react";
 
 export {
   ErrorHexaIcon,
@@ -122,4 +123,5 @@ export {
   ManagePropertiesIcon,
   Plus,
   MinusIcon,
+  EmptyBlocksIcon,
 };
