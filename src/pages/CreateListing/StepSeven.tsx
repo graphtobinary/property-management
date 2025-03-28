@@ -1,6 +1,6 @@
 import PageMeta from "../../components/common/PageMeta";
 import CreateListingPageLayout from "./CreateListingPageLayout";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
 import DynamicRoomSelector from "../../components/DynamicRoomSelector";
 
@@ -45,20 +45,6 @@ const StepSeven: React.FC = () => {
                 {/*  */}
               </div>
             </div>
-          </div>
-        </div>
-        <div className="flex justify-end mb-3">
-          <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={() => navigate(-1)}>
-              Back
-            </Button>
-
-            <Link
-              to="/create-listing-step-eight"
-              className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-primary text-theme-sm hover:bg-primaryDark"
-            >
-              Next
-            </Link>
           </div>
         </div>
       </CreateListingPageLayout>

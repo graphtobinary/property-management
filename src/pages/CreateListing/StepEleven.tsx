@@ -1,11 +1,33 @@
 import PageMeta from "../../components/common/PageMeta";
 import CreateListingPageLayout from "./CreateListingPageLayout";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
 import UploadPropertyPhotos from "../../components/UploadPropertyPhotos";
+import { useState } from "react";
+import { PropertyImageProps } from "../../components/UploadPropertyPhotos/UploadPropertyPhotos";
 
 const StepEleven: React.FC = () => {
+  const [error, setError] = useState("");
+  const [images, setImages] = useState<PropertyImageProps[]>([]);
   const navigate = useNavigate();
+  const handleSubmit = () => {
+    if (images.length === 0) {
+      setError("Upload photos");
+      return;
+    } else {
+      setError("");
+    }
+    console.log("form submitted", images);
+    navigate("/create-listing-step-twelve");
+  };
+
+  const handleImageUpload = (data: PropertyImageProps[], isRemove = false) => {
+    if (isRemove) {
+      setImages(data);
+    } else {
+      setImages((prevImages) => [...prevImages, ...data]);
+    }
+  };
 
   return (
     <>
@@ -38,16 +60,22 @@ const StepEleven: React.FC = () => {
             <div className="flex flex-col mb-3">
               <span className=" text-base font-semibold text-gray-800 dark:text-white/90">
                 Add some photos of your property
+                <span className="text-error-500">*</span>
               </span>
               <small className="text-gray-400">
                 You'll need 5 photos to get started. You can add upto 15 more or
                 make changes later.
               </small>
             </div>
-            <div className=" gap-4 md:gap-6 ">
-              <div className="col-span-12 space-y-12 ">
+            <div className=" ">
+              <div className="col-span-12 space-y-4 ">
                 {/*  */}
-                <UploadPropertyPhotos />
+                <UploadPropertyPhotos
+                  images={images}
+                  handleImageUpload={handleImageUpload}
+                  error={error.length > 0}
+                  hint={error}
+                />
                 {/*  */}
               </div>
             </div>
@@ -59,12 +87,7 @@ const StepEleven: React.FC = () => {
               Back
             </Button>
 
-            <Link
-              to="/create-listing-step-twelve"
-              className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-primary text-theme-sm hover:bg-primaryDark"
-            >
-              Next
-            </Link>
+            <Button onClick={handleSubmit}>Next</Button>
           </div>
         </div>
       </CreateListingPageLayout>

@@ -1,14 +1,35 @@
 import PageMeta from "../../components/common/PageMeta";
 import CreateListingPageLayout from "./CreateListingPageLayout";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
 import TextArea from "../../components/form/input/TextArea";
 import { useState } from "react";
 
 const StepSix: React.FC = () => {
   const [description, setDescription] = useState("");
+  const [errors, setErrors] = useState<string>("");
   const navigate = useNavigate();
   const maxLength = 500;
+
+  const handleSubmit = () => {
+    // Reset errors before validation
+    let newErrors: string = "";
+    // Password validation
+    if (!description.trim()) {
+      newErrors = "Description is required";
+    }
+
+    // Set errors if any
+    if (newErrors.length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    // submit form
+    console.log(description, "form submitted");
+    navigate("/create-listing-step-seven");
+  };
+
   return (
     <>
       <PageMeta
@@ -39,7 +60,7 @@ const StepSix: React.FC = () => {
           </div>
           <div className="flex flex-col ">
             <span className="mb-3 text-base font-semibold text-gray-800 dark:text-white/90">
-              Create your description
+              Create your description<span className="text-error-500">*</span>
             </span>
             <div className="w-full md:w-1/2 gap-4 md:gap-6 ">
               <div className="col-span-12 space-y-12 ">
@@ -52,6 +73,8 @@ const StepSix: React.FC = () => {
                       maxLength={maxLength}
                       rows={4}
                       placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
+                      error={Boolean(errors ?? false)}
+                      hint={errors}
                     />
                     {/* Progress */}
                     <p className="text-gray-500 text-sm">
@@ -70,12 +93,7 @@ const StepSix: React.FC = () => {
               Back
             </Button>
 
-            <Link
-              to="/create-listing-step-seven"
-              className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-primary text-theme-sm hover:bg-primaryDark"
-            >
-              Next
-            </Link>
+            <Button onClick={handleSubmit}>Next</Button>
           </div>
         </div>
       </CreateListingPageLayout>

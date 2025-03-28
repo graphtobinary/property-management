@@ -20,6 +20,7 @@ import {
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
 import useOutsideClick from "../hooks/useOutsideClick";
+import { useAuthStore } from "../store/auth.store";
 
 type NavItem = {
   name: string;
@@ -288,7 +289,7 @@ const AppSidebar: React.FC = () => {
       ))}
     </ul>
   );
-
+  const logout = useAuthStore((state) => state.logout);
   return (
     <aside
       className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
@@ -397,7 +398,7 @@ const AppSidebar: React.FC = () => {
                 <li>
                   <button
                     className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    onClick={() => console.log("Logout clicked")}
+                    onClick={() => logout()}
                   >
                     Logout
                   </button>
