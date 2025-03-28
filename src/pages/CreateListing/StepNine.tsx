@@ -74,7 +74,6 @@ const StepNine: React.FC = () => {
                         placeholder="100"
                         type="number"
                         className="pr-[62px]"
-                        // value={price}
                         onChange={(e) => setPrice(e.target.value)}
                         error={Boolean(errors ?? false)}
                         hint={errors}
