@@ -16,7 +16,7 @@ const SubscriptionDetails: React.FC = () => {
           Exit
         </Button>
       </div>
-      <div className="mt-2 w-1/3 bg-gray-100 p-4 rounded-lg shadow">
+      <div className="mt-2 w-full md:w-1/2 bg-gray-100 p-4 rounded-lg shadow">
         <div className="flex justify-between">
           <p className="text-gray-700 text-sm">Your Subscription </p>
           <span className="font-normal text-md">Free for next 3 days</span>
