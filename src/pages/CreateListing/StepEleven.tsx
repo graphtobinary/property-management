@@ -1,9 +1,12 @@
 import PageMeta from "../../components/common/PageMeta";
 import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
-import UploadPropertyPhotos from "../../components/UploadPropertyPhotos";
-import { useState } from "react";
+import { lazy, useState } from "react";
 import { PropertyImageProps } from "../../components/UploadPropertyPhotos/UploadPropertyPhotos";
+
+const UploadPropertyPhotos = lazy(
+  () => import("../../components/UploadPropertyPhotos")
+);
 
 const StepEleven: React.FC = () => {
   const [error, setError] = useState("");

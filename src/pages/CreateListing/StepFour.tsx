@@ -1,7 +1,11 @@
 import PageMeta from "../../components/common/PageMeta";
 import { Link, useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
-import AddressPinSelector from "../../components/AddressPinSelector";
+import { lazy } from "react";
+
+const AddressPinSelector = lazy(
+  () => import("../../components/AddressPinSelector")
+);
 
 const StepFour: React.FC = () => {
   const navigate = useNavigate();

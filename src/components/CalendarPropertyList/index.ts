@@ -1,3 +1,3 @@
-import PropertyList from "./CalendarPropertyList";
+import CalendarPropertyList from "./CalendarPropertyList";
 
-export default PropertyList;
+export default CalendarPropertyList;

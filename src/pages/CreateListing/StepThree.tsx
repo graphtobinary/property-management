@@ -1,7 +1,9 @@
 import PageMeta from "../../components/common/PageMeta";
 import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
-import AddressForm from "../../components/AddressForm";
+import { lazy } from "react";
+
+const AddressForm = lazy(() => import("../../components/AddressForm"));
 
 const StepThree: React.FC = () => {
   const navigate = useNavigate();

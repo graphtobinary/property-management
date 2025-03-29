@@ -1,7 +1,9 @@
 import PageMeta from "../../components/common/PageMeta";
 import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
-import HouseRulesForm from "../../components/HouseRulesForm";
+import { lazy } from "react";
+
+const HouseRulesForm = lazy(() => import("../../components/HouseRulesForm"));
 
 const StepTen: React.FC = () => {
   const navigate = useNavigate();

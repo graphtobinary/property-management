@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import PageMeta from "../components/common/PageMeta";
-import PropertyList from "../components/PropertyList/PropertyList";
+import PropertyList from "../components/PropertyList";
 import { Plus } from "../icons";
 
 const ManageProperties: React.FC = () => {

@@ -1,7 +1,10 @@
 import PageMeta from "../../components/common/PageMeta";
 import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
-import GuestPaymentOption from "../../components/GuestPaymentOption";
+import { lazy } from "react";
+const GuestPaymentOption = lazy(
+  () => import("../../components/GuestPaymentOption")
+);
 
 const StepThirteen: React.FC = () => {
   const navigate = useNavigate();

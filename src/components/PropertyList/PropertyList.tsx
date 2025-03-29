@@ -2,9 +2,10 @@ import { Link } from "react-router";
 import { Plus } from "../../icons";
 import Button from "../ui/button/Button";
 import PropertyCard from "./PropertyCard";
-import PropertyDetails from "./PropertyDetails";
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { AnimatePresence } from "framer-motion";
+// PropertyDetails
+const PropertyDetails = lazy(() => import("./PropertyDetails"));
 
 const properties = [
   {
@@ -227,10 +228,12 @@ const PropertyList: React.FC = () => {
         ))}
         <AnimatePresence>
           {selectedProperty && (
-            <PropertyDetails
-              property={selectedProperty}
-              onClose={handleClose}
-            />
+            <Suspense fallback={<h2>Loading...</h2>}>
+              <PropertyDetails
+                property={selectedProperty}
+                onClose={handleClose}
+              />
+            </Suspense>
           )}
         </AnimatePresence>
 

@@ -1,7 +1,11 @@
 import PageMeta from "../../components/common/PageMeta";
 import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
-import DynamicRoomSelector from "../../components/DynamicRoomSelector";
+import { lazy } from "react";
+
+const DynamicRoomSelector = lazy(
+  () => import("../../components/DynamicRoomSelector")
+);
 
 const StepSeven: React.FC = () => {
   const navigate = useNavigate();

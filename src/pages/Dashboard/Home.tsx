@@ -1,10 +1,16 @@
-import EcommerceMetrics from "../../components/ecommerce/EcommerceMetrics";
 import MonthlySalesChart from "../../components/ecommerce/MonthlySalesChart";
-import StatisticsChart from "../../components/ecommerce/StatisticsChart";
 import PageMeta from "../../components/common/PageMeta";
-import DonutChart from "../../components/ecommerce/DonutChart";
 import { Link } from "react-router";
 import { EmptyBlocksIcon, Plus } from "../../icons";
+import React, { lazy } from "react";
+
+const EcommerceMetrics = lazy(
+  () => import("../../components/ecommerce/EcommerceMetrics")
+);
+const StatisticsChart = lazy(
+  () => import("../../components/ecommerce/StatisticsChart")
+);
+const DonutChart = lazy(() => import("../../components/ecommerce/DonutChart"));
 
 interface EmptyStateProps {
   title?: string;
