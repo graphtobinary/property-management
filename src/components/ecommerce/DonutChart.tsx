@@ -58,7 +58,7 @@ const DonutChart: React.FC = () => {
   };
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 pt-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
+    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white px-5 py-5 dark:border-gray-800 dark:bg-white/[0.03] sm:px-6 sm:pt-6">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-white/90">
           Recent Earning & Payouts
@@ -68,13 +68,13 @@ const DonutChart: React.FC = () => {
       <div className="flex flex-col md:flex-row items-center md:items-start">
         {/* Left Side Donut Chart */}
         <div className="flex justify-center items-center">
-          <div className="w-72 h-72">
+          <div className="w-64 h-64">
             <Chart options={options} series={series} type="donut" />
           </div>
         </div>
 
         {/* Right Side Summary */}
-        <div className="ml-6 w-full md:w-auto mt-6 md:mt-0 bg-gray-100 px-6 py-4 rounded-2xl">
+        <div className="ml-0 md:ml-6 w-full md:w-auto md:mt-0 bg-gray-100 px-6 py-4 rounded-2xl">
           <ul className="space-y-3">
             {labels.map((label, index) => (
               <Fragment key={index}>

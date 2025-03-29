@@ -1,5 +1,4 @@
 import PageMeta from "../../components/common/PageMeta";
-import CreateListingPageLayout from "./CreateListingPageLayout";
 import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
 import GuestPaymentOption from "../../components/GuestPaymentOption";
@@ -13,8 +12,8 @@ const StepThirteen: React.FC = () => {
         description="This is React.js Calendar Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
       />
 
-      <CreateListingPageLayout>
-        <div className="bg-white p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-0 mb-5 h-full">
+      <>
+        <div className="bg-white md:p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-0 mb-5 h-full">
           <div className="flex justify-between">
             <h3 className="mb-1 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-2">
               Step 13
@@ -48,7 +47,7 @@ const StepThirteen: React.FC = () => {
             </div>
           </div>
         </div>
-      </CreateListingPageLayout>
+      </>
     </>
   );
 };

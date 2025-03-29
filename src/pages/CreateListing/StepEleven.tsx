@@ -1,5 +1,4 @@
 import PageMeta from "../../components/common/PageMeta";
-import CreateListingPageLayout from "./CreateListingPageLayout";
 import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
 import UploadPropertyPhotos from "../../components/UploadPropertyPhotos";
@@ -36,7 +35,7 @@ const StepEleven: React.FC = () => {
         description="This is React.js Calendar Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
       />
 
-      <CreateListingPageLayout>
+      <>
         <div className="bg-white p-0 md:p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-0 mb-5 h-full">
           <div className="flex justify-between">
             <h3 className="mb-1 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-2">
@@ -90,7 +89,7 @@ const StepEleven: React.FC = () => {
             <Button onClick={handleSubmit}>Next</Button>
           </div>
         </div>
-      </CreateListingPageLayout>
+      </>
     </>
   );
 };
