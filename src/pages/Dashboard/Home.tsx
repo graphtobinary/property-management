@@ -1,12 +1,16 @@
-import EcommerceMetrics from "../../components/ecommerce/EcommerceMetrics";
 import MonthlySalesChart from "../../components/ecommerce/MonthlySalesChart";
-import StatisticsChart from "../../components/ecommerce/StatisticsChart";
-// import RecentOrders from "../../components/ecommerce/RecentOrders";
-// import DemographicCard from "../../components/ecommerce/DemographicCard";
 import PageMeta from "../../components/common/PageMeta";
-import DonutChart from "../../components/ecommerce/DonutChart";
 import { Link } from "react-router";
 import { EmptyBlocksIcon, Plus } from "../../icons";
+import React, { lazy } from "react";
+
+const EcommerceMetrics = lazy(
+  () => import("../../components/ecommerce/EcommerceMetrics")
+);
+const StatisticsChart = lazy(
+  () => import("../../components/ecommerce/StatisticsChart")
+);
+const DonutChart = lazy(() => import("../../components/ecommerce/DonutChart"));
 
 interface EmptyStateProps {
   title?: string;
@@ -71,21 +75,12 @@ export default function Home() {
           <MonthlySalesChart />
         </div>
         <div className="col-span-12 xl:col-span-6">
-          {/* <MonthlyTarget /> */}
           <DonutChart />
         </div>
 
         <div className="col-span-12">
           <StatisticsChart />
         </div>
-
-        {/* <div className="col-span-12 xl:col-span-5">
-          <DemographicCard />
-        </div>
-
-        <div className="col-span-12 xl:col-span-7">
-          <RecentOrders />
-        </div> */}
       </div>
     </>
   );

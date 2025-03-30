@@ -3,11 +3,13 @@ import React, { useState, useEffect, useRef } from "react";
 interface TimePickerProps {
   selectedTime: string;
   onTimeChange: (time: string) => void;
+  error?: boolean;
 }
 
 const TimePicker: React.FC<TimePickerProps> = ({
   selectedTime,
   onTimeChange,
+  error = false,
 }) => {
   const [selectedHour, setSelectedHour] = useState<string>("--");
   const [selectedMinute, setSelectedMinute] = useState<string>("--");
@@ -40,7 +42,10 @@ const TimePicker: React.FC<TimePickerProps> = ({
       <input
         type="text"
         readOnly
-        className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+        className={` ${
+          error &&
+          "border-error-500 focus:border-error-300 focus:ring-error-500/20 dark:text-error-400 dark:border-error-500 dark:focus:border-error-800"
+        } w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer`}
         value={selectedTime}
         onClick={() => setIsOpen(!isOpen)}
       />

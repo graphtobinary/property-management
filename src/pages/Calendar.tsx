@@ -1,6 +1,10 @@
 import PageMeta from "../components/common/PageMeta";
-import CalendarHeader from "../components/CalendarHeader";
-import PropertyList from "../components/CalendarPropertyList";
+import { lazy } from "react";
+
+const CalendarHeader = lazy(() => import("../components/CalendarHeader"));
+const CalendarPropertyList = lazy(
+  () => import("../components/CalendarPropertyList")
+);
 
 const Calendar: React.FC = () => {
   return (
@@ -13,7 +17,7 @@ const Calendar: React.FC = () => {
       <div className="p-4">
         <h1 className="text-lg font-semibold">Calendar | March 2025</h1>
         <CalendarHeader />
-        <PropertyList />
+        <CalendarPropertyList />
       </div>
     </>
   );

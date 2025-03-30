@@ -6,21 +6,53 @@ import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
 import Button from "../ui/button/Button";
 import { useAuthStore } from "../../store/auth.store";
+import { validateEmail } from "../../utils/utils";
+
+interface ErrorTypes {
+  email?: string;
+  password?: string;
+}
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [errors, setErrors] = useState<ErrorTypes>({
+    email: "",
+    password: "",
+  });
 
   const navigate = useNavigate();
   const login = useAuthStore((state) => state.login);
 
   const [, setLoading] = useState(false);
-  const [email, setEmail] = useState("hello@gmail.com");
-  const [password, setPassword] = useState("@demo1234");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSignIn = useCallback(
     async (e: { preventDefault: () => void }) => {
       e.preventDefault();
+
+      // Reset errors before validation
+      const newErrors: ErrorTypes = {};
+
+      // Email validation
+      if (!email.trim()) {
+        newErrors.email = "Email is required";
+      } else if (!validateEmail(email)) {
+        newErrors.email = "This is an invalid email address.";
+      }
+
+      // Password validation
+      if (!password.trim()) {
+        newErrors.password = "Password is required";
+      }
+
+      // Set errors if any
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors);
+        return;
+      }
+
       try {
         setLoading(true);
         await login(email, password);
@@ -33,6 +65,12 @@ export default function SignInForm() {
     },
     [email, password, login, navigate]
   );
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setEmail(value);
+  };
+
   // if (loading) return null;
   return (
     <div className="flex flex-col flex-1">
@@ -56,7 +94,9 @@ export default function SignInForm() {
                   </Label>
                   <Input
                     placeholder="info@gmail.com"
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={handleEmailChange}
+                    error={Boolean(errors?.email ?? false)}
+                    hint={errors.email}
                   />
                 </div>
                 <div>
@@ -68,6 +108,8 @@ export default function SignInForm() {
                       type={showPassword ? "text" : "password"}
                       placeholder="Enter your password"
                       onChange={(e) => setPassword(e.target.value)}
+                      error={Boolean(errors?.password ?? false)}
+                      hint={errors.password}
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}

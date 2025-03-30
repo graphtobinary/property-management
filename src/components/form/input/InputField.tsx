@@ -51,23 +51,24 @@ const Input: FC<InputProps> = ({
   }
 
   return (
-    <div className="relative">
-      <input
-        type={type}
-        id={id}
-        name={name}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        onClick={onClick}
-        min={min}
-        max={max}
-        step={step}
-        disabled={disabled}
-        className={inputClasses}
-        maxLength={maxLength}
-      />
-
+    <>
+      <div className="relative">
+        <input
+          type={type}
+          id={id}
+          name={name}
+          placeholder={placeholder}
+          value={value}
+          onChange={onChange}
+          onClick={onClick}
+          min={min}
+          max={max}
+          step={step}
+          disabled={disabled}
+          className={inputClasses}
+          maxLength={maxLength}
+        />
+      </div>
       {hint && (
         <p
           className={`mt-1.5 text-xs ${
@@ -81,7 +82,7 @@ const Input: FC<InputProps> = ({
           {hint}
         </p>
       )}
-    </div>
+    </>
   );
 };
 

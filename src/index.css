@@ -1,5 +1,3 @@
-/* @import url("https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap") */
-/* layer(base); */
 
 @import "tailwindcss";
 
@@ -31,7 +29,7 @@
   font-family: 'Myriad Pro';
   font-style: normal;
   font-weight: 700;
-  src: url('./assets/fonts/MYRIADPRO-BOLDCOND.OTF') format('opentype');
+  src: url("./assets/fonts/MYRIADPRO-COND.OTF") format("opentype");
   font-display: swap;
 }
 
@@ -211,6 +209,12 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
+  .font-myriad {
+    font-family: "Myriad Pro", sans-serif;
+  }
+}
+
+@layer base {
   *,
   ::after,
   ::before,
@@ -309,13 +313,9 @@
     @apply rounded-full;
   }
 
-  &::-webkit-scrollbar-thumb {
-    @apply bg-gray-200 rounded-full dark:bg-gray-700;
-  }
+  
 }
-.dark .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #344054;
-}
+
 
 @layer utilities {
   /* For Remove Date Icon */
@@ -802,13 +802,7 @@ span.flatpickr-weekday,
   @apply min-h-screen;
 }
 
-.simplebar-scrollbar::before {
-  @apply bg-gray-200! rounded-full! dark:bg-gray-700! opacity-100!;
-}
 
-.dark .simplebar-scrollbar::before {
-  @apply bg-gray-700!;
-}
 
 .simplebar-scrollbar.simplebar-visible:before {
   @apply opacity-100;

@@ -4,10 +4,81 @@ import { EyeCloseIcon, EyeIcon } from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
+import { validateEmail } from "../../utils/utils";
+
+interface ErrorTypes {
+  fname?: string;
+  lname?: string;
+  email?: string;
+  password?: string;
+}
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  // const [, setLoading] = useState(false);
+  const [errors, setErrors] = useState<ErrorTypes>({
+    fname: "",
+    lname: "",
+    email: "",
+    password: "",
+  });
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+
+  const handleSignUp = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    // Reset errors before validation
+    const newErrors: ErrorTypes = {};
+
+    // Frist Name validation
+    if (!firstName.trim()) {
+      newErrors.fname = "First Name is required";
+    }
+    // Frist Name validation
+    if (!lastName.trim()) {
+      newErrors.lname = "Last Name is required";
+    }
+
+    // Email validation
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!validateEmail(email)) {
+      newErrors.email = "This is an invalid email address.";
+    }
+
+    // Password validation
+    if (!password.trim()) {
+      newErrors.password = "Password is required";
+    } else if (password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+    }
+
+    console.log(newErrors, "newErrors");
+    // Set errors if any
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    // Proceed with form submission (e.g., API call)
+    console.log("Form submitted successfully", {
+      firstName,
+      lastName,
+      email,
+      password,
+    });
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setEmail(value);
+  };
+
   return (
     <div className="flex flex-col flex-1 w-full overflow-y-auto lg:w-1/2 no-scrollbar">
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
@@ -34,6 +105,9 @@ export default function SignUpForm() {
                       id="fname"
                       name="fname"
                       placeholder="Enter your first name"
+                      onChange={(e) => setFirstName(e.target.value)}
+                      error={Boolean(errors?.fname ?? false)}
+                      hint={errors?.fname}
                     />
                   </div>
                   {/* <!-- Last Name --> */}
@@ -46,6 +120,9 @@ export default function SignUpForm() {
                       id="lname"
                       name="lname"
                       placeholder="Enter your last name"
+                      onChange={(e) => setLastName(e.target.value)}
+                      error={Boolean(errors?.lname ?? false)}
+                      hint={errors.lname}
                     />
                   </div>
                 </div>
@@ -59,6 +136,9 @@ export default function SignUpForm() {
                     id="email"
                     name="email"
                     placeholder="Enter your email"
+                    onChange={handleEmailChange}
+                    error={Boolean(errors?.email ?? false)}
+                    hint={errors.email}
                   />
                 </div>
                 {/* <!-- Password --> */}
@@ -70,10 +150,13 @@ export default function SignUpForm() {
                     <Input
                       placeholder="Enter your password"
                       type={showPassword ? "text" : "password"}
+                      onChange={(e) => setPassword(e.target.value)}
+                      error={Boolean(errors?.password ?? false)}
+                      hint={errors.password}
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                      className="absolute z-30 cursor-pointer right-4 top-3"
                     >
                       {showPassword ? (
                         <EyeIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
@@ -103,7 +186,10 @@ export default function SignUpForm() {
                 </div>
                 {/* <!-- Button --> */}
                 <div>
-                  <button className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-primary shadow-theme-xs hover:bg-primary">
+                  <button
+                    onClick={handleSignUp}
+                    className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-primary shadow-theme-xs hover:bg-primary"
+                  >
                     Sign Up
                   </button>
                 </div>

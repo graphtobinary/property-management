@@ -3,23 +3,17 @@ import { Link, useLocation } from "react-router";
 
 // Assume these icons are imported from an icon library
 import {
-  // AnalyticsIcon,
   BoxCubeIcon,
   CalenderIcon,
   ChevronDownIcon,
-  // GridIcon,
   HomeIcon,
   HorizontaLDots,
   ManagePropertiesIcon,
   PieChartIcon,
   PlugInIcon,
-  // ReservationIcon,
-  // SettingsIcon,
-  // UserCircleIcon,
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
-import useOutsideClick from "../hooks/useOutsideClick";
 
 type NavItem = {
   name: string;
@@ -96,11 +90,7 @@ const othersItems: NavItem[] = [
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
-  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const location = useLocation();
-  const userMenuRef = useRef<HTMLDivElement | null>(null);
-
-  useOutsideClick(userMenuRef, () => setIsUserDropdownOpen(false));
 
   const [openSubmenu, setOpenSubmenu] = useState<{
     type: "main" | "others";
@@ -291,7 +281,7 @@ const AppSidebar: React.FC = () => {
 
   return (
     <aside
-      className={`fixed mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
+      className={`fixed mt-20 md:mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
         ${
           isExpanded || isMobileOpen
             ? "w-[290px]"
@@ -305,7 +295,7 @@ const AppSidebar: React.FC = () => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <div
-        className={`py-4 flex ${
+        className={`py-4 hidden md:flex ${
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
         }`}
       >
@@ -369,43 +359,8 @@ const AppSidebar: React.FC = () => {
           </div>
         </nav>
       </div>
-      <div className="hidden absolute bottom-5 md:flex flex-col">
+      <div className=" absolute bottom-24 md:flex flex-col">
         {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null}
-        <div className="relative" ref={userMenuRef}>
-          {/* User Profile Button */}
-          <div
-            className="flex items-center text-gray-700 cursor-pointer dark:text-gray-400"
-            onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
-          >
-            <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
-              <img src="/images/user/owner.jpg" alt="User" />
-            </span>
-            <div>
-              <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-                Property Manager
-              </span>
-              <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
-                propertymanager@gmail.com
-              </span>
-            </div>
-          </div>
-
-          {/* Dropdown Menu */}
-          {isUserDropdownOpen && (
-            <div className="absolute bottom-full mb-2 right-0 w-40 bg-white shadow-lg rounded-md border border-gray-200 dark:bg-gray-800 dark:border-gray-700">
-              <ul className="py-2 text-sm text-gray-700 dark:text-gray-300">
-                <li>
-                  <button
-                    className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-                    onClick={() => console.log("Logout clicked")}
-                  >
-                    Logout
-                  </button>
-                </li>
-              </ul>
-            </div>
-          )}
-        </div>
       </div>
     </aside>
   );

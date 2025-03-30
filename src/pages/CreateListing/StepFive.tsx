@@ -1,6 +1,5 @@
 import PageMeta from "../../components/common/PageMeta";
-import CreateListingPageLayout from "./CreateListingPageLayout";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
 import { useState } from "react";
 import { MinusIcon, Plus } from "../../icons";
@@ -10,9 +9,29 @@ import Input from "../../components/form/input/InputField";
 const StepFive: React.FC = () => {
   const navigate = useNavigate();
   const [guests, setGuests] = useState(4);
+  const [errors, setErrors] = useState<string>("");
   const [propertyName, setPropertyName] = useState("La -Casa the papel");
   const maxLength = 32;
-  console.log(propertyName);
+
+  const handleSubmit = () => {
+    // Reset errors before validation
+    let newErrors: string = "";
+    // Password validation
+    if (!propertyName.trim()) {
+      newErrors = "Property name is required";
+    }
+
+    // Set errors if any
+    if (newErrors.length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    // submit form
+    console.log(propertyName, guests, "form submitted");
+    navigate("/create-listing-step-six");
+  };
+
   return (
     <>
       <PageMeta
@@ -20,7 +39,7 @@ const StepFive: React.FC = () => {
         description="This is React.js Calendar Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
       />
 
-      <CreateListingPageLayout>
+      <>
         <div className="bg-white p-0 md:p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-0 mb-5 h-full">
           <div className="flex justify-between">
             <h3 className="mb-1 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-2">
@@ -51,7 +70,10 @@ const StepFive: React.FC = () => {
                 <div className="space-y-6">
                   {/* Property Name Input */}
                   <div>
-                    <Label>Name of your property</Label>
+                    <Label>
+                      Name of your property
+                      <span className="text-error-500">*</span>
+                    </Label>
                     <Input
                       type="text"
                       id="input"
@@ -59,6 +81,8 @@ const StepFive: React.FC = () => {
                       value={propertyName}
                       onChange={(e) => setPropertyName(e.target.value)}
                       maxLength={maxLength}
+                      error={Boolean(errors ?? false)}
+                      hint={errors}
                     />
                   </div>
 
@@ -110,15 +134,10 @@ const StepFive: React.FC = () => {
               Back
             </Button>
 
-            <Link
-              to="/create-listing-step-six"
-              className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-primary text-theme-sm hover:bg-primaryDark"
-            >
-              Next
-            </Link>
+            <Button onClick={handleSubmit}>Next</Button>
           </div>
         </div>
-      </CreateListingPageLayout>
+      </>
     </>
   );
 };

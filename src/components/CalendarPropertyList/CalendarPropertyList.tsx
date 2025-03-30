@@ -11,7 +11,7 @@ const properties = [
   // Add more properties...
 ];
 
-const PropertyList = () => {
+const CalendarPropertyList = () => {
   const navigate = useNavigate();
   return (
     <div className="overflow-x-auto w-full">
@@ -66,4 +66,4 @@ const PropertyList = () => {
   );
 };
 
-export default PropertyList;
+export default CalendarPropertyList;

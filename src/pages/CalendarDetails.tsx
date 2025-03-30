@@ -169,7 +169,7 @@ const CalendarDetails: React.FC = () => {
       <div className="flex justify-between flex-col gap-1 mb-6">
         <div className="flex gap-3 items-center">
           <div
-            onClick={() => navigate("/")}
+            onClick={() => navigate(-1)}
             className="bg-gray-300 p-2 rounded-full flex justify-center items-center cursor-pointer"
           >
             <ChevronLeftIcon />

@@ -27,7 +27,7 @@ interface PropertyDetailsProps {
 
 const PropertyDetails: React.FC<PropertyDetailsProps> = ({ onClose }) => {
   return (
-    <div className="fixed inset-0 bg-black/[0.6] bg-opacity-50 flex justify-end z-50">
+    <div className="fixed inset-0 bg-black/[0.6] bg-opacity-50 flex justify-end z-999999">
       <motion.div
         initial={{ x: "100%" }} // Start off-screen to the right
         animate={{ x: 0 }} // Slide in from right
