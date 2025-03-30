@@ -20,6 +20,19 @@ export const signupUser = (formData: { email: string; password: string }) => {
   );
 };
 
+export const verifyEmail = (formData: { invitation_token: string }) => {
+  return doPost(
+    API_CONSTANTS.SIGNUP_VERIFY,
+    {},
+    {
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    }
+  );
+};
+
 export const loginUser = (formData: { email: string; password: string }) => {
   return doPost(
     API_CONSTANTS.USER_SIGNUP,

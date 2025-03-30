@@ -28,6 +28,7 @@ import StepThirteen from "./pages/CreateListing/StepThirteen";
 import PurchasePlan from "./pages/PurchasePlan";
 import CalendarDetails from "./pages/CalendarDetails";
 import UpdateUserProfile from "./pages/UpdateUserProfile";
+import Verification from "./pages/Verification";
 
 // PrivateRoute component to handle authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -76,6 +77,7 @@ export default function App() {
           </Route>
           <Route>
             <Route path="/tell-us-about-you" element={<UpdateUserProfile />} />
+            <Route path="/verification/:token" element={<Verification />} />
           </Route>
 
           {/* Create Listing Routes - Protected */}
