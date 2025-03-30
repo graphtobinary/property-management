@@ -189,6 +189,7 @@ export default function SignUpForm() {
                   <button
                     onClick={handleSignUp}
                     className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-primary shadow-theme-xs hover:bg-primary"
+                    type="submit"
                   >
                     Sign Up
                   </button>

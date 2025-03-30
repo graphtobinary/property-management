@@ -31,7 +31,6 @@ export default function SignInForm() {
   const handleSignIn = useCallback(
     async (e: { preventDefault: () => void }) => {
       e.preventDefault();
-
       // Reset errors before validation
       const newErrors: ErrorTypes = {};
 
@@ -141,6 +140,7 @@ export default function SignInForm() {
                   <Button
                     className="w-full bg-primary hover:bg-primaryDark"
                     size="sm"
+                    type="submit"
                   >
                     Sign in
                   </Button>
