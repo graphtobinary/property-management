@@ -83,11 +83,10 @@ export default function AddressForm() {
   return (
     <>
       <form onSubmit={handleSubmit} className="space-y-6">
-        <span className="text-error-500">*</span>
         <div className="flex flex-col w-full md:w-1/2 gap-4 md:gap-6 ">
           <div>
             <Label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-              Select Country
+              Select Country<span className="text-error-500">*</span>
             </Label>
             <Select
               options={countryOptions}

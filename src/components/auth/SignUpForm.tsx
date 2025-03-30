@@ -5,10 +5,12 @@ import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
 import { validateEmail } from "../../utils/utils";
+import { signupUser } from "../../api/User.api";
+import Button from "../ui/button/Button";
 
 interface ErrorTypes {
-  fname?: string;
-  lname?: string;
+  // fname?: string;
+  // lname?: string;
   email?: string;
   password?: string;
 }
@@ -18,31 +20,31 @@ export default function SignUpForm() {
   const [isChecked, setIsChecked] = useState(false);
   // const [, setLoading] = useState(false);
   const [errors, setErrors] = useState<ErrorTypes>({
-    fname: "",
-    lname: "",
+    // fname: "",
+    // lname: "",
     email: "",
     password: "",
   });
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
+  // const [firstName, setFirstName] = useState("");
+  // const [lastName, setLastName] = useState("");
 
-  const handleSignUp = (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Reset errors before validation
     const newErrors: ErrorTypes = {};
 
-    // Frist Name validation
-    if (!firstName.trim()) {
-      newErrors.fname = "First Name is required";
-    }
-    // Frist Name validation
-    if (!lastName.trim()) {
-      newErrors.lname = "Last Name is required";
-    }
+    // // Frist Name validation
+    // if (!firstName.trim()) {
+    //   newErrors.fname = "First Name is required";
+    // }
+    // // Frist Name validation
+    // if (!lastName.trim()) {
+    //   newErrors.lname = "Last Name is required";
+    // }
 
     // Email validation
     if (!email.trim()) {
@@ -67,11 +69,20 @@ export default function SignUpForm() {
 
     // Proceed with form submission (e.g., API call)
     console.log("Form submitted successfully", {
-      firstName,
-      lastName,
+      // firstName,
+      // lastName,
       email,
       password,
     });
+    const formData = {
+      email,
+      password,
+    };
+    try {
+      await signupUser(formData);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,11 +103,11 @@ export default function SignUpForm() {
             </p>
           </div>
           <div>
-            <form>
+            <form onSubmit={handleSignUp}>
               <div className="space-y-5">
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   {/* <!-- First Name --> */}
-                  <div className="sm:col-span-1">
+                  {/* <div className="sm:col-span-1">
                     <Label>
                       First Name<span className="text-error-500">*</span>
                     </Label>
@@ -109,9 +120,9 @@ export default function SignUpForm() {
                       error={Boolean(errors?.fname ?? false)}
                       hint={errors?.fname}
                     />
-                  </div>
+                  </div> */}
                   {/* <!-- Last Name --> */}
-                  <div className="sm:col-span-1">
+                  {/* <div className="sm:col-span-1">
                     <Label>
                       Last Name<span className="text-error-500">*</span>
                     </Label>
@@ -124,7 +135,7 @@ export default function SignUpForm() {
                       error={Boolean(errors?.lname ?? false)}
                       hint={errors.lname}
                     />
-                  </div>
+                  </div> */}
                 </div>
                 {/* <!-- Email --> */}
                 <div>
@@ -186,13 +197,9 @@ export default function SignUpForm() {
                 </div>
                 {/* <!-- Button --> */}
                 <div>
-                  <button
-                    onClick={handleSignUp}
-                    className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium text-white transition rounded-lg bg-primary shadow-theme-xs hover:bg-primary"
-                    type="submit"
-                  >
+                  <Button type="submit" disabled={!isChecked}>
                     Sign Up
-                  </button>
+                  </Button>
                 </div>
               </div>
             </form>

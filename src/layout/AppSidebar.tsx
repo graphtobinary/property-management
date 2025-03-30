@@ -14,6 +14,7 @@ import {
 } from "../icons";
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
+import AppLogo from "../components/AppLogo/AppLogo";
 
 type NavItem = {
   name: string;
@@ -294,7 +295,12 @@ const AppSidebar: React.FC = () => {
       onMouseEnter={() => !isExpanded && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div
+      <AppLogo
+        isExpanded={isExpanded}
+        isHovered={isHovered}
+        isMobileOpen={isMobileOpen}
+      />
+      {/* <div
         className={`py-4 hidden md:flex ${
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
         }`}
@@ -327,7 +333,7 @@ const AppSidebar: React.FC = () => {
             />
           )}
         </Link>
-      </div>
+      </div> */}
       <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
         <nav className="mb-6">
           <div className="flex flex-col gap-4">

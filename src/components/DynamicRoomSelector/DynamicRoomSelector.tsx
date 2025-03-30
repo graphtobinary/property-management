@@ -207,6 +207,7 @@ const DynamicRoomSelector = () => {
                 className="p-2 bg-gray-300 rounded-md disabled:opacity-50"
                 onClick={() => updateQuantity(room.id, -1)}
                 disabled={room.quantity <= 1}
+                type="button"
               >
                 <MinusIcon />
               </button>
@@ -214,6 +215,7 @@ const DynamicRoomSelector = () => {
               <button
                 className="p-2 bg-gray-300 rounded-md"
                 onClick={() => updateQuantity(room.id, 1)}
+                type="button"
               >
                 <Plus />
               </button>
@@ -223,6 +225,7 @@ const DynamicRoomSelector = () => {
             <Button
               size="sm"
               variant="primary"
+              type="button"
               onClick={() => removeRoom(room.id)}
             >
               <TrashBinIcon />
@@ -232,14 +235,19 @@ const DynamicRoomSelector = () => {
 
         {/* Add Room Button */}
         <div className="w-full p-3 flex justify-center">
-          <Button size="md" variant="primary" onClick={addRoom}>
+          <Button size="md" variant="primary" type="button" onClick={addRoom}>
             Add Room
           </Button>
         </div>
       </div>
       <div className="flex justify-end mb-3 w-full">
         <div className="flex gap-2">
-          <Button size="sm" variant="outline" onClick={() => navigate(-1)}>
+          <Button
+            size="sm"
+            variant="outline"
+            type="button"
+            onClick={() => navigate(-1)}
+          >
             Back
           </Button>
 
