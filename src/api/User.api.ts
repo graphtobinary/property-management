@@ -12,9 +12,6 @@ export const signupUser = (formData: { email: string; password: string }) => {
     API_CONSTANTS.USER_SIGNUP,
     {},
     {
-      headers: {
-        "content-type": "application/json",
-      },
       body: JSON.stringify(formData),
     }
   );
@@ -25,9 +22,6 @@ export const verifyEmail = (formData: { invitation_token: string }) => {
     API_CONSTANTS.SIGNUP_VERIFY,
     {},
     {
-      headers: {
-        "content-type": "application/json",
-      },
       body: JSON.stringify(formData),
     }
   );
@@ -35,7 +29,7 @@ export const verifyEmail = (formData: { invitation_token: string }) => {
 
 export const loginUser = (formData: { email: string; password: string }) => {
   return doPost(
-    API_CONSTANTS.USER_SIGNUP,
+    API_CONSTANTS.USER_LOGIN,
     {},
     {
       headers: {

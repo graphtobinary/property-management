@@ -55,10 +55,6 @@ export default function SignUpForm() {
     }
 
     // Proceed with form submission (e.g., API call)
-    console.log("Form submitted successfully", {
-      email,
-      password,
-    });
     const formData = {
       email,
       password,

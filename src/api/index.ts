@@ -43,7 +43,9 @@ const doCall = async (
   }
 
   // for client side calls only
-  const headers = {};
+  const headers = {
+    "content-type": "application/json",
+  };
 
   return fetch(url, {
     ...option,
@@ -138,3 +140,4 @@ export const doDelete = (
   // @ts-expect-error
   return doCall(uri, params, { ...options, method: "DELETE" });
 };
+

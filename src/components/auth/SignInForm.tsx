@@ -5,8 +5,10 @@ import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
 import Button from "../ui/button/Button";
-import { useAuthStore } from "../../store/auth.store";
 import { validateEmail } from "../../utils/utils";
+import { loginUser } from "../../api/User.api";
+import { Token } from "../../interfaces/auth";
+import { AUTH_COOKIES, setCookie } from "../../utils/cookie";
 
 interface ErrorTypes {
   email?: string;
@@ -22,7 +24,6 @@ export default function SignInForm() {
   });
 
   const navigate = useNavigate();
-  const login = useAuthStore((state) => state.login);
 
   const [, setLoading] = useState(false);
   const [email, setEmail] = useState("");
@@ -52,17 +53,34 @@ export default function SignInForm() {
         return;
       }
 
+      const formData = {
+        email,
+        password,
+      };
+
       try {
         setLoading(true);
-        await login(email, password);
-        navigate("/");
-      } catch (error) {
-        console.error(error);
+        const response = await loginUser(formData) as Token;
+        console.log(response);
+        if (response.accessToken) {
+           // Store tokens in cookies
+          setCookie(AUTH_COOKIES.ACCESS_TOKEN, response.accessToken);
+          setCookie(AUTH_COOKIES.REFRESH_TOKEN, response.refreshToken);
+          // Update auth state
+          // Call Profile API to get user details
+          // setAuth(email, password);
+        
+          navigate("/");
+        }
+      } catch {
+        setErrors({
+          password: "Invalid email or password",
+        });
       } finally {
         setLoading(false);
       }
     },
-    [email, password, login, navigate]
+    [email, password, navigate]
   );
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
