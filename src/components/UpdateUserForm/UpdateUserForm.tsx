@@ -16,19 +16,12 @@ const INIT_FORM_ELEMENTS = {
   businessName: "",
   phoneNumber: "",
   approxNumOfListings: "",
-  averagePrice: "",
 };
 
 const listingOptions = [
   { value: "10", label: "10+" },
   { value: "20", label: "20+" },
   { value: "50", label: "50+" },
-];
-
-const averagePriceOptions = [
-  { value: "₹25-100", label: "₹25-100" },
-  { value: "₹500-1000", label: "₹500-1000" },
-  { value: "₹1000-2000", label: "₹1000-2000" },
 ];
 
 export default function UpdateUserForm() {
@@ -108,7 +101,7 @@ export default function UpdateUserForm() {
   const handleRadioChange = (value: string) => {
     setOwnerType(value);
   };
-
+  // console.log(errors);
   return (
     <>
       <div className="flex flex-col flex-1">
@@ -225,19 +218,6 @@ export default function UpdateUserForm() {
                   className="dark:bg-dark-900"
                   error={Boolean(errors?.approxNumOfListings ?? false)}
                   hint={errors.approxNumOfListings}
-                />
-              </div>
-              <div>
-                <Label>
-                  Avg. nightly rate<span className="text-error-500">*</span>
-                </Label>
-                <Select
-                  options={averagePriceOptions}
-                  placeholder="Select Option"
-                  onChange={(value) => handleChange("averagePrice", value)}
-                  className="dark:bg-dark-900"
-                  error={Boolean(errors?.averagePrice ?? false)}
-                  hint={errors.averagePrice}
                 />
               </div>
             </div>

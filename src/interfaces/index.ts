@@ -7,7 +7,6 @@ export interface UpdateUserDataProps {
   country?: string;
   phoneNumber?: string;
   approxNumOfListings?: string;
-  averagePrice?: string;
 }
 
 export interface AclUserProps {
