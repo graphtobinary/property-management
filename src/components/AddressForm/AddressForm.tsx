@@ -5,6 +5,7 @@ import Select from "../form/Select";
 import TextArea from "../form/input/TextArea";
 import Button from "../ui/button/Button";
 import { useNavigate } from "react-router";
+import useCountries from "../../hooks/useCountries";
 
 const INIT_FORM_ELEMENTS = {
   country: "",
@@ -28,11 +29,6 @@ interface ErrorTypes {
   pincode?: string;
 }
 
-const countryOptions = [
-  { value: "india", label: "India" },
-  { value: "uae", label: "UAE" },
-  { value: "usa", label: "USA" },
-];
 const stateOptions = [
   { value: "delhi", label: "New Delhi" },
   { value: "bihar", label: "Bihar" },
@@ -41,7 +37,7 @@ const stateOptions = [
 
 export default function AddressForm() {
   const [formValues, setFormValues] = useState(INIT_FORM_ELEMENTS);
-
+  const { countries } = useCountries();
   // Error state
   const [errors, setErrors] = useState<ErrorTypes>(INIT_FORM_ELEMENTS);
 
@@ -89,7 +85,7 @@ export default function AddressForm() {
               Select Country<span className="text-error-500">*</span>
             </Label>
             <Select
-              options={countryOptions}
+              options={countries}
               placeholder="Select Option"
               onChange={(value) => handleChange("country", value)}
               className="dark:bg-dark-900"

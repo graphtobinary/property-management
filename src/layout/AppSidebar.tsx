@@ -299,6 +299,8 @@ const AppSidebar: React.FC = () => {
         isExpanded={isExpanded}
         isHovered={isHovered}
         isMobileOpen={isMobileOpen}
+        hiddenOnMobile
+        // isHidden
       />
       {/* <div
         className={`py-4 hidden md:flex ${

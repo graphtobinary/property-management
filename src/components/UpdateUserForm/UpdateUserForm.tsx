@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Select from "../form/Select";
@@ -7,6 +7,7 @@ import { useNavigate } from "react-router";
 import Radio from "../form/input/Radio";
 import { patchUser } from "../../api/User.api";
 import { UpdateUserDataProps } from "../../interfaces";
+import useCountries from "../../hooks/useCountries";
 
 const INIT_FORM_ELEMENTS = {
   country: "",
@@ -18,11 +19,6 @@ const INIT_FORM_ELEMENTS = {
   averagePrice: "",
 };
 
-const countryOptions = [
-  { value: "india", label: "India" },
-  { value: "uae", label: "UAE" },
-  { value: "usa", label: "USA" },
-];
 const listingOptions = [
   { value: "10", label: "10+" },
   { value: "20", label: "20+" },
@@ -36,9 +32,11 @@ const averagePriceOptions = [
 ];
 
 export default function UpdateUserForm() {
-  const [formValues, setFormValues] = useState(INIT_FORM_ELEMENTS);
+  const [formValues, setFormValues] =
+    useState<UpdateUserDataProps>(INIT_FORM_ELEMENTS);
   const [ownerType, setOwnerType] = useState("business");
   const [isLoading, setLoading] = useState(false);
+  const { countries } = useCountries();
 
   // Error state
   const [errors, setErrors] = useState<UpdateUserDataProps>(INIT_FORM_ELEMENTS);
@@ -49,19 +47,30 @@ export default function UpdateUserForm() {
     setErrors((prev) => ({ ...prev, [field]: "" })); // Clear error when typing
   };
 
+  useEffect(() => {
+    if (ownerType !== "business") {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors.businessName;
+        return newErrors;
+      });
+      setFormValues((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors.businessName;
+        return newErrors;
+      });
+    }
+  }, [ownerType]);
+
   // Validation function
   const validateForm = () => {
-    const newErrors: UpdateUserDataProps = {};
+    const newErrors: Partial<Record<keyof typeof formValues, string>> = {};
     Object.keys(formValues).forEach((key) => {
-      if (!formValues[key as keyof typeof formValues].trim()) {
+      const value = formValues[key as keyof typeof formValues];
+      if (!value || typeof value !== "string" || !value.trim()) {
         newErrors[key as keyof typeof errors] = "This field is required";
       }
     });
-
-    // Mobile validation
-    // if (!/^\d{12}$/.test(formValues.mobile)) {
-    //   newErrors.mobile = "Pincode must be a 12-digit number";
-    // }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0; // Return true if no errors
@@ -77,7 +86,9 @@ export default function UpdateUserForm() {
         countryId: 1,
         firstName: formValues.firstName,
         lastName: formValues.lastName,
-        businessName: formValues.businessName,
+        ...(formValues?.businessName && {
+          businessName: formValues?.businessName,
+        }),
         phoneNumber: formValues.phoneNumber,
         approxNumOfListings: formValues.approxNumOfListings,
       };
@@ -101,11 +112,10 @@ export default function UpdateUserForm() {
   return (
     <>
       <div className="flex flex-col flex-1">
-        <div className="w-full pt-10 mx-auto"></div>
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col flex-1 gap-4 md:gap-6 ">
             <div className="bg-gray-100 p-5">
-              <div className="w-1/2 mb-2">
+              <div className="md:w-1/2 mb-2">
                 <span className="text-gray-400 text-sm font-normal leading-0">
                   Are you a business managing multiple properties or the
                   property owner
@@ -171,19 +181,21 @@ export default function UpdateUserForm() {
               </div>
             )}
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
-              <div>
-                <Label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
-                  Select Country<span className="text-error-500">*</span>
-                </Label>
-                <Select
-                  options={countryOptions}
-                  placeholder="Select Option"
-                  onChange={(value) => handleChange("country", value)}
-                  className="dark:bg-dark-900"
-                  error={Boolean(errors?.country ?? false)}
-                  hint={errors.country}
-                />
-              </div>
+              {countries.length > 0 && (
+                <div>
+                  <Label className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+                    Select Country<span className="text-error-500">*</span>
+                  </Label>
+                  <Select
+                    options={countries}
+                    placeholder="Select Option"
+                    onChange={(value) => handleChange("country", value)}
+                    className="dark:bg-dark-900"
+                    error={Boolean(errors?.country ?? false)}
+                    hint={errors.country}
+                  />
+                </div>
+              )}
               <div>
                 <Label>
                   Mobile Number<span className="text-error-500">*</span>

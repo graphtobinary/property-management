@@ -4,7 +4,7 @@ const API_CONSTANTS = {
   USER_LOGIN: "/acl.service.v1.LoginService/Login",
   GET_USER: "/acl.service.v1.AclUserService/GetAclUserProfile",
   PATCH_USER: "/acl.service.v1.TenantService/PatchTenantProfile",
-  GET_COUNTRY_LIST: "/acl.service.v1.MasterCachedService/GetCountries",
+  GET_COUNTRY_LIST: "/master.service.v1.MasterCachedService/GetCountries",
 };
 
 export default API_CONSTANTS;

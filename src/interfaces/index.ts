@@ -15,3 +15,15 @@ export interface AclUserProps {
     };
   };
 }
+
+export interface CountryItemProps {
+  value: string;
+  label: string;
+}
+export interface CountryItemApiProps {
+  id: string;
+  name: string;
+}
+export interface CountryProps {
+  countries: CountryItemApiProps[];
+}

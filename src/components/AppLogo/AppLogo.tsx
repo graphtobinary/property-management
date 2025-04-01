@@ -4,14 +4,22 @@ const AppLogo = ({
   isExpanded,
   isHovered,
   isMobileOpen,
+  hiddenOnMobile = false,
 }: {
   isExpanded?: boolean;
   isHovered?: boolean;
   isMobileOpen?: boolean;
+  hiddenOnMobile?: boolean;
 }) => {
+  let displayClass = "";
+  if (hiddenOnMobile) {
+    displayClass += "hidden sm:flex ";
+  } else {
+    displayClass += "flex ";
+  }
   return (
     <div
-      className={`py-4 hidden md:flex ${
+      className={`py-4 ${displayClass} ${
         !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
       }`}
     >

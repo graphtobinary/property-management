@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import AppLogo from "../components/AppLogo";
 import PageMeta from "../components/common/PageMeta";
 import Input from "../components/form/input/InputField";
 import Label from "../components/form/Label";
@@ -10,14 +9,12 @@ import Button from "../components/ui/button/Button";
 import { useParams } from "react-router";
 import { verifyEmail } from "../api/User.api";
 import Loader from "../components/Loader/Loader";
-import { getCountryList } from "../api/Listing.api";
 
 export default function Verification() {
   const [email, setEmail] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
   const [isLoading, setLoading] = useState(true);
   const [btnLoading, setBtnLoading] = useState(false);
-  // const [countries, setCountries] = useState([]);
   const [errors, setErrors] = useState<{
     email?: string;
   }>({
@@ -28,19 +25,8 @@ export default function Verification() {
     setEmail(value);
   };
 
-  const getCountries = async () => {
-    try {
-      const data = await getCountryList();
-      console.log(data);
-      // setCountries(data as any);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const { token } = useParams();
   useEffect(() => {
-    getCountries();
     handleVerifyEmail();
   }, []);
 
@@ -94,21 +80,14 @@ export default function Verification() {
 
       <AuthLayout>
         <div className="flex flex-col flex-1">
-          <div className="flex flex-col  flex-1 w-full px-12">
+          <div className="flex flex-col  flex-1 w-full md:px-12">
             <div className="flex flex-col h-full">
-              <div className="mb-5 sm:mb-8">
-                <AppLogo
-                  isExpanded={true}
-                  isHovered={false}
-                  isMobileOpen={false}
-                />
-              </div>
               {isLoading ? (
                 <div className="flex w-full h-full justify-center items-center">
                   <Loader size="large" />
                 </div>
               ) : (
-                <div className="flex flex-col flex-1 w-full max-w-md mx-auto">
+                <div className="flex flex-col flex-1 w-full max-w-md mx-auto justify-center">
                   {isSuccess ? (
                     <Alert
                       variant="success"
