@@ -30,6 +30,7 @@ import CalendarDetails from "./pages/CalendarDetails";
 import UpdateUserProfile from "./pages/UpdateUserProfile";
 import Verification from "./pages/Verification";
 import { AUTH_COOKIES, getCookie } from "./utils/cookie";
+import useUser from "./hooks/useUser";
 
 // PrivateRoute component to handle authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -44,7 +45,8 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 export default function App() {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const isAuthenticated = useAuthStore((state) => state.token);
+  useUser();
 
   return (
     <>

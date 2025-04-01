@@ -10,6 +10,8 @@ import { getUser, loginUser } from "../../api/User.api";
 import { Token } from "../../interfaces/auth";
 import { AUTH_COOKIES, setCookie } from "../../utils/cookie";
 import { AclUserProps } from "../../interfaces";
+import { useAuthStore } from "../../store/auth.store";
+import useUserStore from "../../store/user.store";
 
 interface ErrorTypes {
   email?: string;
@@ -29,6 +31,8 @@ export default function SignInForm() {
   const [isLoading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { setToken } = useAuthStore();
+  const { setUser } = useUserStore();
 
   const handleSignIn = useCallback(
     async (e: { preventDefault: () => void }) => {
@@ -66,12 +70,11 @@ export default function SignInForm() {
           // Store tokens in cookies
           setCookie(AUTH_COOKIES.ACCESS_TOKEN, response.accessToken);
           setCookie(AUTH_COOKIES.REFRESH_TOKEN, response.refreshToken);
-          // Update auth state
-          // Call Profile API to get user details
-          // setAuth(email, password);
+          setToken(response.accessToken);
           const { aclUser } = (await getUser(
             response.accessToken
           )) as AclUserProps;
+          setUser(aclUser);
           if (aclUser?.tenant?.tenantBusinessType) {
             navigate("/");
           } else {

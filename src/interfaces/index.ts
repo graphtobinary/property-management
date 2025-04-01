@@ -1,3 +1,5 @@
+import { UserProfileProps } from "./user";
+
 export interface UpdateUserDataProps {
   firstName?: string;
   lastName?: string;
@@ -9,11 +11,7 @@ export interface UpdateUserDataProps {
 }
 
 export interface AclUserProps {
-  aclUser?: {
-    tenant?: {
-      tenantBusinessType?: number;
-    };
-  };
+  aclUser: UserProfileProps;
 }
 
 export interface CountryItemProps {
