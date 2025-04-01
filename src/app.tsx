@@ -29,12 +29,14 @@ import PurchasePlan from "./pages/PurchasePlan";
 import CalendarDetails from "./pages/CalendarDetails";
 import UpdateUserProfile from "./pages/UpdateUserProfile";
 import Verification from "./pages/Verification";
+import { AUTH_COOKIES, getCookie } from "./utils/cookie";
 
 // PrivateRoute component to handle authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  // const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const savedAccessToken = getCookie(AUTH_COOKIES.ACCESS_TOKEN);
 
-  if (!isAuthenticated) {
+  if (!savedAccessToken) {
     return <Navigate to="/signin" replace />;
   }
 

@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import Loader from "../../Loader/Loader";
 
 interface ButtonProps {
   children: ReactNode; // Button text or content
@@ -10,6 +11,7 @@ interface ButtonProps {
   disabled?: boolean; // Disabled state
   className?: string; // class name
   type?: "submit" | "reset" | "button" | undefined;
+  isLoading?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -22,6 +24,7 @@ const Button: React.FC<ButtonProps> = ({
   className = "",
   disabled = false,
   type = "submit",
+  isLoading = false,
 }) => {
   // Size Classes
   const sizeClasses = {
@@ -45,12 +48,22 @@ const Button: React.FC<ButtonProps> = ({
         disabled ? "cursor-not-allowed opacity-50" : ""
       }`}
       onClick={onClick}
-      disabled={disabled}
+      disabled={disabled || isLoading}
       type={type}
     >
-      {startIcon && <span className="flex items-center">{startIcon}</span>}
-      {children}
-      {endIcon && <span className="flex items-center">{endIcon}</span>}
+      <>
+        {isLoading ? (
+          <Loader size="small" variant="light" />
+        ) : (
+          <>
+            {startIcon && (
+              <span className="flex items-center">{startIcon}</span>
+            )}
+            {children}
+            {endIcon && <span className="flex items-center">{endIcon}</span>}
+          </>
+        )}
+      </>
     </button>
   );
 };

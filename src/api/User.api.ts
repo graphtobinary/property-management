@@ -1,11 +1,7 @@
+import { UpdateUserDataProps } from "../interfaces";
+import { getHeaders } from "../utils/utils";
 import API_CONSTANTS from "./constants";
 import { doPost } from "./index";
-
-// import { getHeaders } from 'utils/utils'
-
-// export const getUser = (accessToken: string) => {
-//   return doGet(API_CONSTANTS.GET_USER, {}, { headers: getHeaders(accessToken) })
-// }
 
 export const signupUser = (formData: { email: string; password: string }) => {
   return doPost(
@@ -32,9 +28,29 @@ export const loginUser = (formData: { email: string; password: string }) => {
     API_CONSTANTS.USER_LOGIN,
     {},
     {
-      headers: {
-        "content-type": "application/json",
-      },
+      headers: {},
+      body: JSON.stringify(formData),
+    }
+  );
+};
+
+export const getUser = (accessToken: string) => {
+  return doPost(
+    API_CONSTANTS.GET_USER,
+    {},
+    {
+      headers: getHeaders(accessToken),
+      body: JSON.stringify({}),
+    }
+  );
+};
+
+export const patchUser = (formData: UpdateUserDataProps) => {
+  return doPost(
+    API_CONSTANTS.PATCH_USER,
+    {},
+    {
+      headers: getHeaders(),
       body: JSON.stringify(formData),
     }
   );

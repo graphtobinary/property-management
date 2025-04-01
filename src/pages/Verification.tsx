@@ -9,10 +9,15 @@ import { validateEmail } from "../utils/utils";
 import Button from "../components/ui/button/Button";
 import { useParams } from "react-router";
 import { verifyEmail } from "../api/User.api";
+import Loader from "../components/Loader/Loader";
+import { getCountryList } from "../api/Listing.api";
 
 export default function Verification() {
   const [email, setEmail] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isLoading, setLoading] = useState(true);
+  const [btnLoading, setBtnLoading] = useState(false);
+  // const [countries, setCountries] = useState([]);
   const [errors, setErrors] = useState<{
     email?: string;
   }>({
@@ -23,8 +28,19 @@ export default function Verification() {
     setEmail(value);
   };
 
+  const getCountries = async () => {
+    try {
+      const data = await getCountryList();
+      console.log(data);
+      // setCountries(data as any);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const { token } = useParams();
   useEffect(() => {
+    getCountries();
     handleVerifyEmail();
   }, []);
 
@@ -34,8 +50,10 @@ export default function Verification() {
         invitation_token: token as string,
       });
       setIsSuccess(true);
+      setLoading(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   };
 
@@ -59,11 +77,14 @@ export default function Verification() {
     }
 
     try {
+      setBtnLoading(true);
       // api call will be added here
     } catch (error) {
       console.error(error);
+      setBtnLoading(false);
     }
   }, [email]);
+
   return (
     <>
       <PageMeta
@@ -74,7 +95,7 @@ export default function Verification() {
       <AuthLayout>
         <div className="flex flex-col flex-1">
           <div className="flex flex-col  flex-1 w-full px-12">
-            <div className="w-2/3">
+            <div className="flex flex-col h-full">
               <div className="mb-5 sm:mb-8">
                 <AppLogo
                   isExpanded={true}
@@ -82,48 +103,56 @@ export default function Verification() {
                   isMobileOpen={false}
                 />
               </div>
-              {isSuccess ? (
-                <Alert
-                  variant="success"
-                  title="Email verified Successful"
-                  message="Grow from 1 listing to 1000s in a single platform"
-                  showLink={true}
-                  linkHref="/"
-                  linkText="Learn more"
-                />
+              {isLoading ? (
+                <div className="flex w-full h-full justify-center items-center">
+                  <Loader size="large" />
+                </div>
               ) : (
-                <>
-                  <div className="mt-5">
+                <div className="flex flex-col flex-1 w-full max-w-md mx-auto">
+                  {isSuccess ? (
                     <Alert
-                      variant="error"
-                      title="Token Expired"
-                      message="Send verification email again"
+                      variant="success"
+                      title="Email verified Successful"
+                      message="Grow from 1 listing to 1000s in a single platform"
+                      showLink={true}
+                      linkHref="/"
+                      linkText="Learn more"
                     />
-                    <div className="mt-5">
-                      <Label>
-                        Email<span className="text-error-500">*</span>
-                      </Label>
-                      <Input
-                        placeholder="info@gmail.com"
-                        onChange={handleEmailChange}
-                        error={Boolean(errors?.email ?? false)}
-                        hint={errors.email}
-                      />
-                    </div>
-                    <div className="mt-5">
-                      <Button
-                        onClick={() => handleSendVerificationEmail()}
-                        className="w-full"
-                        size="sm"
-                        type="submit"
-                      >
-                        Send Verification Email
-                      </Button>
-                    </div>
-                  </div>
-                </>
+                  ) : (
+                    <>
+                      <div className="mt-5">
+                        <Alert
+                          variant="error"
+                          title="Token Expired"
+                          message="Send verification email again"
+                        />
+                        <div className="mt-5">
+                          <Label>
+                            Email<span className="text-error-500">*</span>
+                          </Label>
+                          <Input
+                            placeholder="info@gmail.com"
+                            onChange={handleEmailChange}
+                            error={Boolean(errors?.email ?? false)}
+                            hint={errors.email}
+                          />
+                        </div>
+                        <div className="mt-5">
+                          <Button
+                            onClick={() => handleSendVerificationEmail()}
+                            className="w-full"
+                            size="sm"
+                            type="submit"
+                            isLoading={btnLoading}
+                          >
+                            Send Verification Email
+                          </Button>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
               )}
-              <div>{/* --- */}</div>
             </div>
           </div>
         </div>

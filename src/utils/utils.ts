@@ -1,3 +1,5 @@
+import { AUTH_COOKIES, getCookie } from "./cookie";
+
 export const getDaysFromMilliseconds = (time: number) => {
   return Number(time / (1000 * 60 * 60 * 24));
 };
@@ -26,4 +28,15 @@ export const replaceParamInString = (
     changedUrl = changedUrl.replace(`{${match}}`, param);
   });
   return changedUrl;
+};
+
+export const getHeaders = (accessToken?: string) => {
+  const savedAccessToken = getCookie(AUTH_COOKIES.ACCESS_TOKEN);
+  const headers: {
+    [key: string]: string;
+  } = {};
+  if (accessToken || savedAccessToken) {
+    headers.Authorization = `Bearer ${accessToken || savedAccessToken}`;
+  }
+  return headers;
 };

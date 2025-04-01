@@ -18,6 +18,7 @@ export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const [errors, setErrors] = useState<ErrorTypes>({
     email: "",
     password: "",
@@ -60,6 +61,7 @@ export default function SignUpForm() {
       password,
     };
     try {
+      setLoading(true);
       await signupUser(formData);
       setPassword("");
       setEmail("");
@@ -68,7 +70,9 @@ export default function SignUpForm() {
       if (formRef?.current) {
         formRef?.current.reset();
       }
+      setLoading(false);
     } catch (error) {
+      setLoading(false);
       console.log(error);
     }
   };
@@ -166,6 +170,7 @@ export default function SignUpForm() {
                     type="submit"
                     className="w-full"
                     disabled={!isChecked}
+                    isLoading={isLoading}
                   >
                     Sign Up
                   </Button>

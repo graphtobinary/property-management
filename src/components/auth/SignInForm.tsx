@@ -6,9 +6,10 @@ import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
 import Button from "../ui/button/Button";
 import { validateEmail } from "../../utils/utils";
-import { loginUser } from "../../api/User.api";
+import { getUser, loginUser } from "../../api/User.api";
 import { Token } from "../../interfaces/auth";
 import { AUTH_COOKIES, setCookie } from "../../utils/cookie";
+import { AclUserProps } from "../../interfaces";
 
 interface ErrorTypes {
   email?: string;
@@ -25,7 +26,7 @@ export default function SignInForm() {
 
   const navigate = useNavigate();
 
-  const [, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -60,17 +61,22 @@ export default function SignInForm() {
 
       try {
         setLoading(true);
-        const response = await loginUser(formData) as Token;
-        console.log(response);
+        const response = (await loginUser(formData)) as Token;
         if (response.accessToken) {
-           // Store tokens in cookies
+          // Store tokens in cookies
           setCookie(AUTH_COOKIES.ACCESS_TOKEN, response.accessToken);
           setCookie(AUTH_COOKIES.REFRESH_TOKEN, response.refreshToken);
           // Update auth state
           // Call Profile API to get user details
           // setAuth(email, password);
-        
-          navigate("/");
+          const { aclUser } = (await getUser(
+            response.accessToken
+          )) as AclUserProps;
+          if (aclUser?.tenant?.tenantBusinessType) {
+            navigate("/");
+          } else {
+            navigate("/tell-us-about-you");
+          }
         }
       } catch {
         setErrors({
@@ -159,6 +165,7 @@ export default function SignInForm() {
                     className="w-full bg-primary hover:bg-primaryDark"
                     size="sm"
                     type="submit"
+                    isLoading={isLoading}
                   >
                     Sign in
                   </Button>

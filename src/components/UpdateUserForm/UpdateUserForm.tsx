@@ -5,26 +5,18 @@ import Select from "../form/Select";
 import Button from "../ui/button/Button";
 import { useNavigate } from "react-router";
 import Radio from "../form/input/Radio";
+import { patchUser } from "../../api/User.api";
+import { UpdateUserDataProps } from "../../interfaces";
 
 const INIT_FORM_ELEMENTS = {
   country: "",
   firstName: "",
   lastName: "",
   businessName: "",
-  mobile: "",
-  listingCount: "",
+  phoneNumber: "",
+  approxNumOfListings: "",
   averagePrice: "",
 };
-
-interface ErrorTypes {
-  firstName?: string;
-  lastName?: string;
-  businessName?: string;
-  country?: string;
-  mobile?: string;
-  listingCount?: string;
-  averagePrice?: string;
-}
 
 const countryOptions = [
   { value: "india", label: "India" },
@@ -32,9 +24,9 @@ const countryOptions = [
   { value: "usa", label: "USA" },
 ];
 const listingOptions = [
-  { value: "10+", label: "10+" },
-  { value: "20+", label: "20+" },
-  { value: "50+", label: "50+" },
+  { value: "10", label: "10+" },
+  { value: "20", label: "20+" },
+  { value: "50", label: "50+" },
 ];
 
 const averagePriceOptions = [
@@ -46,9 +38,10 @@ const averagePriceOptions = [
 export default function UpdateUserForm() {
   const [formValues, setFormValues] = useState(INIT_FORM_ELEMENTS);
   const [ownerType, setOwnerType] = useState("business");
+  const [isLoading, setLoading] = useState(false);
 
   // Error state
-  const [errors, setErrors] = useState<ErrorTypes>(INIT_FORM_ELEMENTS);
+  const [errors, setErrors] = useState<UpdateUserDataProps>(INIT_FORM_ELEMENTS);
 
   // Handle input changes
   const handleChange = (field: string, value: string) => {
@@ -58,7 +51,7 @@ export default function UpdateUserForm() {
 
   // Validation function
   const validateForm = () => {
-    const newErrors: ErrorTypes = {};
+    const newErrors: UpdateUserDataProps = {};
     Object.keys(formValues).forEach((key) => {
       if (!formValues[key as keyof typeof formValues].trim()) {
         newErrors[key as keyof typeof errors] = "This field is required";
@@ -73,22 +66,37 @@ export default function UpdateUserForm() {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0; // Return true if no errors
   };
-
+  const navigate = useNavigate();
   // Handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (validateForm()) {
-      console.log("Form submitted successfully", formValues);
-      navigate("/");
+      const formData = {
+        isBussinessType: ownerType === "business",
+        countryId: 1,
+        firstName: formValues.firstName,
+        lastName: formValues.lastName,
+        businessName: formValues.businessName,
+        phoneNumber: formValues.phoneNumber,
+        approxNumOfListings: formValues.approxNumOfListings,
+      };
+
+      try {
+        setLoading(true);
+        await patchUser(formData);
+        navigate("/");
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.log(error);
+      }
     }
   };
 
   const handleRadioChange = (value: string) => {
     setOwnerType(value);
   };
-
-  const navigate = useNavigate();
 
   return (
     <>
@@ -183,9 +191,9 @@ export default function UpdateUserForm() {
                 <Input
                   type="number"
                   placeholder="Enter mobile"
-                  onChange={(e) => handleChange("mobile", e.target.value)}
-                  error={Boolean(errors?.mobile ?? false)}
-                  hint={errors.mobile}
+                  onChange={(e) => handleChange("phoneNumber", e.target.value)}
+                  error={Boolean(errors?.phoneNumber ?? false)}
+                  hint={errors.phoneNumber}
                 />
               </div>
             </div>
@@ -199,10 +207,12 @@ export default function UpdateUserForm() {
                 <Select
                   options={listingOptions}
                   placeholder="Select Option"
-                  onChange={(value) => handleChange("listingCount", value)}
+                  onChange={(value) =>
+                    handleChange("approxNumOfListings", value)
+                  }
                   className="dark:bg-dark-900"
-                  error={Boolean(errors?.listingCount ?? false)}
-                  hint={errors.listingCount}
+                  error={Boolean(errors?.approxNumOfListings ?? false)}
+                  hint={errors.approxNumOfListings}
                 />
               </div>
               <div>
@@ -221,7 +231,12 @@ export default function UpdateUserForm() {
             </div>
           </div>
           <div className="flex my-5 w-full">
-            <Button type="submit" size="md" variant="primary">
+            <Button
+              type="submit"
+              size="md"
+              variant="primary"
+              isLoading={isLoading}
+            >
               Continue
             </Button>
           </div>
