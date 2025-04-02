@@ -98,7 +98,7 @@ export default function SignUpForm() {
               showLink={false}
             />
           )}
-          <div>
+          <div className="mt-5">
             <form ref={formRef} onSubmit={handleSignUp}>
               <div className="space-y-5">
                 {/* <!-- Email --> */}

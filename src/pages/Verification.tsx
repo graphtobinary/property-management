@@ -95,7 +95,7 @@ export default function Verification() {
                       message="Grow from 1 listing to 1000s in a single platform"
                       showLink={true}
                       linkHref="/"
-                      linkText="Learn more"
+                      linkText="Signin"
                     />
                   ) : (
                     <>

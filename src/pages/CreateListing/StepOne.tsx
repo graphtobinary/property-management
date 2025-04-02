@@ -1,23 +1,42 @@
 import PageMeta from "../../components/common/PageMeta";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
-const categories = [
-  { id: 1, name: "House" },
-  { id: 2, name: "Flat/Apartment" },
-  { id: 3, name: "Barn" },
-  { id: 4, name: "Bed & Breakfast" },
-  { id: 5, name: "Boat" },
-  { id: 6, name: "Cabin" },
-  { id: 7, name: "Motorhome" },
-  { id: 8, name: "Castle" },
-  { id: 9, name: "Container" },
-  { id: 10, name: "Guest House" },
-  { id: 11, name: "House Boat" },
-  { id: 12, name: "Tree House" },
-];
+import { useListingStore } from "../../store/listing.store";
+import { getPropertyTypes } from "../../api/Listing.api";
+import { PropertyTypeProps } from "../../interfaces/listing";
+
 const StepOne: React.FC = () => {
-  const [selected, setSelected] = useState(1);
+  const [selected, setSelected] = useState<string>("");
+  const [propertyTypeList, setPropertyTypeList] = useState<
+    PropertyTypeProps[] | []
+  >([]);
+  const { listingFormData, setListingFormData } = useListingStore();
+
+  useEffect(() => {
+    fetchPropertyTypeList();
+  }, []);
+
+  const fetchPropertyTypeList = async () => {
+    try {
+      const { propertyTypes } = (await getPropertyTypes()) as {
+        propertyTypes: PropertyTypeProps[];
+      };
+      setPropertyTypeList(propertyTypes);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (selected) {
+      setListingFormData({
+        ...listingFormData,
+        propertyTypeId: propertyTypeList[Number(selected)]?.id,
+      });
+    }
+  }, [selected]);
+
   const navigate = useNavigate();
   return (
     <>
@@ -55,12 +74,12 @@ const StepOne: React.FC = () => {
               <div className="col-span-12 space-y-12 ">
                 {/*  */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-4 md:gap-6">
-                  {categories.map((category) => (
+                  {propertyTypeList?.map((category: PropertyTypeProps) => (
                     <div
-                      key={category.id}
-                      onClick={() => setSelected(category.id)}
+                      key={category?.id}
+                      onClick={() => setSelected(category?.id)}
                       className={`border  bg-white shadow-lg cursor-pointer ${
-                        selected === category.id
+                        selected === category?.id
                           ? "border-black"
                           : "border-none"
                       }`}
@@ -68,7 +87,7 @@ const StepOne: React.FC = () => {
                       {/* Product Image Section */}
                       <div className="relative">
                         <img
-                          src="https://demo.tailadmin.com/src/images/grid-image/image-01.png" // Replace with the actual product image URL
+                          src="images/product/placeholder-thumb.jpg" // Replace with the actual product image URL
                           alt="Nike Air Force 1 NDESTRUKT"
                           className="w-full "
                         />
@@ -77,7 +96,7 @@ const StepOne: React.FC = () => {
                       {/* Product Info Section */}
                       <div className=" p-3 flex justify-center items-center">
                         <span className="text-gray-800  text-center">
-                          {category.name}
+                          {category?.name}
                         </span>
                       </div>
                     </div>

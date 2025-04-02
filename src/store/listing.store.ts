@@ -3,7 +3,7 @@ import { ListingState } from "../interfaces";
 
 const listingFormDataInitialValue = {
   listingFormData: {
-    propertyType: "",
+    propertyTypeId: "",
     placeType: "",
     propertyLocation: {
       country: "",

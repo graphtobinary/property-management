@@ -105,7 +105,7 @@ export interface PropertyDetailsProps {
 }
 
 export interface ListingFormDataProps {
-  propertyType: string;
+  propertyTypeId: string;
   placeType: string;
   propertyLocation: {
     country: string;
@@ -178,4 +178,8 @@ export interface CalendarEvent extends EventInput {
 export interface PropertyImageProps {
   id: string;
   url: string;
+}
+
+export interface CreatePropertProps {
+  tempId: string;
 }
