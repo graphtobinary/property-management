@@ -5,9 +5,12 @@ import Select from "../form/Select";
 import Button from "../ui/button/Button";
 import { useNavigate } from "react-router";
 import Radio from "../form/input/Radio";
-import { patchUser } from "../../api/User.api";
-import { UpdateUserDataProps } from "../../interfaces";
+import { getUser, patchUser } from "../../api/User.api";
+import { AclUserProps, UpdateUserDataProps } from "../../interfaces";
 import useCountries from "../../hooks/useCountries";
+import { AUTH_COOKIES, getCookie } from "../../utils/cookie";
+import useUserStore from "../../store/user.store";
+import { IApiException } from "../../api/Api.exception";
 
 const INIT_FORM_ELEMENTS = {
   country: "",
@@ -68,6 +71,20 @@ export default function UpdateUserForm() {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0; // Return true if no errors
   };
+  const { setUser } = useUserStore();
+  const getUserData = async () => {
+    try {
+      const token = getCookie(AUTH_COOKIES.ACCESS_TOKEN) || "";
+      const { aclUser } = (await getUser(token)) as AclUserProps;
+      setUser(aclUser);
+    } catch (e) {
+      const error = e as IApiException;
+      console.log("UserData Error: ", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const navigate = useNavigate();
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
@@ -89,6 +106,7 @@ export default function UpdateUserForm() {
       try {
         setLoading(true);
         await patchUser(formData);
+        await getUserData();
         navigate("/");
         setLoading(false);
       } catch (error) {

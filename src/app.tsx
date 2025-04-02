@@ -35,10 +35,12 @@ import useUserStore from "./store/user.store";
 // PrivateRoute component to handle authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { user } = useUserStore();
-  if (!user) {
-    return <Navigate to="/signin" replace />;
+
+  if (user === undefined) {
+    return <Loader />; // Prevent unnecessary navigation until we have user data
   }
-  return <>{children}</>;
+
+  return user ? <>{children}</> : <Navigate to="/signin" replace />;
 };
 
 export default function App() {
@@ -58,12 +60,27 @@ export default function App() {
       <Routes>
         <Route
           path="/signin"
-          element={!user ? <SignIn /> : <Navigate replace to={"/"} />}
+          element={
+            user === undefined ? (
+              <Loader />
+            ) : !user ? (
+              <SignIn />
+            ) : (
+              <Navigate replace to="/" />
+            )
+          }
         />
-
         <Route
           path="/signup"
-          element={user ? <Navigate to={"/"} replace /> : <SignUp />}
+          element={
+            user === undefined ? (
+              <Loader />
+            ) : user ? (
+              <Navigate replace to="/" />
+            ) : (
+              <SignUp />
+            )
+          }
         />
 
         {/* Protected Routes */}
