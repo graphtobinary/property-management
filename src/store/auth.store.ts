@@ -1,9 +1,5 @@
 import { create } from "zustand";
-
-interface AuthState {
-  token: string;
-  setToken: (token: string) => void;
-}
+import { AuthState } from "../interfaces/auth";
 
 export const useAuthStore = create<AuthState>()((set) => ({
   token: "",

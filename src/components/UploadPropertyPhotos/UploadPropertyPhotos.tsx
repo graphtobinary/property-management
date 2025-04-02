@@ -1,9 +1,5 @@
 import { useDropzone } from "react-dropzone";
-
-export interface PropertyImageProps {
-  id: string;
-  url: string;
-}
+import { PropertyImageProps } from "../../interfaces";
 
 const UploadPropertyPhotos: React.FC<{
   images: PropertyImageProps[];

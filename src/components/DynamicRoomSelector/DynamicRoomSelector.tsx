@@ -5,6 +5,7 @@ import Label from "../form/Label";
 import Select from "../form/Select";
 import Input from "../form/input/InputField";
 import { useNavigate } from "react-router";
+import { PropertyTypeFormProps, Room } from "../../interfaces";
 
 const roomOptions = [
   "Master Bedroom",
@@ -30,18 +31,6 @@ const furnishingTypeOptions = [
   { value: "not furnished", label: "Not Furnished" },
 ];
 
-interface ErrorTypes {
-  propertyType?: string;
-  furnishingType?: string;
-  propertySize?: string;
-}
-
-interface Room {
-  id: number;
-  type: string;
-  quantity: number;
-}
-
 const INIT_FORM_ELEMENTS = {
   propertyType: "",
   furnishingType: "",
@@ -52,7 +41,8 @@ const DynamicRoomSelector = () => {
   const [formValues, setFormValues] = useState(INIT_FORM_ELEMENTS);
 
   // Error state
-  const [errors, setErrors] = useState<ErrorTypes>(INIT_FORM_ELEMENTS);
+  const [errors, setErrors] =
+    useState<PropertyTypeFormProps>(INIT_FORM_ELEMENTS);
   const [rooms, setRooms] = useState<Room[]>([
     { id: Date.now(), type: "Master Bedroom", quantity: 4 },
   ]);
@@ -90,12 +80,13 @@ const DynamicRoomSelector = () => {
 
   // Validation function
   const validateForm = () => {
-    const newErrors: ErrorTypes = {};
+    const newErrors: PropertyTypeFormProps = {};
     Object.keys(formValues).forEach((key) => {
       const value = formValues[key as keyof typeof formValues];
 
       if (typeof value === "string" && !value.trim()) {
-        newErrors[key as keyof ErrorTypes] = "This field is required";
+        newErrors[key as keyof PropertyTypeFormProps] =
+          "This field is required";
       }
     });
 

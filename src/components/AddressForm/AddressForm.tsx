@@ -6,6 +6,7 @@ import TextArea from "../form/input/TextArea";
 import Button from "../ui/button/Button";
 import { useNavigate } from "react-router";
 import useCountries from "../../hooks/useCountries";
+import { AddressFormProps } from "../../interfaces";
 
 const INIT_FORM_ELEMENTS = {
   country: "",
@@ -18,17 +19,6 @@ const INIT_FORM_ELEMENTS = {
   pincode: "",
 };
 
-interface ErrorTypes {
-  country?: string;
-  addressLine1?: string;
-  addressLine2?: string;
-  landmark?: string;
-  district?: string;
-  city?: string;
-  state?: string;
-  pincode?: string;
-}
-
 const stateOptions = [
   { value: "delhi", label: "New Delhi" },
   { value: "bihar", label: "Bihar" },
@@ -39,7 +29,7 @@ export default function AddressForm() {
   const [formValues, setFormValues] = useState(INIT_FORM_ELEMENTS);
   const { countries } = useCountries();
   // Error state
-  const [errors, setErrors] = useState<ErrorTypes>(INIT_FORM_ELEMENTS);
+  const [errors, setErrors] = useState<AddressFormProps>(INIT_FORM_ELEMENTS);
 
   // Handle input changes
   const handleChange = (field: string, value: string) => {
@@ -49,7 +39,7 @@ export default function AddressForm() {
 
   // Validation function
   const validateForm = () => {
-    const newErrors: ErrorTypes = {};
+    const newErrors: AddressFormProps = {};
     Object.keys(formValues).forEach((key) => {
       if (!formValues[key as keyof typeof formValues].trim()) {
         newErrors[key as keyof typeof errors] = "This field is required";

@@ -8,18 +8,14 @@ import { validateEmail } from "../../utils/utils";
 import { signupUser } from "../../api/User.api";
 import Button from "../ui/button/Button";
 import Alert from "../ui/alert/Alert";
-
-interface ErrorTypes {
-  email?: string;
-  password?: string;
-}
+import { SigninFormProps } from "../../interfaces/auth";
 
 export default function SignUpForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isLoading, setLoading] = useState(false);
-  const [errors, setErrors] = useState<ErrorTypes>({
+  const [errors, setErrors] = useState<SigninFormProps>({
     email: "",
     password: "",
   });
@@ -32,7 +28,7 @@ export default function SignUpForm() {
     e.preventDefault();
 
     // Reset errors before validation
-    const newErrors: ErrorTypes = {};
+    const newErrors: SigninFormProps = {};
 
     // Email validation
     if (!email.trim()) {

@@ -3,7 +3,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { EventInput, DateSelectArg, EventClickArg } from "@fullcalendar/core";
+import { DateSelectArg, EventClickArg } from "@fullcalendar/core";
 import { Modal } from "../components/ui/modal";
 import { useModal } from "../hooks/useModal";
 import PageMeta from "../components/common/PageMeta";
@@ -15,15 +15,7 @@ import Button from "../components/ui/button/Button";
 import { getDaysFromMilliseconds } from "../utils/utils";
 import { ChevronLeftIcon } from "../icons";
 import { useNavigate } from "react-router";
-
-interface CalendarEvent extends EventInput {
-  extendedProps: {
-    calendar: string;
-    price: number;
-    availability: string;
-    privateNote: string;
-  };
-}
+import { CalendarEvent } from "../interfaces";
 
 const CalendarDetails: React.FC = () => {
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(

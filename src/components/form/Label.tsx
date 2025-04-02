@@ -1,11 +1,6 @@
-import { FC, ReactNode } from "react";
+import { FC } from "react";
 import { twMerge } from "tailwind-merge";
-
-interface LabelProps {
-  htmlFor?: string;
-  children: ReactNode;
-  className?: string;
-}
+import { LabelProps } from "../../interfaces";
 
 const Label: FC<LabelProps> = ({ htmlFor, children, className }) => {
   return (

@@ -2,6 +2,7 @@ import React from "react";
 import Button from "../components/ui/button/Button";
 import { Link, useNavigate } from "react-router";
 import { CheckCircleIcon } from "../icons";
+import { PricingCardProps } from "../interfaces";
 
 // Subscription details component
 const SubscriptionDetails: React.FC = () => {
@@ -44,14 +45,6 @@ const SubscriptionDetails: React.FC = () => {
 };
 
 // Pricing card component
-interface PricingCardProps {
-  title: string;
-  subtitle: string;
-  features: string[];
-  isPremium?: boolean;
-  isCurrent?: boolean;
-}
-
 const PricingCard: React.FC<PricingCardProps> = ({
   title,
   subtitle,

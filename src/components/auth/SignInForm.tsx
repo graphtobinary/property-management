@@ -7,21 +7,16 @@ import Checkbox from "../form/input/Checkbox";
 import Button from "../ui/button/Button";
 import { validateEmail } from "../../utils/utils";
 import { getUser, loginUser } from "../../api/User.api";
-import { Token } from "../../interfaces/auth";
+import { SigninFormProps, Token } from "../../interfaces/auth";
 import { AUTH_COOKIES, setCookie } from "../../utils/cookie";
 import { AclUserProps } from "../../interfaces";
 import { useAuthStore } from "../../store/auth.store";
 import useUserStore from "../../store/user.store";
 
-interface ErrorTypes {
-  email?: string;
-  password?: string;
-}
-
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
-  const [errors, setErrors] = useState<ErrorTypes>({
+  const [errors, setErrors] = useState<SigninFormProps>({
     email: "",
     password: "",
   });
@@ -38,7 +33,7 @@ export default function SignInForm() {
     async (e: { preventDefault: () => void }) => {
       e.preventDefault();
       // Reset errors before validation
-      const newErrors: ErrorTypes = {};
+      const newErrors: SigninFormProps = {};
 
       // Email validation
       if (!email.trim()) {

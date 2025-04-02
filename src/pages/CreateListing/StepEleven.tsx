@@ -2,7 +2,7 @@ import PageMeta from "../../components/common/PageMeta";
 import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
 import { lazy, useState } from "react";
-import { PropertyImageProps } from "../../components/UploadPropertyPhotos/UploadPropertyPhotos";
+import { PropertyImageProps } from "../../interfaces";
 
 const UploadPropertyPhotos = lazy(
   () => import("../../components/UploadPropertyPhotos")

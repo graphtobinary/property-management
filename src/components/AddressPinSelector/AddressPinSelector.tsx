@@ -1,21 +1,12 @@
 import { useState, useCallback, useRef } from "react";
 import { GoogleMap, useLoadScript } from "@react-google-maps/api";
 import Input from "../form/input/InputField";
+import { LatLng, MapProps } from "../../interfaces";
 
 const mapContainerStyle = {
   width: "100%",
   height: "300px",
 };
-
-// Define interfaces for Type Safety
-interface LatLng {
-  lat: number;
-  lng: number;
-}
-
-interface MapProps {
-  googleMapsApiKey?: string;
-}
 
 const center = { lat: 20.2961, lng: 85.8245 }; // Bhubaneswar
 

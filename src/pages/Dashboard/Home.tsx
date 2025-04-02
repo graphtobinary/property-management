@@ -3,6 +3,7 @@ import PageMeta from "../../components/common/PageMeta";
 import { Link } from "react-router";
 import { EmptyBlocksIcon, Plus } from "../../icons";
 import React, { lazy } from "react";
+import { PropertyEmptyStateProps } from "../../interfaces";
 
 const EcommerceMetrics = lazy(
   () => import("../../components/ecommerce/EcommerceMetrics")
@@ -12,12 +13,7 @@ const StatisticsChart = lazy(
 );
 const DonutChart = lazy(() => import("../../components/ecommerce/DonutChart"));
 
-interface EmptyStateProps {
-  title?: string;
-  description?: string;
-}
-
-const EmptyState: React.FC<EmptyStateProps> = ({
+const EmptyState: React.FC<PropertyEmptyStateProps> = ({
   title = "Nothing to see here",
   description = "You need to add at least 2-3 properties to be able to view data on dashboard.",
 }) => {

@@ -1,19 +1,5 @@
 import { useState } from "react";
-
-interface Option {
-  value: string;
-  label: string;
-}
-
-interface SelectProps {
-  options: Option[];
-  placeholder?: string;
-  onChange: (value: string) => void;
-  className?: string;
-  defaultValue?: string;
-  error?: boolean; // Error state
-  hint?: string; // Hint text to display
-}
+import { SelectProps } from "../../interfaces";
 
 const Select: React.FC<SelectProps> = ({
   options,
