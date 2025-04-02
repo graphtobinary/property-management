@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import { EyeCloseIcon, EyeIcon } from "../../icons";
 import Label from "../form/Label";
@@ -26,60 +26,54 @@ export default function SignInForm() {
   const [isLoading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true); // Initially disabled
+
   const { setToken } = useAuthStore();
   const { setUser } = useUserStore();
+
+  // Enable button when both email & password are filled
+  useEffect(() => {
+    setIsButtonDisabled(!(email.trim() && password.trim()));
+  }, [email, password]);
 
   const handleSignIn = useCallback(
     async (e: { preventDefault: () => void }) => {
       e.preventDefault();
-      // Reset errors before validation
       const newErrors: SigninFormProps = {};
 
-      // Email validation
       if (!email.trim()) {
         newErrors.email = "Email is required";
       } else if (!validateEmail(email)) {
         newErrors.email = "This is an invalid email address.";
       }
 
-      // Password validation
       if (!password.trim()) {
         newErrors.password = "Password is required";
       }
 
-      // Set errors if any
       if (Object.keys(newErrors).length > 0) {
         setErrors(newErrors);
         return;
       }
 
-      const formData = {
-        email,
-        password,
-      };
-
       try {
         setLoading(true);
-        const response = (await loginUser(formData)) as Token;
+        const response = (await loginUser({ email, password })) as Token;
         if (response.accessToken) {
-          // Store tokens in cookies
           setCookie(AUTH_COOKIES.ACCESS_TOKEN, response.accessToken);
           setCookie(AUTH_COOKIES.REFRESH_TOKEN, response.refreshToken);
           setToken(response.accessToken);
+
           const { aclUser } = (await getUser(
             response.accessToken
           )) as AclUserProps;
           setUser(aclUser);
-          if (aclUser?.tenant?.tenantBusinessType) {
-            navigate("/");
-          } else {
-            navigate("/tell-us-about-you");
-          }
+          navigate(
+            aclUser?.tenant?.tenantBusinessType ? "/" : "/tell-us-about-you"
+          );
         }
       } catch {
-        setErrors({
-          password: "Invalid email or password",
-        });
+        setErrors({ password: "Invalid email or password" });
       } finally {
         setLoading(false);
       }
@@ -87,12 +81,6 @@ export default function SignInForm() {
     [email, password, navigate]
   );
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setEmail(value);
-  };
-
-  // if (loading) return null;
   return (
     <div className="flex flex-col flex-1">
       <div className="w-full max-w-md pt-10 mx-auto"></div>
@@ -111,25 +99,27 @@ export default function SignInForm() {
               <div className="space-y-6">
                 <div>
                   <Label>
-                    Email <span className="text-error-500">*</span>{" "}
+                    Email <span className="text-error-500">*</span>
                   </Label>
                   <Input
                     placeholder="info@gmail.com"
-                    onChange={handleEmailChange}
-                    error={Boolean(errors?.email ?? false)}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    error={Boolean(errors?.email)}
                     hint={errors.email}
                   />
                 </div>
                 <div>
                   <Label>
-                    Password <span className="text-error-500">*</span>{" "}
+                    Password <span className="text-error-500">*</span>
                   </Label>
                   <div className="relative">
                     <Input
                       type={showPassword ? "text" : "password"}
                       placeholder="Enter your password"
+                      value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      error={Boolean(errors?.password ?? false)}
+                      error={Boolean(errors?.password)}
                       hint={errors.password}
                     />
                     <span
@@ -164,6 +154,7 @@ export default function SignInForm() {
                     size="sm"
                     type="submit"
                     isLoading={isLoading}
+                    disabled={isButtonDisabled} // Button disabled initially
                   >
                     Sign in
                   </Button>
@@ -173,7 +164,7 @@ export default function SignInForm() {
 
             <div className="mt-5">
               <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
-                Don&apos;t have an account? {""}
+                Don&apos;t have an account?{" "}
                 <Link
                   to="/signup"
                   className="text-primary hover:text-primary dark:text-primary"

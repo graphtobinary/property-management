@@ -2,15 +2,18 @@ import { useRef, useState } from "react";
 import useOutsideClick from "../hooks/useOutsideClick";
 import { AUTH_COOKIES, removeCookie } from "../utils/cookie";
 import { useNavigate } from "react-router";
+import useUserStore from "../store/user.store";
 
 export default function SidebarWidget() {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
+  const { clearUserStore } = useUserStore();
 
   const logout = () => {
     removeCookie(AUTH_COOKIES.ACCESS_TOKEN);
     removeCookie(AUTH_COOKIES.REFRESH_TOKEN);
+    clearUserStore();
     navigate("/signin");
   };
 

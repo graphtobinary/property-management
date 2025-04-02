@@ -23,7 +23,7 @@ export interface UserProfileProps {
 }
 
 export interface UserStoreProps {
-  user: UserProfileProps | undefined;
+  user: UserProfileProps | null;
   setUser: (value: UserProfileProps) => void;
   clearUserStore: () => void;
 }

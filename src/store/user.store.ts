@@ -2,7 +2,7 @@ import { UserStoreProps } from "../interfaces/user";
 import { create } from "zustand";
 
 const userStoreInitialValue = {
-  user: undefined,
+  user: null,
 };
 
 const useUserStore = create<UserStoreProps>((set) => ({

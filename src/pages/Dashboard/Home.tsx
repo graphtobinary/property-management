@@ -1,9 +1,10 @@
 import MonthlySalesChart from "../../components/ecommerce/MonthlySalesChart";
 import PageMeta from "../../components/common/PageMeta";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { EmptyBlocksIcon, Plus } from "../../icons";
-import React, { lazy } from "react";
+import React, { lazy, useEffect } from "react";
 import { PropertyEmptyStateProps } from "../../interfaces";
+import useUserStore from "../../store/user.store";
 
 const EcommerceMetrics = lazy(
   () => import("../../components/ecommerce/EcommerceMetrics")
@@ -35,6 +36,12 @@ const EmptyState: React.FC<PropertyEmptyStateProps> = ({
 };
 
 export default function Home() {
+  const { user } = useUserStore();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!user?.tenant?.tenantBusinessType) navigate("tell-us-about-you");
+  }, [user]);
+
   // eslint-disable-next-line no-constant-condition
   if (false) return <EmptyState />;
   return (
