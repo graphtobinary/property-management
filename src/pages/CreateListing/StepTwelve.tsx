@@ -181,7 +181,11 @@ const StepTwelve: React.FC = () => {
 
             {/* Buttons */}
             <div className="mt-6 flex gap-4">
-              <Button size="sm" variant="outline" onClick={() => navigate("/")}>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => navigate("/manage-properties")}
+              >
                 Done for Now
               </Button>
               <Button
