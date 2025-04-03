@@ -3,9 +3,8 @@ import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
 import { lazy, useState } from "react";
 import { PropertyImageProps } from "../../interfaces";
-// import { uploadImages } from "../../api/Listing.api";
-// import { useAuthStore } from "../../store/auth.store";
-// import { useListingStore } from "../../store/listing.store";
+import { useAuthStore } from "../../store/auth.store";
+import { useListingStore } from "../../store/listing.store";
 
 const UploadPropertyPhotos = lazy(
   () => import("../../components/UploadPropertyPhotos")
@@ -26,26 +25,39 @@ const StepEleven: React.FC = () => {
     navigate("/create-listing-step-twelve");
   };
 
-  // const { token } = useAuthStore();
-  // const { listingFormData } = useListingStore();
-  // const uploadMedia = async (media: { url: string; id: string }) => {
-  //   console.log(media, "img data");
-  //   try {
-  //     // const response = await fetch(media.url);
-  //     // const blob = await response.blob();
-  //     const formdata = new FormData();
-  //     formdata.append("file", media.url, media.url);
-  //     // console.log(blob, media.url, listingFormData.propertyTempId, "form data");
-  //     const data = await uploadImages(
-  //       token,
-  //       formdata,
-  //       listingFormData.propertyTempId
-  //     );
-  //     // console.log(data, "uploaded img");
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
+  const { token } = useAuthStore();
+  const { listingFormData } = useListingStore();
+  const uploadMedia = async (media: { url: string; id: string }) => {
+    console.log(media, "img data");
+    try {
+      const myHeaders = new Headers();
+      myHeaders.append("Authorization", `Bearer ${token}`);
+
+      const formdata = new FormData();
+      // Get the file object from the URL
+      const fileResponse = await fetch(media.url);
+      const blob = await fileResponse.blob();
+      const file = new File([blob], media.id, { type: blob.type });
+      formdata.append("file", file);
+
+      const requestOptions: RequestInit = {
+        method: "POST",
+        headers: myHeaders,
+        body: formdata,
+        redirect: "follow" as RequestRedirect
+      };
+
+      const apiResponse = await fetch(
+        `${import.meta.env.VITE_BASE_API_ENDPOINT}/upload-image/1/${listingFormData.propertyTempId}`,
+        requestOptions
+      );
+      
+      const data = await apiResponse.json();
+      console.log(data, "uploaded img");
+    } catch (error) {
+      console.error('Upload error:', error);
+    }
+  };
 
   console.log(images);
   const handleImageUpload = (data: PropertyImageProps[], isRemove = false) => {
@@ -53,7 +65,7 @@ const StepEleven: React.FC = () => {
       setImages(data);
     } else {
       setImages((prevImages) => [...prevImages, ...data]);
-      // uploadMedia(data);
+      data.forEach((image) => uploadMedia({ url: image.url, id: image.id }));
     }
   };
 
