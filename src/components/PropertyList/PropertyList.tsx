@@ -1,18 +1,21 @@
-import { Link } from "react-router";
 import { Plus } from "../../icons";
 import Button from "../ui/button/Button";
 import PropertyCard from "./PropertyCard";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
-import { getPropertyList } from "../../api/Listing.api";
+import { getPropertyList, getPropertyTempId } from "../../api/Listing.api";
 import { useAuthStore } from "../../store/auth.store";
 import { PropertyDetailsProps } from "./PropertyDetails";
+import { useNavigate } from "react-router";
+import { useListingStore } from "../../store/listing.store";
 const PropertyDetails = lazy(() => import("./PropertyDetails"));
 
 const PropertyList: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedProperty, setSelectedProperty] = useState<any | null>(null);
+  const { listingFormData, setListingFormData } = useListingStore();
   const { token } = useAuthStore();
+  const navigate = useNavigate();
   const [propertyList, setPropertyList] = useState<PropertyDetailsProps[] | []>(
     []
   );
@@ -20,6 +23,22 @@ const PropertyList: React.FC = () => {
   useEffect(() => {
     fetchPropertyList();
   }, []);
+
+  const handlePropertyTempId = async () => {
+    try {
+      const { propertyId } = (await getPropertyTempId(token)) as {
+        propertyId: string;
+      };
+
+      setListingFormData({
+        ...listingFormData,
+        propertyTempId: propertyId,
+      });
+      navigate("/create-listing-step-one");
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const fetchPropertyList = async () => {
     try {
@@ -71,14 +90,12 @@ const PropertyList: React.FC = () => {
         </AnimatePresence>
 
         <div className="flex justify-center mt-6">
-          <Link to="/create-listing-step-one">
-            <Button variant="primary">
-              <span className="text-lg">
-                <Plus stroke="#fff" />
-              </span>{" "}
-              Add Another Property
-            </Button>
-          </Link>
+          <Button variant="primary" onClick={handlePropertyTempId}>
+            <span className="text-lg">
+              <Plus stroke="#fff" />
+            </span>{" "}
+            Add Another Property
+          </Button>
         </div>
       </div>
     </>
