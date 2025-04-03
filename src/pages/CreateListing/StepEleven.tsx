@@ -3,6 +3,9 @@ import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
 import { lazy, useState } from "react";
 import { PropertyImageProps } from "../../interfaces";
+// import { uploadImages } from "../../api/Listing.api";
+// import { useAuthStore } from "../../store/auth.store";
+// import { useListingStore } from "../../store/listing.store";
 
 const UploadPropertyPhotos = lazy(
   () => import("../../components/UploadPropertyPhotos")
@@ -23,11 +26,34 @@ const StepEleven: React.FC = () => {
     navigate("/create-listing-step-twelve");
   };
 
+  // const { token } = useAuthStore();
+  // const { listingFormData } = useListingStore();
+  // const uploadMedia = async (media: { url: string; id: string }) => {
+  //   console.log(media, "img data");
+  //   try {
+  //     // const response = await fetch(media.url);
+  //     // const blob = await response.blob();
+  //     const formdata = new FormData();
+  //     formdata.append("file", media.url, media.url);
+  //     // console.log(blob, media.url, listingFormData.propertyTempId, "form data");
+  //     const data = await uploadImages(
+  //       token,
+  //       formdata,
+  //       listingFormData.propertyTempId
+  //     );
+  //     // console.log(data, "uploaded img");
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+
+  console.log(images);
   const handleImageUpload = (data: PropertyImageProps[], isRemove = false) => {
     if (isRemove) {
       setImages(data);
     } else {
       setImages((prevImages) => [...prevImages, ...data]);
+      // uploadMedia(data);
     }
   };
 

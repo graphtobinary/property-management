@@ -1,36 +1,36 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Label from "../../components/form/Label";
 import Radio from "../form/input/Radio";
 import TimePicker from "../TimePicker/TimePicker";
 import Button from "../ui/button/Button";
 import { useNavigate } from "react-router";
+import {
+  convertTo12HourFormat,
+  convertTo24HourFormat,
+} from "../../utils/utils";
+import { useListingStore } from "../../store/listing.store";
 
 interface ErrorTypes {
-  checkInFromTime?: string;
-  checkInUntilTime?: string;
-  checkOutFromTime?: string;
-  checkOutUntilTime?: string;
+  checkinTime?: string;
+  checkoutTime?: string;
 }
 
 const INIT_FORM_ELEMENTS = {
-  checkInFromTime: "",
-  checkInUntilTime: "",
-  checkOutFromTime: "",
-  checkOutUntilTime: "",
+  checkinTime: "",
+  checkoutTime: "",
 };
 
 const HouseRulesForm = () => {
-  const [smoking, setSmoking] = useState<string>("no");
-  const [petFriendly, setPetFriendly] = useState<string>("no");
-  const [specialNeeds, setSpecialNeeds] = useState<string>("no");
-  const [checkInFromTime, setCheckInFromTime] = useState<string>("");
-  const [checkInUntilTime, setCheckInUntilTime] = useState<string>("");
-  const [checkOutFromTime, setCheckOutFromTime] = useState<string>("");
-  const [checkOutUntilTime, setCheckOutUntilTime] = useState<string>("");
+  const [smoking, setSmoking] = useState<boolean>(false);
+  const [petFriendly, setPetFriendly] = useState<boolean>(false);
+  const [specialNeeds, setSpecialNeeds] = useState<boolean>(false);
+  const [checkinTime, setCheckInTime] = useState<string>("");
+  const [checkoutTime, setCheckOutTime] = useState<string>("");
+  const { listingFormData, setListingFormData } = useListingStore();
   // Error state
   const [errors, setErrors] = useState<ErrorTypes>(INIT_FORM_ELEMENTS);
 
-  const handleRadioChange = (type: string, value: string) => {
+  const handleRadioChange = (type: string, value: boolean) => {
     if (type === "smoking") {
       setSmoking(value);
     }
@@ -43,97 +43,95 @@ const HouseRulesForm = () => {
   };
 
   // Regex for time format validation (HH:MM AM/PM)
-  const timeFormatRegex = /^(0[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/;
+  // const timeFormatRegex = /^(0[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/;
 
   // Validation function
-  const validateForm = () => {
+  const validateForm = useCallback(() => {
     const newErrors: Partial<ErrorTypes> = {};
     const timeFields = {
-      checkInFromTime,
-      checkInUntilTime,
-      checkOutFromTime,
-      checkOutUntilTime,
+      checkinTime: checkinTime,
+      checkoutTime: checkoutTime,
     };
 
     Object.entries(timeFields).forEach(([key, value]) => {
       if (!value || value.trim() === "--:-- --") {
         newErrors[key as keyof ErrorTypes] = "This field is required";
-      } else if (!timeFormatRegex.test(value)) {
-        newErrors[key as keyof ErrorTypes] =
-          "Invalid time format (e.g., 03:00 AM)";
       }
+
+      // else if (!timeFormatRegex.test(value)) {
+      //   newErrors[key as keyof ErrorTypes] =
+      //     "Invalid time format (e.g., 03:00 AM)";
+      // }
     });
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0; // Return true if no errors
-  };
+  }, [checkinTime, checkoutTime]);
 
   const navigate = useNavigate();
   const handleSubmit = () => {
     if (validateForm()) {
-      console.log("Form submitted successfully", {
-        checkInFromTime,
-        checkInUntilTime,
-        checkOutFromTime,
-        checkOutUntilTime,
+      setListingFormData({
+        ...listingFormData,
+        checkinTime: convertTo24HourFormat(checkinTime),
+        checkoutTime: convertTo24HourFormat(checkoutTime),
+        petAllowed: petFriendly,
+        smokingAllowed: smoking,
+        needsAccessibility: specialNeeds,
       });
       navigate("/create-listing-step-eleven");
     }
   };
 
+  useEffect(() => {
+    if (listingFormData?.checkinTime) {
+      setCheckInTime(convertTo12HourFormat(listingFormData.checkinTime));
+    }
+    if (listingFormData?.checkoutTime) {
+      setCheckOutTime(convertTo12HourFormat(listingFormData.checkoutTime));
+    }
+    if (listingFormData?.smokingAllowed) {
+      setSmoking(listingFormData.smokingAllowed);
+    }
+    if (listingFormData?.petAllowed) {
+      setPetFriendly(listingFormData.petAllowed);
+    }
+    if (listingFormData?.needsAccessibility) {
+      setSpecialNeeds(listingFormData.needsAccessibility);
+    }
+  }, [listingFormData]);
+
+  console.log(errors?.checkinTime, "errors?.checkInTime");
   return (
     <div className="space-y-4">
       <div className="space-y-4 w-full md:w-1/2 ">
-        <span className="mb-3 text-base font-semibold text-gray-800 dark:text-white/90">
+        {/* <span className="mb-3 text-base font-semibold text-gray-800 dark:text-white/90">
           What is the checkin time
-        </span>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
+        </span> */}
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 md:gap-6">
           <div>
             <Label htmlFor="tm">
-              From<span className="text-error-500">*</span>
+              What is the checkin time
+              <span className="text-error-500">*</span>
             </Label>
             <TimePicker
-              selectedTime={checkInFromTime}
-              onTimeChange={setCheckInFromTime}
-              error={Boolean(errors?.checkInFromTime ?? false)}
+              selectedTime={checkinTime}
+              onTimeChange={setCheckInTime}
+              error={Boolean(errors?.checkinTime ?? false)}
             />
           </div>
           <div>
             <Label htmlFor="tm">
-              Until<span className="text-error-500">*</span>
+              What is the checkout time<span className="text-error-500">*</span>
             </Label>
             <TimePicker
-              selectedTime={checkInUntilTime}
-              onTimeChange={setCheckInUntilTime}
-              error={Boolean(errors?.checkInUntilTime ?? false)}
-            />
-          </div>
-        </div>
-        <span className="mb-3 text-base font-semibold text-gray-800 dark:text-white/90">
-          What is the checkout time
-        </span>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
-          <div>
-            <Label htmlFor="tm">
-              From<span className="text-error-500">*</span>
-            </Label>
-            <TimePicker
-              selectedTime={checkOutFromTime}
-              onTimeChange={setCheckOutFromTime}
-              error={Boolean(errors?.checkOutFromTime ?? false)}
-            />
-          </div>
-          <div>
-            <Label htmlFor="tm">
-              Until<span className="text-error-500">*</span>
-            </Label>
-            <TimePicker
-              selectedTime={checkOutUntilTime}
-              onTimeChange={setCheckOutUntilTime}
-              error={Boolean(errors?.checkOutUntilTime ?? false)}
+              selectedTime={checkoutTime}
+              onTimeChange={setCheckOutTime}
+              error={Boolean(errors?.checkoutTime ?? false)}
             />
           </div>
         </div>
+
         <div className="flex flex-wrap justify-between">
           <Label htmlFor="group1">
             Smoking<span className="text-error-500">*</span>
@@ -142,17 +140,17 @@ const HouseRulesForm = () => {
             <Radio
               id="radio1"
               name="group1"
-              value="yes"
-              checked={smoking === "yes"}
-              onChange={(e) => handleRadioChange("smoking", e)}
+              value={"true"}
+              checked={smoking}
+              onChange={(e) => handleRadioChange("smoking", JSON.parse(e))}
               label="Yes"
             />
             <Radio
               id="radio2"
               name="group1"
-              value="no"
-              checked={smoking === "no"}
-              onChange={(e) => handleRadioChange("smoking", e)}
+              value={"false"}
+              checked={!smoking}
+              onChange={(e) => handleRadioChange("smoking", JSON.parse(e))}
               label="No"
             />
           </div>
@@ -165,17 +163,17 @@ const HouseRulesForm = () => {
             <Radio
               id="radio3"
               name="group2"
-              value="yes"
-              checked={petFriendly === "yes"}
-              onChange={(e) => handleRadioChange("petFriendly", e)}
+              value={"true"}
+              checked={petFriendly}
+              onChange={(e) => handleRadioChange("petFriendly", JSON.parse(e))}
               label="Yes"
             />
             <Radio
               id="radio4"
               name="group2"
-              value="no"
-              checked={petFriendly === "no"}
-              onChange={(e) => handleRadioChange("petFriendly", e)}
+              value={"false"}
+              checked={!petFriendly}
+              onChange={(e) => handleRadioChange("petFriendly", JSON.parse(e))}
               label="No"
             />
           </div>
@@ -188,17 +186,17 @@ const HouseRulesForm = () => {
             <Radio
               id="radio5"
               name="group3"
-              value="yes"
-              checked={specialNeeds === "yes"}
-              onChange={(e) => handleRadioChange("specialNeeds", e)}
+              value={"true"}
+              checked={specialNeeds}
+              onChange={(e) => handleRadioChange("specialNeeds", JSON.parse(e))}
               label="Yes"
             />
             <Radio
               id="radio6"
               name="group3"
-              value="no"
-              checked={specialNeeds === "no"}
-              onChange={(e) => handleRadioChange("specialNeeds", e)}
+              value={"false"}
+              checked={!specialNeeds}
+              onChange={(e) => handleRadioChange("specialNeeds", JSON.parse(e))}
               label="No"
             />
           </div>

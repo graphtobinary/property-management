@@ -40,3 +40,34 @@ export const getHeaders = (accessToken?: string) => {
   }
   return headers;
 };
+
+export function convertTo24HourFormat(time12h: string): string {
+  const [time, modifier] = time12h.split(" ");
+  // eslint-disable-next-line prefer-const
+  let [hours, minutes] = time.split(":").map(Number);
+
+  if (modifier === "PM" && hours !== 12) {
+    hours += 12;
+  } else if (modifier === "AM" && hours === 12) {
+    hours = 0;
+  }
+
+  return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+    2,
+    "0"
+  )}`;
+}
+
+export function convertTo12HourFormat(time24h: string): string {
+  // eslint-disable-next-line prefer-const
+  let [hours, minutes] = time24h.split(":").map(Number);
+  const modifier = hours >= 12 ? "PM" : "AM";
+
+  if (hours === 0) {
+    hours = 12; // Midnight case (00:00 → 12:00 AM)
+  } else if (hours > 12) {
+    hours -= 12; // Convert to 12-hour format (e.g., 13:00 → 1:00 PM)
+  }
+
+  return String(`${hours}:${String(minutes).padStart(2, "0")} ${modifier}`);
+}

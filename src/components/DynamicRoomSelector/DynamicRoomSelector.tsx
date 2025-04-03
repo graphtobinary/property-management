@@ -1,61 +1,91 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MinusIcon, Plus, TrashBinIcon } from "../../icons";
 import Button from "../ui/button/Button";
 import Label from "../form/Label";
 import Select from "../form/Select";
 import Input from "../form/input/InputField";
 import { useNavigate } from "react-router";
-import { PropertyTypeFormProps, Room } from "../../interfaces";
-
-const roomOptions = [
-  "Master Bedroom",
-  "Bedroom",
-  "Bathroom",
-  "Kitchen",
-  "Living Room",
-  "Dining Room",
-  "Majlis",
-  "Storage",
-  "Maid Room",
-];
-
-const options = [
-  { value: "1 BHK", label: "1 BHK" },
-  { value: "2 BHK", label: "2 BHK" },
-  { value: "3 BHK", label: "3 BHK" },
-];
-
-const furnishingTypeOptions = [
-  { value: "fully furnished", label: "Fully Furnished" },
-  { value: "semi furnished", label: "Semi Furnished" },
-  { value: "not furnished", label: "Not Furnished" },
-];
+import { Option, PropertyTypeFormProps, Room } from "../../interfaces";
+import {
+  GetBhkTypes,
+  getFurnishingTypes,
+  getRoomTypes,
+} from "../../api/Listing.api";
+import { ListTypeProps } from "../../interfaces/listing";
+import { useListingStore } from "../../store/listing.store";
 
 const INIT_FORM_ELEMENTS = {
   propertyType: "",
   furnishingType: "",
-  propertySize: "",
+  propertySize: 0,
 };
 
 const DynamicRoomSelector = () => {
   const [formValues, setFormValues] = useState(INIT_FORM_ELEMENTS);
+  const [bhkTypeList, setBhkTypeList] = useState<Option[]>([]);
+  const [furnishingTypeList, setFurnishingTypeList] = useState<Option[]>([]);
+  const [roomTypeList, setRoomTypeList] = useState<Option[]>([]);
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const { listingFormData, setListingFormData } = useListingStore();
+
+  useEffect(() => {
+    fetchFormData();
+  }, []);
+
+  const fetchFormData = async () => {
+    try {
+      const { bhkTypes } = (await GetBhkTypes()) as {
+        bhkTypes: ListTypeProps[];
+      };
+      if (bhkTypes.length) {
+        setBhkTypeList(
+          bhkTypes.map((item) => {
+            return { value: item.id, label: item.name };
+          })
+        );
+      }
+      const { furnishingTypes } = (await getFurnishingTypes()) as {
+        furnishingTypes: ListTypeProps[];
+      };
+      setFurnishingTypeList(
+        furnishingTypes.map((item) => {
+          return { value: item.id, label: item.name };
+        })
+      );
+      const { roomTypes } = (await getRoomTypes()) as {
+        roomTypes: ListTypeProps[];
+      };
+      setRoomTypeList(
+        roomTypes.map((item) => {
+          return { value: item.id, label: item.name };
+        })
+      );
+      setRooms([
+        { id: Date.now(), roomTypeId: roomTypes[0].id, quantity: 1 }, // Default new entry
+      ]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   // Error state
-  const [errors, setErrors] =
-    useState<PropertyTypeFormProps>(INIT_FORM_ELEMENTS);
-  const [rooms, setRooms] = useState<Room[]>([
-    { id: Date.now(), type: "Master Bedroom", quantity: 4 },
-  ]);
+  const [errors, setErrors] = useState<PropertyTypeFormProps>({
+    propertyType: "",
+    furnishingType: "",
+    propertySize: "",
+  });
 
   const addRoom = () => {
     setRooms([
       ...rooms,
-      { id: Date.now(), type: "Bedroom", quantity: 1 }, // Default new entry
+      { id: Date.now(), roomTypeId: roomTypeList[0].value, quantity: 1 }, // Default new entry
     ]);
   };
 
-  const updateRoom = (id: number, type: string) => {
-    setRooms(rooms.map((room) => (room.id === id ? { ...room, type } : room)));
+  const updateRoom = (id: number, roomTypeId: string) => {
+    setRooms(
+      rooms.map((room) => (room.id === id ? { ...room, roomTypeId } : room))
+    );
   };
 
   const updateQuantity = (id: number, change: number) => {
@@ -94,12 +124,40 @@ const DynamicRoomSelector = () => {
     return Object.keys(newErrors).length === 0; // Return true if no errors
   };
 
+  useEffect(() => {
+    if (listingFormData.bhkTypeId) {
+      setFormValues((prev) => {
+        return { ...prev, propertyType: listingFormData.bhkTypeId };
+      });
+    }
+    if (listingFormData.furnishingTypeId) {
+      setFormValues((prev) => {
+        return { ...prev, furnishingType: listingFormData.furnishingTypeId };
+      });
+    }
+    if (listingFormData.areaInSqMeter)
+      setFormValues((prev) => {
+        return { ...prev, propertySize: listingFormData.areaInSqMeter };
+      });
+  }, [listingFormData]);
+
   const navigate = useNavigate();
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      console.log("Form submitted successfully", formValues);
+      setListingFormData({
+        ...listingFormData,
+        roomDetails: rooms.map((item) => {
+          return {
+            roomTypeId: item.roomTypeId,
+            quantity: item.quantity,
+          };
+        }),
+        bhkTypeId: formValues.propertyType,
+        furnishingTypeId: formValues.furnishingType,
+        areaInSqMeter: Number(formValues.propertySize),
+      });
       navigate("/create-listing-step-eight");
     }
   };
@@ -111,14 +169,17 @@ const DynamicRoomSelector = () => {
           <Label>
             Select property type<span className="text-error-500">*</span>
           </Label>
-          <Select
-            options={options}
-            placeholder="Select Option"
-            onChange={(value) => handleChange("propertyType", value)}
-            className="dark:bg-dark-900"
-            error={Boolean(errors?.propertyType ?? false)}
-            hint={errors.propertyType}
-          />
+          {!!bhkTypeList.length && (
+            <Select
+              options={bhkTypeList}
+              placeholder="Select Option"
+              defaultValue={listingFormData.bhkTypeId ?? ""}
+              onChange={(value) => handleChange("propertyType", value)}
+              className="dark:bg-dark-900"
+              error={Boolean(errors?.propertyType ?? false)}
+              hint={errors.propertyType}
+            />
+          )}
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
           <div>
@@ -126,8 +187,9 @@ const DynamicRoomSelector = () => {
               Select furnishing type<span className="text-error-500">*</span>
             </Label>
             <Select
-              options={furnishingTypeOptions}
+              options={furnishingTypeList}
               placeholder="Select an option"
+              defaultValue={listingFormData.furnishingTypeId ?? ""}
               onChange={(value) => handleChange("furnishingType", value)}
               error={Boolean(errors?.furnishingType ?? false)}
               hint={errors.furnishingType}
@@ -143,6 +205,7 @@ const DynamicRoomSelector = () => {
                 placeholder="100"
                 type="number"
                 className="pr-[62px]"
+                value={formValues.propertySize ?? ""}
                 onChange={(e) => handleChange("propertySize", e.target.value)}
                 error={Boolean(errors?.propertySize ?? false)}
                 hint={errors.propertySize}
@@ -163,12 +226,12 @@ const DynamicRoomSelector = () => {
               <select
                 // className="p-3 bg-gray-300 rounded-md border-none w-1/2"
                 className={`h-11 appearance-none rounded-lg border border-gray-300 bg-transparent px-4 py-2.5 pr-11 text-sm shadow-theme-xs placeholder:text-gray-400 focus:border-primaryLight focus:outline-hidden focus:ring-3 focus:ring-primary/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-brand-800 text-gray-500 `}
-                value={room.type}
+                value={room.roomTypeId}
                 onChange={(e) => updateRoom(room.id, e.target.value)}
               >
-                {roomOptions.map((option) => (
-                  <option key={option} value={option}>
-                    {option}
+                {roomTypeList?.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
                   </option>
                 ))}
               </select>

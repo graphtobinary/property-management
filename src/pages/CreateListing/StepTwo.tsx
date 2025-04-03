@@ -1,29 +1,49 @@
 import PageMeta from "../../components/common/PageMeta";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
-const options = [
-  {
-    id: 1,
-    title: "An entire place",
-    description: "People will have the whole place to themselves",
-  },
-  {
-    id: 2,
-    title: "A room",
-    description:
-      "Guests will have their own room to themselves and access to shared places",
-  },
-  {
-    id: 3,
-    title: "A shared room in your property",
-    description:
-      "Guests sleep in a shared room in a professionally managed hostel with staff on site 24/7",
-  },
-];
+import { getBookingPlaceTypes } from "../../api/Listing.api";
+import { ListTypeProps } from "../../interfaces/listing";
+import { useListingStore } from "../../store/listing.store";
+
 const StepTwo: React.FC = () => {
-  const [selected, setSelected] = useState(1);
+  const [selected, setSelected] = useState<string>("");
+  const [bookingPlaceTypeList, setBookingPlaceTypeList] = useState<
+    ListTypeProps[] | []
+  >([]);
+  const { listingFormData, setListingFormData } = useListingStore();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (listingFormData?.bookingPlaceTypeId) {
+      setSelected(listingFormData.bookingPlaceTypeId);
+    }
+  }, [listingFormData]);
+
+  useEffect(() => {
+    fetchPropertyTypeList();
+  }, []);
+
+  const fetchPropertyTypeList = async () => {
+    try {
+      const { bookingPlaceTypes } = (await getBookingPlaceTypes()) as {
+        bookingPlaceTypes: ListTypeProps[];
+      };
+      setBookingPlaceTypeList(bookingPlaceTypes);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (selected) {
+      setListingFormData({
+        ...listingFormData,
+        bookingPlaceTypeId: selected,
+      });
+    }
+  }, [selected]);
+
   return (
     <>
       <PageMeta
@@ -60,10 +80,10 @@ const StepTwo: React.FC = () => {
               <div className="col-span-12 space-y-12 ">
                 {/*  */}
                 <div className="space-y-4">
-                  {options.map((option) => (
+                  {bookingPlaceTypeList?.map((option) => (
                     <div
                       key={option.id}
-                      className={`flex items-center gap-4 p-4 border rounded-lg cursor-pointer ${
+                      className={`flex items-center gap-4 p-4 border rounded-lg cursor-pointer w-full md:w-xl ${
                         selected === option.id
                           ? "border-black"
                           : "border-gray-300"
@@ -74,12 +94,10 @@ const StepTwo: React.FC = () => {
                       <div className="w-12 h-12 bg-gray-300 rounded-md"></div>
                       {/* Text Content */}
                       <div>
-                        <h3 className="text-lg font-semibold">
-                          {option.title}
-                        </h3>
-                        <p className="text-gray-500 text-sm">
+                        <h3 className="text-md font-normal">{option.name}</h3>
+                        {/* <p className="text-gray-500 text-sm">
                           {option.description}
-                        </p>
+                        </p> */}
                       </div>
                     </div>
                   ))}

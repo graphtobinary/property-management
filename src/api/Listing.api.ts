@@ -1,4 +1,5 @@
-import { CreatePropertProps } from "../interfaces";
+import { ListingFormDataProps } from "../interfaces";
+import { getHeaders } from "../utils/utils";
 import API_CONSTANTS from "./constants";
 import { doPost } from "./index";
 
@@ -92,21 +93,41 @@ export const getTags = () => {
   );
 };
 
-export const getPropertyTempId = () => {
+export const getPropertyTempId = (accessToken: string) => {
   return doPost(
     API_CONSTANTS.GET_PROPERTY_TEMPID,
     {},
     {
+      headers: getHeaders(accessToken),
       body: JSON.stringify({}),
     }
   );
 };
 
-export const createProperty = (formData: CreatePropertProps) => {
+export const createProperty = (
+  accessToken: string,
+  formData: ListingFormDataProps
+) => {
   return doPost(
     API_CONSTANTS.CREATE_PROPERTY,
     {},
     {
+      headers: getHeaders(accessToken),
+      body: JSON.stringify(formData),
+    }
+  );
+};
+
+export const uploadImages = (
+  accessToken: string,
+  formData: FormData,
+  tempId: string
+) => {
+  return doPost(
+    API_CONSTANTS.UPLOAD_IMAGE,
+    { tempId },
+    {
+      headers: getHeaders(accessToken),
       body: JSON.stringify(formData),
     }
   );

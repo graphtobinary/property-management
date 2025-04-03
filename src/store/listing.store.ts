@@ -3,47 +3,39 @@ import { ListingState } from "../interfaces";
 
 const listingFormDataInitialValue = {
   listingFormData: {
+    propertyTempId: "",
     propertyTypeId: "",
-    placeType: "",
-    propertyLocation: {
-      country: "",
+    bookingPlaceTypeId: "",
+    address: {
+      countryId: "",
       addressLine1: "",
       addressLine2: "",
       landmark: "",
-      district: "",
+      // district: "",
       city: "",
       state: "",
-      pincode: "",
+      zipCode: "",
+      latitude: 0,
+      longitude: 0,
     },
-    propertyPinLocation: "",
-    aboutProperty: {
-      name: "",
-      guestLimit: 0,
-    },
-    propertyDescription: "",
-    propertyMeasurement: {
-      type: "",
-      furnishingType: "",
-      propertySize: 0,
-      propertyDetails: [],
-    },
-    propertySpecifications: [],
-    propertyPrice: 0,
-    propertyRules: {
-      checkInTimeFrom: "",
-      checkInTimeUntil: "",
-      checkOutTimeFrom: "",
-      checkOutTimeUntil: "",
-      smoking: true,
-      petFriendly: true,
-      handicappedAccessebility: true,
-    },
-    propertyPhotos: [],
-    propertyHighlight: [],
-    guestPaymentOption: {
-      creditCard: true,
-      nameOnInvoice: "",
-    },
+    name: "",
+    guestCapacity: 0,
+    description: "",
+    bhkTypeId: "",
+    furnishingTypeId: "",
+    areaInSqMeter: 0,
+    roomDetails: [],
+    amenityIds: [],
+    pricePerNight: 0,
+
+    checkinTime: "",
+    checkoutTime: "",
+    smokingAllowed: true,
+    petAllowed: true,
+    needsAccessibility: true,
+
+    // propertyPhotos: [],
+    tagIds: [],
   },
 };
 export const useListingStore = create<ListingState>()((set) => ({

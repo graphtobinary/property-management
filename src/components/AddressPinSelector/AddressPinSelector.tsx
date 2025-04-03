@@ -1,7 +1,8 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { GoogleMap, useLoadScript } from "@react-google-maps/api";
 import Input from "../form/input/InputField";
 import { LatLng, MapProps } from "../../interfaces";
+import { useListingStore } from "../../store/listing.store";
 
 const mapContainerStyle = {
   width: "100%",
@@ -19,6 +20,7 @@ const AddressPinSelector: React.FC<MapProps> = ({
   const [address, setAddress] = useState<string>("");
   const mapRef = useRef<google.maps.Map | null>(null);
   const [mapCenter, setMapCenter] = useState(center);
+  const { listingFormData, setListingFormData } = useListingStore();
 
   const onMapLoad = useCallback((map: google.maps.Map) => {
     map.setCenter(mapCenter);
@@ -32,7 +34,27 @@ const AddressPinSelector: React.FC<MapProps> = ({
       };
       setMapCenter(newCenter);
       getAddressFromCoordinates(mapCenter.lat, mapCenter.lng);
+      console.log("before update", newCenter);
+      setListingFormData({
+        ...listingFormData,
+        address: {
+          ...listingFormData.address,
+          latitude: mapCenter.lat,
+          longitude: mapCenter.lng,
+        },
+      });
     }
+  }, [mapCenter]);
+
+  useEffect(() => {
+    setListingFormData({
+      ...listingFormData,
+      address: {
+        ...listingFormData.address,
+        latitude: mapCenter.lat,
+        longitude: mapCenter.lng,
+      },
+    });
   }, [mapCenter]);
 
   const getAddressFromCoordinates = (lat: number, lng: number) => {
@@ -48,7 +70,6 @@ const AddressPinSelector: React.FC<MapProps> = ({
     });
   };
 
-  console.log(address, "address", mapCenter, "mapCenter");
   if (!isLoaded) return <p>Loading map...</p>;
 
   return (

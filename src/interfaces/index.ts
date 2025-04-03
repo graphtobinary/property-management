@@ -28,14 +28,14 @@ export interface CountryProps {
 }
 
 export interface AddressFormProps {
-  country?: string;
+  countryId?: string;
   addressLine1?: string;
   addressLine2?: string;
   landmark?: string;
-  district?: string;
+  // district?: string;
   city?: string;
   state?: string;
-  pincode?: string;
+  zipCode?: string;
 }
 
 export interface LatLng {
@@ -59,7 +59,7 @@ export interface PropertyTypeFormProps {
 
 export interface Room {
   id: number;
-  type: string;
+  roomTypeId: string;
   quantity: number;
 }
 
@@ -88,6 +88,7 @@ export interface SelectProps {
   defaultValue?: string;
   error?: boolean; // Error state
   hint?: string; // Hint text to display
+  selected?: string;
 }
 
 export interface CheckboxProps {
@@ -100,52 +101,42 @@ export interface CheckboxProps {
 }
 
 export interface PropertyDetailsProps {
-  type: string;
+  roomTypeId: string;
   quantity: number;
 }
 
 export interface ListingFormDataProps {
+  propertyTempId: string;
   propertyTypeId: string;
-  placeType: string;
-  propertyLocation: {
-    country: string;
+  bookingPlaceTypeId: string;
+  address: {
+    countryId: string;
     addressLine1: string;
     addressLine2: string;
     landmark: string;
-    district: string;
+    // district: string;
     city: string;
     state: string;
-    pincode: string;
+    zipCode: string;
+    latitude: number | undefined;
+    longitude: number | undefined;
   };
-  propertyPinLocation: string;
-  aboutProperty: {
-    name: string;
-    guestLimit: number;
-  };
-  propertyDescription: string;
-  propertyMeasurement: {
-    type: string;
-    furnishingType: string;
-    propertySize: number;
-    propertyDetails: PropertyDetailsProps[];
-  };
-  propertySpecifications: string[];
-  propertyPrice: number;
-  propertyRules: {
-    checkInTimeFrom: string;
-    checkInTimeUntil: string;
-    checkOutTimeFrom: string;
-    checkOutTimeUntil: string;
-    smoking: boolean;
-    petFriendly: boolean;
-    handicappedAccessebility: boolean;
-  };
-  propertyPhotos: string[];
-  propertyHighlight: string[];
-  guestPaymentOption: {
-    creditCard: boolean;
-    nameOnInvoice: string;
-  };
+  name: string;
+  guestCapacity: number;
+  description: string;
+  bhkTypeId: string;
+  furnishingTypeId: string;
+  areaInSqMeter: number;
+  roomDetails: PropertyDetailsProps[];
+  amenityIds: string[];
+  pricePerNight: number;
+  checkinTime: string;
+  checkoutTime: string;
+  smokingAllowed: boolean;
+  petAllowed: boolean;
+  needsAccessibility: boolean;
+  // propertyPhotos: string[];
+  tagIds: string[];
 }
 
 export interface ListingState {

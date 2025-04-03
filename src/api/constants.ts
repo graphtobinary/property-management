@@ -17,6 +17,7 @@ const API_CONSTANTS = {
   GET_TAGS: "/master.service.v1.MasterCachedService/GetTags",
   GET_PROPERTY_TEMPID: "/property.service.v1.PropertyService/GetPropertyTempId",
   CREATE_PROPERTY: "/property.service.v1.PropertyService/CreateProperty",
+  UPLOAD_IMAGE: "/upload-image/1/{tempID}",
 };
 
 export default API_CONSTANTS;

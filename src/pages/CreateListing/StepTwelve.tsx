@@ -1,41 +1,54 @@
 import PageMeta from "../../components/common/PageMeta";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
-const categories = [
-  {
-    id: 1,
-    name: "Peaceful",
-  },
-  {
-    id: 2,
-    name: "Spacious",
-  },
-  {
-    id: 3,
-    name: "Unique",
-  },
-  {
-    id: 4,
-    name: "Pet Friendly",
-  },
-  {
-    id: 5,
-    name: "Family Friendly",
-  },
-  {
-    id: 6,
-    name: "Stylish",
-  },
-  {
-    id: 7,
-    name: "Good For Couples",
-  },
-];
+import { createProperty, getTags } from "../../api/Listing.api";
+import { ListTypeProps } from "../../interfaces/listing";
+import { useListingStore } from "../../store/listing.store";
+import { Modal } from "../../components/ui/modal";
+import { CheckLineIcon } from "../../icons";
+import { useModal } from "../../hooks/useModal";
+import { useAuthStore } from "../../store/auth.store";
+
 const StepTwelve: React.FC = () => {
-  const [selected, setSelected] = useState([1]);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [highlights, setHighlights] = useState<ListTypeProps[]>([]);
   const navigate = useNavigate();
-  const handleSelect = (id: number) => {
+  const { listingFormData, setListingFormData } = useListingStore();
+  const { isOpen, openModal, closeModal } = useModal();
+
+  useEffect(() => {
+    fetchPropertyTypeList();
+  }, []);
+
+  const fetchPropertyTypeList = async () => {
+    try {
+      const { tags } = (await getTags()) as {
+        tags: ListTypeProps[];
+      };
+      setHighlights(tags);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (selected) {
+      setListingFormData({
+        ...listingFormData,
+        tagIds: selected,
+      });
+    }
+  }, [selected]);
+
+  useEffect(() => {
+    if (listingFormData?.tagIds.length) {
+      setSelected(listingFormData.tagIds);
+    }
+  }, [listingFormData]);
+
+  const handleSelect = (id: string) => {
     setSelected((prev) => {
       let newSelectedItem = [...prev];
       if (prev.includes(id)) {
@@ -46,6 +59,21 @@ const StepTwelve: React.FC = () => {
       return newSelectedItem;
     });
   };
+
+  const { token } = useAuthStore();
+
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+      await createProperty(token, listingFormData);
+      openModal();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
       <PageMeta
@@ -82,7 +110,7 @@ const StepTwelve: React.FC = () => {
               <div className="col-span-12 space-y-12 ">
                 {/*  */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-4 md:gap-6">
-                  {categories.map((category) => (
+                  {highlights?.map((category: ListTypeProps) => (
                     <div
                       key={category.id}
                       onClick={() => handleSelect(category.id)}
@@ -95,7 +123,7 @@ const StepTwelve: React.FC = () => {
                       {/* Product Image Section */}
                       <div className="relative">
                         <img
-                          src="https://demo.tailadmin.com/src/images/grid-image/image-01.png" // Replace with the actual product image URL
+                          src="images/product/placeholder-thumb.jpg" // Replace with the actual product image URL
                           alt="Nike Air Force 1 NDESTRUKT"
                           className="w-full "
                         />
@@ -117,17 +145,55 @@ const StepTwelve: React.FC = () => {
         </div>
         <div className="flex justify-end mb-3">
           <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={() => navigate(-1)}>
+            <Button
+              isLoading={loading}
+              size="sm"
+              variant="outline"
+              onClick={() => navigate(-1)}
+            >
               Back
             </Button>
-            <Link
-              to="/create-listing-step-thirteen"
-              className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-primary text-theme-sm hover:bg-primaryDark"
-            >
-              Next
-            </Link>
+
+            <Button onClick={handleSubmit}>Complete Registration</Button>
           </div>
         </div>
+        <Modal
+          isOpen={isOpen}
+          onClose={closeModal}
+          className="max-w-[700px] p-6 lg:p-10"
+        >
+          <div className="flex flex-col items-center justify-center  p-6">
+            {/* Success Icon */}
+            <div className="flex items-center justify-center w-20 h-20 rounded-full bg-gray-400">
+              <CheckLineIcon width={50} height={50} />
+            </div>
+
+            {/* Heading */}
+            <h2 className="mt-4 text-xl font-semibold text-gray-900">
+              Property Listed
+            </h2>
+
+            {/* Description */}
+            <p className="mt-2 text-center text-gray-500 text-sm max-w-sm">
+              Congratulations! Your property has been listed. It can be found in
+              the manage properties panel for final publishing.
+            </p>
+
+            {/* Buttons */}
+            <div className="mt-6 flex gap-4">
+              <Button size="sm" variant="outline" onClick={() => navigate("/")}>
+                Done for Now
+              </Button>
+              <Button
+                size="sm"
+                variant="primary"
+                onClick={() => navigate("/create-listing-step-one")}
+              >
+                <span className="text-lg">+</span> Add Another
+              </Button>
+            </div>
+          </div>
+        </Modal>
       </>
     </>
   );

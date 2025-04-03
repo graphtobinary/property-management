@@ -1,41 +1,62 @@
 import PageMeta from "../../components/common/PageMeta";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
-const categories = [
-  { id: 1, name: "Wifi" },
-  { id: 2, name: "TV" },
-  { id: 3, name: "Kitchen" },
-  { id: 4, name: "Washing Machine" },
-  { id: 5, name: "Dish Washer" },
-  { id: 6, name: "Free Parking" },
-  { id: 7, name: "Air Conditioning" },
-  { id: 8, name: "Workspace" },
-  { id: 9, name: "Pool" },
-  { id: 10, name: "Hot Tub" },
-  { id: 11, name: "Patio" },
-  { id: 12, name: "BBQ Grill" },
-  { id: 13, name: "Dining Table" },
-  { id: 14, name: "House" },
-  { id: 15, name: "Pool Table" },
-  { id: 16, name: "Fireplace" },
-  { id: 17, name: "Beach Access" },
-  { id: 18, name: "Fire Extinguisher" },
-  { id: 19, name: "Piano" },
-  { id: 20, name: "Guitar" },
-  { id: 21, name: "Closet" },
-  { id: 22, name: "Toilet Paper" },
-  { id: 23, name: "Shower" },
-  { id: 24, name: "Toilet" },
-  { id: 25, name: "Hair Dryer" },
-  { id: 26, name: "Bathtub" },
-  { id: 27, name: "Toiletries" },
-  { id: 28, name: "Bathrobes" },
-];
+import { getAmenities } from "../../api/Listing.api";
+import { ListTypeProps } from "../../interfaces/listing";
+import { useListingStore } from "../../store/listing.store";
+// const categories = [
+//   { id: 1, name: "Wifi" },
+//   { id: 2, name: "TV" },
+//   { id: 3, name: "Kitchen" },
+//   { id: 4, name: "Washing Machine" },
+//   { id: 5, name: "Dish Washer" },
+//   { id: 6, name: "Free Parking" },
+//   { id: 7, name: "Air Conditioning" },
+//   { id: 8, name: "Workspace" },
+//   { id: 9, name: "Pool" },
+//   { id: 10, name: "Hot Tub" },
+//   { id: 11, name: "Patio" },
+//   { id: 12, name: "BBQ Grill" },
+//   { id: 13, name: "Dining Table" },
+//   { id: 14, name: "House" },
+//   { id: 15, name: "Pool Table" },
+//   { id: 16, name: "Fireplace" },
+//   { id: 17, name: "Beach Access" },
+//   { id: 18, name: "Fire Extinguisher" },
+//   { id: 19, name: "Piano" },
+//   { id: 20, name: "Guitar" },
+//   { id: 21, name: "Closet" },
+//   { id: 22, name: "Toilet Paper" },
+//   { id: 23, name: "Shower" },
+//   { id: 24, name: "Toilet" },
+//   { id: 25, name: "Hair Dryer" },
+//   { id: 26, name: "Bathtub" },
+//   { id: 27, name: "Toiletries" },
+//   { id: 28, name: "Bathrobes" },
+// ];
 const StepEight: React.FC = () => {
-  const [selected, setSelected] = useState([1]);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [amenitiesList, setAmenitiesList] = useState<ListTypeProps[] | []>([]);
+  const { listingFormData, setListingFormData } = useListingStore();
   const navigate = useNavigate();
-  const handleSelect = (id: number) => {
+
+  useEffect(() => {
+    fetchAmenityList();
+  }, []);
+
+  const fetchAmenityList = async () => {
+    try {
+      const { amenities } = (await getAmenities()) as {
+        amenities: ListTypeProps[];
+      };
+      setAmenitiesList(amenities);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleSelect = (id: string) => {
     setSelected((prev) => {
       let newSelectedItem = [...prev];
       if (prev.includes(id)) {
@@ -46,6 +67,22 @@ const StepEight: React.FC = () => {
       return newSelectedItem;
     });
   };
+
+  useEffect(() => {
+    if (listingFormData?.amenityIds.length) {
+      setSelected(listingFormData.amenityIds);
+    }
+  }, [listingFormData]);
+
+  useEffect(() => {
+    if (selected) {
+      setListingFormData({
+        ...listingFormData,
+        amenityIds: selected,
+      });
+    }
+  }, [selected]);
+
   return (
     <>
       <PageMeta
@@ -82,7 +119,7 @@ const StepEight: React.FC = () => {
               <div className="col-span-12 space-y-12 ">
                 {/*  */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-4 md:gap-6">
-                  {categories.map((category) => (
+                  {amenitiesList?.map((category: ListTypeProps) => (
                     <div
                       key={category.id}
                       onClick={() => handleSelect(category.id)}
@@ -95,7 +132,7 @@ const StepEight: React.FC = () => {
                       {/* Product Image Section */}
                       <div className="relative">
                         <img
-                          src="https://demo.tailadmin.com/src/images/grid-image/image-01.png" // Replace with the actual product image URL
+                          src="images/product/placeholder-thumb.jpg" // Replace with the actual product image URL
                           alt="Nike Air Force 1 NDESTRUKT"
                           className="w-full "
                         />

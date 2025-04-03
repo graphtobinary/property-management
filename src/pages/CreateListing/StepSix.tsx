@@ -2,13 +2,20 @@ import PageMeta from "../../components/common/PageMeta";
 import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
 import TextArea from "../../components/form/input/TextArea";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useListingStore } from "../../store/listing.store";
 
 const StepSix: React.FC = () => {
   const [description, setDescription] = useState("");
   const [errors, setErrors] = useState<string>("");
   const navigate = useNavigate();
   const maxLength = 500;
+  const { listingFormData, setListingFormData } = useListingStore();
+
+  useEffect(() => {
+    if (listingFormData.description)
+      setDescription(listingFormData.description);
+  }, [listingFormData]);
 
   const handleSubmit = () => {
     // Reset errors before validation
@@ -25,7 +32,10 @@ const StepSix: React.FC = () => {
     }
 
     // submit form
-    console.log(description, "form submitted");
+    setListingFormData({
+      ...listingFormData,
+      description: description,
+    });
     navigate("/create-listing-step-seven");
   };
 

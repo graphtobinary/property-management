@@ -4,14 +4,20 @@ import { Link, useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
 import { useListingStore } from "../../store/listing.store";
 import { getPropertyTypes } from "../../api/Listing.api";
-import { PropertyTypeProps } from "../../interfaces/listing";
+import { ListTypeProps } from "../../interfaces/listing";
 
 const StepOne: React.FC = () => {
+  const { listingFormData, setListingFormData } = useListingStore();
   const [selected, setSelected] = useState<string>("");
   const [propertyTypeList, setPropertyTypeList] = useState<
-    PropertyTypeProps[] | []
+    ListTypeProps[] | []
   >([]);
-  const { listingFormData, setListingFormData } = useListingStore();
+
+  useEffect(() => {
+    if (listingFormData?.propertyTypeId) {
+      setSelected(listingFormData.propertyTypeId);
+    }
+  }, [listingFormData]);
 
   useEffect(() => {
     fetchPropertyTypeList();
@@ -20,7 +26,7 @@ const StepOne: React.FC = () => {
   const fetchPropertyTypeList = async () => {
     try {
       const { propertyTypes } = (await getPropertyTypes()) as {
-        propertyTypes: PropertyTypeProps[];
+        propertyTypes: ListTypeProps[];
       };
       setPropertyTypeList(propertyTypes);
     } catch (error) {
@@ -32,12 +38,13 @@ const StepOne: React.FC = () => {
     if (selected) {
       setListingFormData({
         ...listingFormData,
-        propertyTypeId: propertyTypeList[Number(selected)]?.id,
+        propertyTypeId: selected,
       });
     }
   }, [selected]);
 
   const navigate = useNavigate();
+
   return (
     <>
       <PageMeta
@@ -74,7 +81,7 @@ const StepOne: React.FC = () => {
               <div className="col-span-12 space-y-12 ">
                 {/*  */}
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-4 md:gap-6">
-                  {propertyTypeList?.map((category: PropertyTypeProps) => (
+                  {propertyTypeList?.map((category: ListTypeProps) => (
                     <div
                       key={category?.id}
                       onClick={() => setSelected(category?.id)}

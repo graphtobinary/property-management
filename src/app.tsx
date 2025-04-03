@@ -23,7 +23,6 @@ import StepTen from "./pages/CreateListing/StepTen";
 import StepEleven from "./pages/CreateListing/StepEleven";
 import StepTwelve from "./pages/CreateListing/StepTwelve";
 import CreateListingPageLayout from "./pages/CreateListing/CreateListingPageLayout";
-import StepThirteen from "./pages/CreateListing/StepThirteen";
 import PurchasePlan from "./pages/PurchasePlan";
 import CalendarDetails from "./pages/CalendarDetails";
 import UpdateUserProfile from "./pages/UpdateUserProfile";
@@ -117,15 +116,11 @@ export default function App() {
           <Route path="/create-listing-step-ten" element={<StepTen />} />
           <Route path="/create-listing-step-eleven" element={<StepEleven />} />
           <Route path="/create-listing-step-twelve" element={<StepTwelve />} />
-          <Route
-            path="/create-listing-step-thirteen"
-            element={<StepThirteen />}
-          />
           <Route path="/purchase-plan" element={<PurchasePlan />} />
         </Route>
 
         {/* Other Routes */}
-        <Route path="/verification/:token" element={<Verification />} />
+        <Route path="/signup-verification/:token" element={<Verification />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

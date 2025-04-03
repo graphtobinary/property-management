@@ -1,17 +1,24 @@
 import PageMeta from "../../components/common/PageMeta";
 import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MinusIcon, Plus } from "../../icons";
 import Label from "../../components/form/Label";
 import Input from "../../components/form/input/InputField";
+import { useListingStore } from "../../store/listing.store";
 
 const StepFive: React.FC = () => {
   const navigate = useNavigate();
   const [guests, setGuests] = useState(4);
   const [errors, setErrors] = useState<string>("");
-  const [propertyName, setPropertyName] = useState("La -Casa the papel");
+  const [propertyName, setPropertyName] = useState("");
   const maxLength = 32;
+  const { listingFormData, setListingFormData } = useListingStore();
+
+  useEffect(() => {
+    if (listingFormData.name) setPropertyName(listingFormData.name);
+    if (listingFormData.guestCapacity) setGuests(listingFormData.guestCapacity);
+  }, [listingFormData]);
 
   const handleSubmit = () => {
     // Reset errors before validation
@@ -28,7 +35,11 @@ const StepFive: React.FC = () => {
     }
 
     // submit form
-    console.log(propertyName, guests, "form submitted");
+    setListingFormData({
+      ...listingFormData,
+      name: propertyName,
+      guestCapacity: guests,
+    });
     navigate("/create-listing-step-six");
   };
 
@@ -77,7 +88,7 @@ const StepFive: React.FC = () => {
                     <Input
                       type="text"
                       id="input"
-                      placeholder="Enter city"
+                      placeholder="Enter property name"
                       value={propertyName}
                       onChange={(e) => setPropertyName(e.target.value)}
                       maxLength={maxLength}

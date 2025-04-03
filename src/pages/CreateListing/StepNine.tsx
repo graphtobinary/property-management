@@ -3,18 +3,26 @@ import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
 import Label from "../../components/form/Label";
 import Input from "../../components/form/input/InputField";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useListingStore } from "../../store/listing.store";
 
 const StepNine: React.FC = () => {
   const navigate = useNavigate();
-  const [price, setPrice] = useState<string>();
+  const [price, setPrice] = useState<number>();
   const [errors, setErrors] = useState<string>("");
+  const { listingFormData, setListingFormData } = useListingStore();
+
+  useEffect(() => {
+    if (listingFormData?.pricePerNight) {
+      setPrice(listingFormData.pricePerNight);
+    }
+  }, [listingFormData]);
 
   const handleSubmit = () => {
     // Reset errors before validation
     let newErrors: string = "";
     // Password validation
-    if (!price?.trim()) {
+    if (!price) {
       newErrors = "Price is required";
     }
 
@@ -25,7 +33,10 @@ const StepNine: React.FC = () => {
     }
 
     // submit form
-    console.log(price, "form submitted");
+    setListingFormData({
+      ...listingFormData,
+      pricePerNight: Number(price),
+    });
     navigate("/create-listing-step-ten");
   };
 
@@ -73,7 +84,8 @@ const StepNine: React.FC = () => {
                         placeholder="100"
                         type="number"
                         className="pr-[62px]"
-                        onChange={(e) => setPrice(e.target.value)}
+                        value={price}
+                        onChange={(e) => setPrice(Number(e.target.value))}
                         error={Boolean(errors ?? false)}
                         hint={errors}
                       />

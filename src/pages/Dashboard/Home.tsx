@@ -1,10 +1,14 @@
 import MonthlySalesChart from "../../components/ecommerce/MonthlySalesChart";
 import PageMeta from "../../components/common/PageMeta";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { EmptyBlocksIcon, Plus } from "../../icons";
 import React, { lazy, useEffect } from "react";
 import { PropertyEmptyStateProps } from "../../interfaces";
 import useUserStore from "../../store/user.store";
+import { useListingStore } from "../../store/listing.store";
+import Button from "../../components/ui/button/Button";
+import { getPropertyTempId } from "../../api/Listing.api";
+import { useAuthStore } from "../../store/auth.store";
 
 const EcommerceMetrics = lazy(
   () => import("../../components/ecommerce/EcommerceMetrics")
@@ -18,18 +22,33 @@ const EmptyState: React.FC<PropertyEmptyStateProps> = ({
   title = "Nothing to see here",
   description = "You need to add at least 2-3 properties to be able to view data on dashboard.",
 }) => {
+  // const { listingFormData, setListingFormData } = useListingStore();
+  const { token } = useAuthStore();
+  // const navigate = useNavigate();
+
+  const handlePropertyTempId = async () => {
+    try {
+      const data = await getPropertyTempId(token);
+      console.log(data);
+      // navigate("/create-listing-step-one")
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="flex h-screen flex-col items-center justify-center text-center py-10 px-4">
       <EmptyBlocksIcon width={70} height={73} />
       <h2 className="text-lg font-semibold text-gray-900 mt-2">{title}</h2>
       <p className="text-sm text-gray-500 mt-2 max-w-sm">{description}</p>
       <div className="flex mt-3">
-        <Link
-          to="/create-listing-step-one"
-          className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-primary text-theme-sm hover:bg-primary"
+        <Button
+          onClick={handlePropertyTempId}
+          // to="/create-listing-step-one"
+          // className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-primary text-theme-sm hover:bg-primary"
         >
           <Plus stroke="#fff" /> <span className="pl-1"> Create Listing</span>
-        </Link>
+        </Button>
       </div>
     </div>
   );
@@ -42,6 +61,25 @@ export default function Home() {
     if (!user?.tenant?.tenantBusinessType) navigate("tell-us-about-you");
   }, [user]);
 
+  const { listingFormData, setListingFormData } = useListingStore();
+  const { token } = useAuthStore();
+
+  const handlePropertyTempId = async () => {
+    try {
+      const { propertyId } = (await getPropertyTempId(token)) as {
+        propertyId: string;
+      };
+
+      setListingFormData({
+        ...listingFormData,
+        propertyTempId: propertyId,
+      });
+      navigate("/create-listing-step-one");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  console.log(listingFormData);
   // eslint-disable-next-line no-constant-condition
   if (false) return <EmptyState />;
   return (
@@ -60,13 +98,14 @@ export default function Home() {
         </h2>
         <div className="flex justify-end mb-3">
           <div className="flex">
-            <Link
-              to="/create-listing-step-one"
-              className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-primary text-theme-sm hover:bg-primary"
+            <Button
+              onClick={handlePropertyTempId}
+              // to="/create-listing-step-one"
+              // className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-primary text-theme-sm hover:bg-primary"
             >
               <Plus stroke="#fff" />{" "}
               <span className="pl-1"> Create Listing</span>
-            </Link>
+            </Button>
           </div>
         </div>
       </div>

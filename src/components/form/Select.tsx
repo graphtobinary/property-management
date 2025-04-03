@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SelectProps } from "../../interfaces";
 
 const Select: React.FC<SelectProps> = ({
@@ -7,6 +7,7 @@ const Select: React.FC<SelectProps> = ({
   onChange,
   className = "",
   defaultValue = "",
+  // selected = "",
   error = false, // Error state
   hint = "", // Default hint text
 }) => {
@@ -18,6 +19,10 @@ const Select: React.FC<SelectProps> = ({
     setSelectedValue(value);
     onChange(value); // Trigger parent handler
   };
+
+  useEffect(() => {
+    setSelectedValue(defaultValue);
+  }, [defaultValue]);
 
   let selectClasses = `h-11 w-full appearance-none rounded-lg border  bg-transparent px-4 py-2.5 pr-11 text-sm shadow-theme-xs placeholder:text-gray-400 focus:border-primaryLight focus:outline-hidden focus:ring-3 focus:ring-primary/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-primary ${className} `;
 
@@ -46,15 +51,17 @@ const Select: React.FC<SelectProps> = ({
             {placeholder}
           </option>
           {/* Map over options */}
-          {options.map((option) => (
-            <option
-              key={option.value}
-              value={option.value}
-              className="text-gray-700 dark:bg-gray-900 dark:text-gray-400"
-            >
-              {option.label}
-            </option>
-          ))}
+          {options.map((option) => {
+            return (
+              <option
+                key={option.value}
+                value={option.value}
+                className="text-gray-700 dark:bg-gray-900 dark:text-gray-400"
+              >
+                {option.label}
+              </option>
+            );
+          })}
         </select>
         <span className="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
           <svg

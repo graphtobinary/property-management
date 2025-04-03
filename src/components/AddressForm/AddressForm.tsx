@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Select from "../form/Select";
@@ -7,29 +7,25 @@ import Button from "../ui/button/Button";
 import { useNavigate } from "react-router";
 import useCountries from "../../hooks/useCountries";
 import { AddressFormProps } from "../../interfaces";
+import { useListingStore } from "../../store/listing.store";
 
 const INIT_FORM_ELEMENTS = {
-  country: "",
+  countryId: "",
   addressLine1: "",
   addressLine2: "",
   landmark: "",
-  district: "",
+  // district: "",
   city: "",
   state: "",
-  pincode: "",
+  zipCode: "",
 };
-
-const stateOptions = [
-  { value: "delhi", label: "New Delhi" },
-  { value: "bihar", label: "Bihar" },
-  { value: "up", label: "Uttar Pradesh" },
-];
 
 export default function AddressForm() {
   const [formValues, setFormValues] = useState(INIT_FORM_ELEMENTS);
   const { countries } = useCountries();
   // Error state
   const [errors, setErrors] = useState<AddressFormProps>(INIT_FORM_ELEMENTS);
+  const { listingFormData, setListingFormData } = useListingStore();
 
   // Handle input changes
   const handleChange = (field: string, value: string) => {
@@ -37,8 +33,41 @@ export default function AddressForm() {
     setErrors((prev) => ({ ...prev, [field]: "" })); // Clear error when typing
   };
 
+  useEffect(() => {
+    if (listingFormData.address) {
+      setFormValues((prev) => ({
+        ...prev,
+        countryId: listingFormData.address.countryId,
+      }));
+      setFormValues((prev) => ({
+        ...prev,
+        addressLine1: listingFormData.address.addressLine1,
+      }));
+      setFormValues((prev) => ({
+        ...prev,
+        addressLine2: listingFormData.address.addressLine2,
+      }));
+      setFormValues((prev) => ({
+        ...prev,
+        landmark: listingFormData.address.landmark,
+      }));
+      setFormValues((prev) => ({
+        ...prev,
+        city: listingFormData.address.city,
+      }));
+      setFormValues((prev) => ({
+        ...prev,
+        zipCode: listingFormData.address.zipCode,
+      }));
+      setFormValues((prev) => ({
+        ...prev,
+        state: listingFormData.address.state,
+      }));
+    }
+  }, [listingFormData]);
+
   // Validation function
-  const validateForm = () => {
+  const validateForm = useCallback(() => {
     const newErrors: AddressFormProps = {};
     Object.keys(formValues).forEach((key) => {
       if (!formValues[key as keyof typeof formValues].trim()) {
@@ -47,19 +76,22 @@ export default function AddressForm() {
     });
 
     // Pincode validation
-    if (!/^\d{6}$/.test(formValues.pincode)) {
-      newErrors.pincode = "Pincode must be a 6-digit number";
+    if (!/^\d{6}$/.test(formValues.zipCode)) {
+      newErrors.zipCode = "Pincode must be a 6-digit number";
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0; // Return true if no errors
-  };
+  }, [formValues]);
 
   // Handle form submission
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
-      console.log("Form submitted successfully", formValues);
+      setListingFormData({
+        ...listingFormData,
+        address: { ...listingFormData.address, ...formValues },
+      });
       navigate("/create-listing-step-four");
     }
   };
@@ -77,10 +109,11 @@ export default function AddressForm() {
             <Select
               options={countries}
               placeholder="Select Option"
-              onChange={(value) => handleChange("country", value)}
+              onChange={(value) => handleChange("countryId", value)}
+              defaultValue={listingFormData.address.countryId ?? ""}
               className="dark:bg-dark-900"
-              error={Boolean(errors?.country ?? false)}
-              hint={errors.country}
+              error={Boolean(errors?.countryId ?? false)}
+              hint={errors.countryId}
             />
           </div>
           <div>
@@ -114,14 +147,15 @@ export default function AddressForm() {
             <Input
               type="text"
               id="input"
+              value={formValues.landmark ?? ""}
               placeholder="Enter landmark"
               onChange={(e) => handleChange("landmark", e.target.value)}
               error={Boolean(errors?.landmark ?? false)}
               hint={errors.landmark}
             />
           </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
-            <div>
+          <div>
+            {/* <div>
               <Label>
                 District<span className="text-error-500">*</span>
               </Label>
@@ -133,7 +167,7 @@ export default function AddressForm() {
                 error={Boolean(errors?.district ?? false)}
                 hint={errors.district}
               />
-            </div>
+            </div> */}
             <div>
               <Label>
                 City<span className="text-error-500">*</span>
@@ -142,6 +176,7 @@ export default function AddressForm() {
                 type="text"
                 id="input"
                 placeholder="Enter city"
+                value={formValues.city ?? ""}
                 onChange={(e) => handleChange("city", e.target.value)}
                 error={Boolean(errors?.city ?? false)}
                 hint={errors.city}
@@ -153,11 +188,20 @@ export default function AddressForm() {
               <Label>
                 State<span className="text-error-500">*</span>
               </Label>
-              <Select
+              {/* <Select
                 options={stateOptions}
                 placeholder="Select an option"
                 onChange={(value) => handleChange("state", value)}
                 className="dark:bg-dark-900"
+                error={Boolean(errors?.state ?? false)}
+                hint={errors.state}
+              /> */}
+              <Input
+                type="text"
+                id="input"
+                placeholder="Enter State"
+                value={formValues.state ?? ""}
+                onChange={(e) => handleChange("state", e.target.value)}
                 error={Boolean(errors?.state ?? false)}
                 hint={errors.state}
               />
@@ -170,9 +214,10 @@ export default function AddressForm() {
                 type="number"
                 id="input"
                 placeholder="Enter pincode"
-                onChange={(e) => handleChange("pincode", e.target.value)}
-                error={Boolean(errors?.pincode ?? false)}
-                hint={errors.pincode}
+                value={formValues.zipCode ?? ""}
+                onChange={(e) => handleChange("zipCode", e.target.value)}
+                error={Boolean(errors?.zipCode ?? false)}
+                hint={errors.zipCode}
               />
             </div>
           </div>

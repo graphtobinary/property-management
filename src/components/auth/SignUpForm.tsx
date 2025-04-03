@@ -44,7 +44,6 @@ export default function SignUpForm() {
       newErrors.password = "Password must be at least 6 characters";
     }
 
-    console.log(newErrors, "newErrors");
     // Set errors if any
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
