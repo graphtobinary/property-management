@@ -18,6 +18,8 @@ const API_CONSTANTS = {
   GET_PROPERTY_TEMPID: "/property.service.v1.PropertyService/GetPropertyTempId",
   CREATE_PROPERTY: "/property.service.v1.PropertyService/CreateProperty",
   UPLOAD_IMAGE: "/upload-image/1/{tempID}",
+  GET_PROPERTY_LIST:
+    "/property.service.v1.PropertyService/GetPropertiesCollection",
 };
 
 export default API_CONSTANTS;

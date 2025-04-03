@@ -132,3 +132,22 @@ export const uploadImages = (
     }
   );
 };
+
+export const getPropertyList = (
+  accessToken: string,
+  formData: {
+    pagination: {
+      page: number;
+      limit: number;
+    };
+  }
+) => {
+  return doPost(
+    API_CONSTANTS.GET_PROPERTY_LIST,
+    {},
+    {
+      headers: getHeaders(accessToken),
+      body: JSON.stringify(formData),
+    }
+  );
+};

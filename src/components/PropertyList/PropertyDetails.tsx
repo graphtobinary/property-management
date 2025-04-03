@@ -3,13 +3,13 @@ import Button from "../ui/button/Button";
 import { motion } from "framer-motion";
 import { ChevronLeftIcon } from "../../icons";
 
-interface PropertyDetailsProps {
+export interface PropertyDetailsProps {
   property: {
     name: string;
     location: string;
-    price: string;
+    pricePerNight: string;
     thumbnail: string;
-    details: {
+    propertyAddress: {
       type: string;
       furnishing: string;
       area: string;
@@ -20,12 +20,21 @@ interface PropertyDetailsProps {
       kitchen: number;
       amenities: string[];
       tags: string[];
+      addressLine1: string;
+      addressLine2: string;
+      city: string;
+      state: string;
+      zipCode: string;
     };
   };
   onClose: () => void;
 }
 
-const PropertyDetails: React.FC<PropertyDetailsProps> = ({ onClose }) => {
+const PropertyDetails: React.FC<PropertyDetailsProps> = ({
+  property,
+  onClose,
+}) => {
+  const { propertyAddress } = property;
   return (
     <div className="fixed inset-0 bg-black/[0.6] bg-opacity-50 flex justify-end z-999999">
       <motion.div
@@ -47,16 +56,16 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({ onClose }) => {
           {/* Title & Price */}
           <div className="flex justify-between items-center mb-4">
             <div>
-              <h2 className="text-lg font-semibold">The Royal Lotus Inn</h2>
+              <h2 className="text-lg font-semibold">{property.name}</h2>
               <p className="text-gray-500 text-xs font-light">
-                C211, Z-One, Patia, Bhubaneswar
+                {`${propertyAddress.addressLine1}, ${propertyAddress.addressLine2}, ${propertyAddress.city} ${propertyAddress.state} ${propertyAddress.zipCode}`}
               </p>
             </div>
             <div className=" bg-gray-100 p-2">
               <p className="text-gray-500 text-xs font-thin">
                 Your price per night
               </p>
-              <p className="text-md">₹2,345</p>
+              <p className="text-md">{property.pricePerNight}</p>
             </div>
           </div>
 
