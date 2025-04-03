@@ -2,7 +2,7 @@ import Button from "../ui/button/Button";
 const fallBackImg = "images/product/placeholder-thumb.jpg";
 export interface PropertyCardProps {
   name: string;
-  // address: string;
+  address: string;
   pricePerNight: string;
   thumbnail?: string;
   onClick: () => void;
@@ -10,36 +10,35 @@ export interface PropertyCardProps {
 
 const PropertyCard: React.FC<PropertyCardProps> = ({
   name,
-  // address,
+  address,
   pricePerNight,
   thumbnail,
   onClick,
 }) => {
   return (
     <div
-      className="flex items-center justify-between p-2 bg-gray-100 rounded-lg gap-3"
+      className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
       onClick={onClick}
     >
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-8">
         <img
           src={thumbnail || fallBackImg}
           alt="Property"
           className="w-16 h-16 rounded-md object-cover"
         />
         <div>
-          <h3 className=" text-md">{name}</h3>
-          {/* <p className="text-xs text-gray-400">{address}</p> */}
+          <h3 className="text-sm font-medium">{name}</h3>
+          <p className="text-xs text-gray-500">{address}</p>
+        </div>
+        {/* Price section */}
+        <div>
+          <p className="text-xs text-gray-400">Your price per night</p>
+          <p className="text-sm text-gray-900">{pricePerNight}</p>
         </div>
       </div>
 
-      {/* Center section */}
-      <div className="flex-1 pl-3">
-        <p className="text-xs text-gray-400">Your price per night</p>
-        <p className=" text-md">{pricePerNight}</p>
-      </div>
-
       {/* Buttons Section */}
-      <div className="flex gap-2">
+      <div className="flex items-center gap-3">
         <Button size="sm" variant="outline">
           Edit
         </Button>

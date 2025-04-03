@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import Button from "../ui/button/Button";
 import { motion } from "framer-motion";
 import { ChevronLeftIcon } from "../../icons";
 
 export interface PropertyDetailsProps {
+  [x: string]: any;
   property: {
     name: string;
     location: string;

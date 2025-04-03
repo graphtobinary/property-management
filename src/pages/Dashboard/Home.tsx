@@ -78,8 +78,8 @@ export default function Home() {
     } catch (error) {
       console.log(error);
     }
-  };
-  console.log(listingFormData);
+  }; 
+  // console.log(listingFormData);
   // eslint-disable-next-line no-constant-condition
   if (false) return <EmptyState />;
   return (
