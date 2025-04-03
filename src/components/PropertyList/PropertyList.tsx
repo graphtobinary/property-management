@@ -74,7 +74,7 @@ const PropertyList: React.FC = () => {
               property.propertyAddress.addressLine2
             }
             pricePerNight={property.pricePerNight}
-            thumbnail={property.thumbnail}
+            thumbnail={property.imagePath ? `${import.meta.env.VITE_CDN_URL}${property.imagePath}` : ""}
             onClick={() => setSelectedProperty(property)}
           />
         ))}

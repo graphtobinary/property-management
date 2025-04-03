@@ -9,6 +9,7 @@ export default function SidebarWidget() {
   const userMenuRef = useRef<HTMLDivElement | null>(null);
   const navigate = useNavigate();
   const { clearUserStore } = useUserStore();
+  const { user } = useUserStore();
 
   const logout = () => {
     removeCookie(AUTH_COOKIES.ACCESS_TOKEN);
@@ -48,10 +49,10 @@ export default function SidebarWidget() {
           </span>
           <div>
             <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-              Property Manager
+            {user?.tenant?.firstName} {user?.tenant?.lastName}
             </span>
             <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
-              propertymanager@gmail.com
+              {user?.email}
             </span>
           </div>
         </div>

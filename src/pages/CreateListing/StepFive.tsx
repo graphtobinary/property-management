@@ -46,8 +46,8 @@ const StepFive: React.FC = () => {
   return (
     <>
       <PageMeta
-        title="React.js Calendar Dashboard | TailAdmin - Next.js Admin Dashboard Template"
-        description="This is React.js Calendar Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
+        title="Manzil"
+        description="Property Management Dashboard"
       />
 
       <>

@@ -43,8 +43,8 @@ const StepNine: React.FC = () => {
   return (
     <>
       <PageMeta
-        title="React.js Calendar Dashboard | TailAdmin - Next.js Admin Dashboard Template"
-        description="This is React.js Calendar Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
+        title="Manzil"
+        description="Property Management Dashboard"
       />
 
       <>
@@ -90,7 +90,7 @@ const StepNine: React.FC = () => {
                         hint={errors}
                       />
                       <small className="absolute right-0 top-0 border-l border-gray-200 px-3.5 py-3 text-gray-500 dark:border-gray-800 dark:text-gray-400">
-                        The guest will pay ₹1,956 before taxes
+                        The guest will pay ₹{Math.round((price || 0) + ((price || 0) * 0.1))} after taxes
                       </small>
                     </div>
                   </div>

@@ -151,3 +151,23 @@ export const getPropertyList = (
     }
   );
 };
+
+export const getPropertyById = (
+  accessToken: string,
+  formData: {
+    propertyId: number;
+    includeRooms: boolean;
+    includeAmenities: boolean;
+    includeTags: boolean;
+    includePhotos: boolean;
+  }
+) => {
+  return doPost(
+    API_CONSTANTS.GET_PROPERTY_BY_ID,
+    {},
+    {
+      headers: getHeaders(accessToken),
+      body: JSON.stringify(formData),
+    }
+  );
+};
