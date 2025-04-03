@@ -100,7 +100,7 @@ export interface CheckboxProps {
   disabled?: boolean;
 }
 
-export interface PropertyDetailsProps {
+export interface RoomDetailsProps {
   roomTypeId: string;
   quantity: number;
 }
@@ -127,7 +127,7 @@ export interface ListingFormDataProps {
   bhkTypeId: string;
   furnishingTypeId: string;
   areaInSqMeter: number;
-  roomDetails: PropertyDetailsProps[];
+  roomDetails: RoomDetailsProps[];
   amenityIds: string[];
   pricePerNight: number;
   checkinTime: string;

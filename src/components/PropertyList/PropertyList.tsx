@@ -5,9 +5,9 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { getPropertyList, getPropertyTempId } from "../../api/Listing.api";
 import { useAuthStore } from "../../store/auth.store";
-import { PropertyDetailsProps } from "./PropertyDetails";
 import { useNavigate } from "react-router";
 import { useListingStore } from "../../store/listing.store";
+import { PropertyListItemProps } from "../../interfaces/listing";
 const PropertyDetails = lazy(() => import("./PropertyDetails"));
 
 const PropertyList: React.FC = () => {
@@ -16,9 +16,9 @@ const PropertyList: React.FC = () => {
   const { listingFormData, setListingFormData } = useListingStore();
   const { token } = useAuthStore();
   const navigate = useNavigate();
-  const [propertyList, setPropertyList] = useState<PropertyDetailsProps[] | []>(
-    []
-  );
+  const [propertyList, setPropertyList] = useState<
+    PropertyListItemProps[] | []
+  >([]);
 
   useEffect(() => {
     fetchPropertyList();
@@ -49,7 +49,7 @@ const PropertyList: React.FC = () => {
         },
       };
       const { properties } = (await getPropertyList(token, formData)) as {
-        properties: PropertyDetailsProps[];
+        properties: PropertyListItemProps[];
       };
       setPropertyList(properties);
       // console.log(properties);
@@ -65,19 +65,16 @@ const PropertyList: React.FC = () => {
   return (
     <>
       <div className="min-h-screen flex flex-col gap-4">
-        {propertyList?.map((property: PropertyDetailsProps, index) => (
-          <PropertyCard
-            key={index}
-            name={property.name}
-            address={
-              property.propertyAddress.addressLine1 +", " +
-              property.propertyAddress.addressLine2
-            }
-            pricePerNight={property.pricePerNight}
-            thumbnail={property.thumbnail}
-            onClick={() => setSelectedProperty(property)}
-          />
-        ))}
+        {propertyList?.map((property, index) => {
+          console.log(property, "property");
+          return (
+            <PropertyCard
+              key={index}
+              {...property}
+              onClick={() => setSelectedProperty(property)}
+            />
+          );
+        })}
         <AnimatePresence>
           {selectedProperty && (
             <Suspense fallback={<h2>Loading...</h2>}>

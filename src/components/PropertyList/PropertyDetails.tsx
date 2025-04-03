@@ -1,42 +1,63 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
+ 
+import React, { useEffect, useState } from "react";
 import Button from "../ui/button/Button";
 import { motion } from "framer-motion";
 import { ChevronLeftIcon } from "../../icons";
-
-export interface PropertyDetailsProps {
-  [x: string]: any;
-  property: {
-    name: string;
-    location: string;
-    pricePerNight: string;
-    thumbnail: string;
-    propertyAddress: {
-      type: string;
-      furnishing: string;
-      area: string;
-      guests: number;
-      bathrooms: number;
-      kingBedrooms: number;
-      queenBedrooms: number;
-      kitchen: number;
-      amenities: string[];
-      tags: string[];
-      addressLine1: string;
-      addressLine2: string;
-      city: string;
-      state: string;
-      zipCode: string;
-    };
-  };
-  onClose: () => void;
-}
+import { useAuthStore } from "../../store/auth.store";
+import { getPropertyById } from "../../api/Listing.api";
+import {
+  PropertyProps,
+  PropertyDetailsProps,
+  RoomProps,
+  AmenityProps,
+  TagsProps,
+} from "../../interfaces/listing";
 
 const PropertyDetails: React.FC<PropertyDetailsProps> = ({
   property,
   onClose,
 }) => {
   const { propertyAddress } = property;
+
+  const { token } = useAuthStore();
+  const [propertyDetails, setPropertyDetails] = useState<PropertyProps>();
+  const [roomsList, setRoomsList] = useState<RoomProps[]>([]);
+  const [amenitiesList, setAmenitiesList] = useState<AmenityProps[]>([]);
+  const [tagsList, setTagsList] = useState<TagsProps[]>([]);
+
+  useEffect(() => {
+    fetchPropertyById();
+  }, []);
+
+  const fetchPropertyById = async () => {
+    try {
+      const formData = {
+        propertyId: property.id,
+        includeRooms: true,
+        includeAmenities: true,
+        includeTags: true,
+        includePhotos: true,
+      };
+      const {
+        property: propertyData,
+        rooms,
+        amenities,
+        tags,
+      } = (await getPropertyById(token, formData)) as {
+        property: PropertyProps;
+        rooms: RoomProps[];
+        amenities: AmenityProps[];
+        tags: TagsProps[];
+      };
+      setRoomsList(rooms);
+      setAmenitiesList(amenities);
+      setTagsList(tags);
+      setPropertyDetails(propertyData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  console.log(propertyDetails);
   return (
     <div className="fixed inset-0 bg-black/[0.6] bg-opacity-50 flex justify-end z-999999">
       <motion.div
@@ -60,7 +81,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
             <div>
               <h2 className="text-lg font-semibold">{property.name}</h2>
               <p className="text-gray-500 text-xs font-light">
-                {`${propertyAddress.addressLine1}, ${propertyAddress.addressLine2}, ${propertyAddress.city} ${propertyAddress.state} ${propertyAddress.zipCode}`}
+                {`${propertyAddress.addressLine1}, ${propertyAddress.addressLine2}, ${propertyAddress.city} ${propertyAddress.state} ${propertyDetails?.country?.name} ${propertyAddress.zipCode}`}
               </p>
             </div>
             <div className=" bg-gray-100 p-2">
@@ -77,17 +98,21 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
               <span className="text-xs text-gray-500 font-thin">
                 Property Type
               </span>
-              <span className="text-sm">2 Bhk</span>
+              <span className="text-sm">{propertyDetails?.bhkType?.name}</span>
             </div>
             <div className="bg-gray-100 p-3 rounded-md text-center flex flex-col">
               <span className="text-xs text-gray-500 font-thin">
                 Furnishing Type
               </span>
-              <span className="text-sm">Fully Furnished</span>
+              <span className="text-sm">
+                {propertyDetails?.furnishingType?.name}
+              </span>
             </div>
             <div className="bg-gray-100 p-3 rounded-md text-center flex flex-col">
               <span className="text-xs text-gray-500 font-thin">Area</span>
-              <span className="text-sm">324 sq mtr</span>
+              <span className="text-sm">
+                {propertyDetails?.areaInSqMeter} sq mtr
+              </span>
             </div>
           </div>
 
@@ -101,64 +126,61 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
 
           {/* Description */}
           <p className="text-gray-600 text-sm mb-4">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
+            {propertyDetails?.description}
           </p>
 
           {/* Features */}
           <div className="grid grid-cols-3 gap-2 mb-4">
             <div className="bg-gray-100 p-3 rounded-md text-center flex flex-col">
-              <span className="text-sm">4</span>
+              <span className="text-sm">{propertyDetails?.guestCapacity}</span>
               <span className="text-xs text-gray-500 font-thin"> Guests</span>
             </div>
-            <div className="bg-gray-100 p-3 rounded-md text-center flex flex-col">
-              <span className="text-sm">3</span>
-              <span className="text-xs text-gray-500 font-thin">Bathrooms</span>
-            </div>
-            <div className="bg-gray-100 p-3 rounded-md text-center flex flex-col">
-              <span className="text-sm">2</span>
-              <span className="text-xs text-gray-500 font-thin">
-                King Size Bedrooms
-              </span>
-            </div>
-            <div className="bg-gray-100 p-3 rounded-md text-center flex flex-col">
-              <span className="text-sm">2</span>
-              <span className="text-xs text-gray-500 font-thin">
-                Queen Size Bedrooms
-              </span>
-            </div>
-            <div className="bg-gray-100 p-3 rounded-md text-center flex flex-col">
-              <span className="text-sm">2</span>
-              <span className="text-xs text-gray-500 font-thin">Kitchen</span>
-            </div>
+            {roomsList?.map((room, i) => (
+              <div
+                key={`${room.id}-${i}`}
+                className="bg-gray-100 p-3 rounded-md text-center flex flex-col"
+              >
+                <span className="text-sm">{room.quantity}</span>
+                <span className="text-xs text-gray-500 font-thin">
+                  {room.roomType.name}
+                </span>
+              </div>
+            ))}
           </div>
           <hr className="my-3 border-gray-300" />
           {/* Amenities */}
           <div className="flex flex-wrap gap-2 mb-4">
-            <span className="bg-gray-200 px-3 py-1 text-sm rounded-md">TV</span>
-            <span className="bg-gray-200 px-3 py-1 text-sm rounded-md">
-              Refrigerator
-            </span>
-            <span className="bg-gray-200 px-3 py-1 text-sm rounded-md">
-              Wifi
-            </span>
-            <span className="text-xs text-gray-500 font-light py-1">
-              +15 more
-            </span>
+            {amenitiesList?.map(({ amenity }, i) => (
+              <span
+                key={`${amenity.id}-${i}`}
+                className="bg-gray-200 px-3 py-1 text-sm rounded-md"
+              >
+                {amenity.name}
+              </span>
+            ))}
+            {amenitiesList.length > 4 && (
+              <span className="text-xs text-gray-500 font-light py-1">
+                +{amenitiesList.slice(0, 4).length} more
+              </span>
+            )}
           </div>
 
           <hr className="my-3 border-gray-300" />
           {/* Tags */}
           <div className="flex flex-wrap gap-2 mb-6">
-            <span className="bg-gray-200 text-sm px-3 py-1 rounded-md">
-              Family Friendly
-            </span>
-            <span className="bg-gray-200 text-sm px-3 py-1 rounded-md">
-              Stylish
-            </span>
-            <span className="text-xs text-gray-500 font-light py-1">
-              +2 more
-            </span>
+            {tagsList?.map(({ tag }, i) => (
+              <span
+                key={`${tag.id}-${i}`}
+                className="bg-gray-200 px-3 py-1 text-sm rounded-md"
+              >
+                {tag.name}
+              </span>
+            ))}
+            {tagsList.length > 4 && (
+              <span className="text-xs text-gray-500 font-light py-1">
+                +{tagsList.slice(0, 4).length} more
+              </span>
+            )}
           </div>
           {/* Buttons */}
           <div className="flex justify-end gap-2 absolute bottom-5 right-5">
