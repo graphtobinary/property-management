@@ -17,21 +17,21 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 }) => {
   return (
     <div
-      className="flex items-center justify-between p-4 bg-gray-50 rounded-lg"
+      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
       onClick={onClick}
     >
       <div className="flex items-center gap-8">
         <img
           src={thumbnail || fallBackImg}
           alt="Property"
-          className="w-16 h-16 rounded-md object-cover"
+          className="w-12 h-12 rounded-md object-cover"
         />
-        <div>
-          <h3 className="text-sm font-medium">{name}</h3>
+        <div className="w-32">
+          <h3 className="text-md font-medium">{name}</h3>
           <p className="text-xs text-gray-500">{address}</p>
         </div>
         {/* Price section */}
-        <div>
+        <div className="border-l border-l-gray-200 pl-4">
           <p className="text-xs text-gray-400">Your price per night</p>
           <p className="text-sm text-gray-900">{pricePerNight}</p>
         </div>
