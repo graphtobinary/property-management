@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Button from "../ui/button/Button";
 import { motion } from "framer-motion";
-import { ChevronLeftIcon } from "../../icons";
+import { CrossIcon } from "../../icons";
 import { useAuthStore } from "../../store/auth.store";
 import { getPropertyById } from "../../api/Listing.api";
 import {
@@ -13,7 +12,7 @@ import {
   TagsProps,
   PhotosProps,
 } from "../../interfaces/listing";
-
+import useOutsideClick from "../../hooks/useOutsideClick";
 const PropertyDetails: React.FC<PropertyDetailsProps> = ({
   property,
   onClose,
@@ -62,22 +61,27 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
       console.log(error);
     }
   };
-
+  const sidebarRef = useRef<HTMLDivElement | null>(null);
+  useOutsideClick(sidebarRef, () => onClose());
   return (
-    <div className="fixed inset-0 bg-black/[0.6] bg-opacity-50 flex justify-end z-999999">
+    <div
+      // onClick={onClose}
+      className="fixed inset-0 bg-black/[0.6] bg-opacity-50 flex justify-end z-999999"
+    >
       <motion.div
+        ref={sidebarRef}
         initial={{ x: "100%" }} // Start off-screen to the right
         animate={{ x: 0 }} // Slide in from right
         exit={{ x: "100%" }} // Slide out to right
         transition={{ type: "tween", duration: 0.3 }} // Smooth transition
-        className="w-[40%] h-full bg-white shadow-lg p-6 overflow-visible  relative"
+        className="w-[40%] bg-white shadow-lg p-6  relative h-screen overflow-auto"
       >
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 -left-4 text-gray-500 hover:text-black bg-gray-400 shadow w-8 h-8 rounded-full z-10 flex justify-center items-center"
+          className="absolute top-0 left-0 text-gray-500 hover:text-black w-8 h-8 z-10 flex justify-center items-center"
         >
-          <ChevronLeftIcon />
+          <CrossIcon />
         </button>
 
         <div className="">
@@ -160,7 +164,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
           <hr className="my-3 border-gray-300" />
           {/* Amenities */}
           <div className="flex flex-wrap gap-2 mb-4">
-            {amenitiesList?.map((amenity: any) => (
+            {amenitiesList?.map((amenity: AmenityProps) => (
               <span
                 key={amenity.id}
                 className="bg-gray-200 px-3 py-1 text-sm rounded-md"
@@ -178,7 +182,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
           <hr className="my-3 border-gray-300" />
           {/* Tags */}
           <div className="flex flex-wrap gap-2 mb-6">
-            {tagsList?.map((tag: any) => (
+            {tagsList?.map((tag: TagsProps) => (
               <span
                 key={tag.id}
                 className="bg-gray-200 text-sm px-3 py-1 rounded-md"
@@ -193,7 +197,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
             )}
           </div>
           {/* Buttons */}
-          <div className="flex justify-end gap-2 absolute bottom-5 right-5">
+          <div className="flex justify-end gap-2 bottom-5 right-5">
             <Button variant="outline">Edit</Button>
             <Button variant="outline">Delist</Button>
             <Button variant="primary">Publish Property</Button>
