@@ -825,3 +825,10 @@ span.flatpickr-weekday,
 .fc .fc-daygrid-event-harness-abs{
   top: 50px
 }
+._dateDayItem_ghqxn_62{
+  width: 55px!important;
+  height: 55px!important;
+}
+._monthYearLabel_ghqxn_50{
+  visibility: hidden!important;
+}

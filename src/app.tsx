@@ -30,6 +30,8 @@ import Verification from "./pages/Verification";
 import useUser from "./hooks/useUser";
 import Loader from "./components/Loader/Loader";
 import useUserStore from "./store/user.store";
+import TermsConditions from "./pages/TermsConditions";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 
 // PrivateRoute component to handle authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -120,6 +122,8 @@ export default function App() {
         </Route>
 
         {/* Other Routes */}
+        <Route path="/terms-condition" element={<TermsConditions />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/signup-verification/:token" element={<Verification />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

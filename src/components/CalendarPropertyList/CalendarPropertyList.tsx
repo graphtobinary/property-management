@@ -19,11 +19,11 @@ const CalendarPropertyList = () => {
         <thead>
           <tr>
             <th className="sticky left-0 bg-white p-2">Property</th>
-            {Object.keys(properties[0].prices).map((date) => (
+            {/* {Object.keys(properties[0].prices).map((date) => (
               <th key={date} className="px-4 py-2">
                 {date}
               </th>
-            ))}
+            ))} */}
           </tr>
         </thead>
         <tbody>
