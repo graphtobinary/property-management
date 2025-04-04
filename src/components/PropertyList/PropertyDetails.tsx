@@ -13,6 +13,7 @@ import {
   PhotosProps,
 } from "../../interfaces/listing";
 import useOutsideClick from "../../hooks/useOutsideClick";
+import ServicesList from "../ServicesList";
 const PropertyDetails: React.FC<PropertyDetailsProps> = ({
   property,
   onClose,
@@ -63,11 +64,9 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
   };
   const sidebarRef = useRef<HTMLDivElement | null>(null);
   useOutsideClick(sidebarRef, () => onClose());
+
   return (
-    <div
-      // onClick={onClose}
-      className="fixed inset-0 bg-black/[0.6] bg-opacity-50 flex justify-end z-999999"
-    >
+    <div className="fixed inset-0 bg-black/[0.6] bg-opacity-50 flex justify-end z-999999">
       <motion.div
         ref={sidebarRef}
         initial={{ x: "100%" }} // Start off-screen to the right
@@ -130,6 +129,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
             {imagesList?.length > 0 &&
               imagesList.map((image: PhotosProps) => (
                 <img
+                  key={image.id}
                   src={`${import.meta.env.VITE_CDN_URL}${image?.imagePath}`}
                   alt="Property"
                   className="w-full h-full object-cover rounded-md"
@@ -148,7 +148,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
               <span className="text-sm">{propertyDetails?.guestCapacity}</span>
               <span className="text-xs text-gray-500 font-thin"> Guests</span>
             </div>
-            {roomsList?.map((room, i) => (
+            {roomsList.slice(0, 4)?.map((room, i) => (
               <div
                 key={`${room.id}-${i}`}
                 className="bg-gray-100 p-3 rounded-md text-center flex flex-col"
@@ -163,8 +163,9 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
 
           <hr className="my-3 border-gray-300" />
           {/* Amenities */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            {amenitiesList?.map((amenity: AmenityProps) => (
+          <ServicesList listData={amenitiesList} />
+          {/* <div className="flex flex-wrap gap-2 mb-4">
+            {amenityVisibleItems?.map((amenity: AmenityProps) => (
               <span
                 key={amenity.id}
                 className="bg-gray-200 px-3 py-1 text-sm rounded-md"
@@ -174,15 +175,16 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
             ))}
             {amenitiesList.length > 4 && (
               <span className="text-xs text-gray-500 font-light py-1">
-                +{amenitiesList.slice(0, 4).length} more
+                {amenityMoreText}
               </span>
             )}
-          </div>
+          </div> */}
 
           <hr className="my-3 border-gray-300" />
           {/* Tags */}
-          <div className="flex flex-wrap gap-2 mb-6">
-            {tagsList?.map((tag: TagsProps) => (
+          <ServicesList isTags listData={tagsList} />
+          {/* <div className="flex flex-wrap gap-2 mb-6">
+            {tagsVisibleItems?.map((tag: TagsProps) => (
               <span
                 key={tag.id}
                 className="bg-gray-200 text-sm px-3 py-1 rounded-md"
@@ -192,10 +194,10 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
             ))}
             {tagsList.length > 4 && (
               <span className="text-xs text-gray-500 font-light py-1">
-                +{tagsList.slice(0, 4).length} more
+                {tagsMoreText}
               </span>
             )}
-          </div>
+          </div> */}
           {/* Buttons */}
           <div className="flex justify-end gap-2 bottom-5 right-5">
             <Button variant="outline">Edit</Button>

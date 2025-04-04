@@ -14,10 +14,27 @@ export interface RoomProps {
 
 export interface AmenityProps {
   id: string;
-  amenity: {
+  amenity?: {
     id: string;
     name: string;
   };
+}
+
+export interface ServicesListItemProps {
+  id: string;
+  amenity?: {
+    id: string;
+    name: string;
+  };
+  tag?: {
+    id: string;
+    name: string;
+  };
+}
+
+export interface ServicesListDataProps {
+  listData: ServicesListItemProps[];
+  isTags?: boolean;
 }
 
 export interface PhotosProps {
@@ -27,7 +44,7 @@ export interface PhotosProps {
 
 export interface TagsProps {
   id: string;
-  tag: {
+  tag?: {
     id: string;
     name: string;
   };

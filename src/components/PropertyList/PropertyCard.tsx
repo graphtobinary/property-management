@@ -11,16 +11,16 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 }) => {
   return (
     <div
-      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg flex-col sm:flex-row gap-5"
       onClick={onClick}
     >
-      <div className="flex items-center gap-8">
+      <div className="flex items-center gap-5 md:gap-8">
         <img
           src={imagePath || fallBackImg}
           alt="Property"
           className="w-12 h-12 rounded-md object-cover"
         />
-        <div className="w-32">
+        <div className="w-full md:w-56">
           <h3 className="text-md font-medium">{name}</h3>
           <p className="text-xs text-gray-500">{`${propertyAddress?.addressLine1}, ${propertyAddress?.addressLine2}, ${propertyAddress?.city} ${propertyAddress?.state} ${propertyAddress?.zipCode}`}</p>
         </div>
