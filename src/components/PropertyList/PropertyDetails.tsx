@@ -5,7 +5,14 @@ import { motion } from "framer-motion";
 import { ChevronLeftIcon } from "../../icons";
 import { useAuthStore } from "../../store/auth.store";
 import { getPropertyById } from "../../api/Listing.api";
-import { PropertyProps, PropertyDetailsProps } from "../../interfaces/listing";
+import {
+  PropertyProps,
+  PropertyDetailsProps,
+  RoomProps,
+  AmenityProps,
+  TagsProps,
+  PhotosProps,
+} from "../../interfaces/listing";
 
 const PropertyDetails: React.FC<PropertyDetailsProps> = ({
   property,
@@ -14,10 +21,11 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
   const { propertyAddress } = property;
 
   const { token } = useAuthStore();
-  const [propertyDetails, setPropertyDetails] = useState<PropertyProps[]>([]);
-  const [images, setImages] = useState<any>([]);
-  const [amenities, setAmenities] = useState<any>([]);
-  const [tags, setTags] = useState<any>([]);
+  const [propertyDetails, setPropertyDetails] = useState<PropertyProps>();
+  const [imagesList, setImagesList] = useState<PhotosProps[]>([]);
+  const [amenitiesList, setAmenitiesList] = useState<AmenityProps[]>([]);
+  const [tagsList, setTagsList] = useState<TagsProps[]>([]);
+  const [roomsList, setRoomsList] = useState<RoomProps[]>([]);
 
   useEffect(() => {
     fetchPropertyById();
@@ -32,19 +40,24 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
         includeTags: true,
         includePhotos: true,
       };
-      const { property: propertyData, photos, amenities, tags } = (await getPropertyById(
-        token,
-        formData
-      )) as {
-        property: PropertyProps[];
-        photos: [];
-        amenities: [];
-        tags: [];
+      const {
+        property: propertyData,
+        photos,
+        amenities,
+        tags,
+        rooms,
+      } = (await getPropertyById(token, formData)) as {
+        property: PropertyProps;
+        photos: PhotosProps[];
+        amenities: AmenityProps[];
+        tags: TagsProps[];
+        rooms: RoomProps[];
       };
       setPropertyDetails(propertyData);
-      setImages(photos);
-      setAmenities(amenities);
-      setTags(tags);
+      setImagesList(photos);
+      setAmenitiesList(amenities);
+      setTagsList(tags);
+      setRoomsList(rooms);
     } catch (error) {
       console.log(error);
     }
@@ -110,14 +123,14 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
 
           {/* Image Placeholder */}
           <div className="grid grid-cols-2 gap-2 mb-4">
-          {images?.length > 0 && 
-            images.map((image: any) => (
-              <img
-                src={`${import.meta.env.VITE_CDN_URL}${image?.imagePath}`}
-                alt="Property"
-                className="w-full h-full object-cover rounded-md"
-              />
-            ))}
+            {imagesList?.length > 0 &&
+              imagesList.map((image: PhotosProps) => (
+                <img
+                  src={`${import.meta.env.VITE_CDN_URL}${image?.imagePath}`}
+                  alt="Property"
+                  className="w-full h-full object-cover rounded-md"
+                />
+              ))}
           </div>
 
           {/* Description */}
@@ -131,45 +144,53 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
               <span className="text-sm">{propertyDetails?.guestCapacity}</span>
               <span className="text-xs text-gray-500 font-thin"> Guests</span>
             </div>
-            <div className="bg-gray-100 p-3 rounded-md text-center flex flex-col">
-              <span className="text-sm">3</span>
-              <span className="text-xs text-gray-500 font-thin">Bathrooms</span>
-            </div>
-            <div className="bg-gray-100 p-3 rounded-md text-center flex flex-col">
-              <span className="text-sm">2</span>
-              <span className="text-xs text-gray-500 font-thin">
-                King Size Bedrooms
-              </span>
-            </div>
-            <div className="bg-gray-100 p-3 rounded-md text-center flex flex-col">
-              <span className="text-sm">2</span>
-              <span className="text-xs text-gray-500 font-thin">
-                Queen Size Bedrooms
-              </span>
-            </div>
-            <div className="bg-gray-100 p-3 rounded-md text-center flex flex-col">
-              <span className="text-sm">2</span>
-              <span className="text-xs text-gray-500 font-thin">Kitchen</span>
-            </div>
+            {roomsList?.map((room, i) => (
+              <div
+                key={`${room.id}-${i}`}
+                className="bg-gray-100 p-3 rounded-md text-center flex flex-col"
+              >
+                <span className="text-sm">{room.quantity}</span>
+                <span className="text-xs text-gray-500 font-thin">
+                  {room.roomType.name}
+                </span>
+              </div>
+            ))}
           </div>
+
           <hr className="my-3 border-gray-300" />
           {/* Amenities */}
           <div className="flex flex-wrap gap-2 mb-4">
-            {amenities?.map((amenity: any) => (
-              <span key={amenity.id} className="bg-gray-200 px-3 py-1 text-sm rounded-md">
+            {amenitiesList?.map((amenity: any) => (
+              <span
+                key={amenity.id}
+                className="bg-gray-200 px-3 py-1 text-sm rounded-md"
+              >
                 {amenity.amenity.name}
               </span>
             ))}
+            {amenitiesList.length > 4 && (
+              <span className="text-xs text-gray-500 font-light py-1">
+                +{amenitiesList.slice(0, 4).length} more
+              </span>
+            )}
           </div>
 
           <hr className="my-3 border-gray-300" />
           {/* Tags */}
           <div className="flex flex-wrap gap-2 mb-6">
-            {tags?.map((tag: any) => (
-              <span key={tag.id} className="bg-gray-200 text-sm px-3 py-1 rounded-md">
+            {tagsList?.map((tag: any) => (
+              <span
+                key={tag.id}
+                className="bg-gray-200 text-sm px-3 py-1 rounded-md"
+              >
                 {tag.tag.name}
               </span>
             ))}
+            {tagsList.length > 4 && (
+              <span className="text-xs text-gray-500 font-light py-1">
+                +{tagsList.slice(0, 4).length} more
+              </span>
+            )}
           </div>
           {/* Buttons */}
           <div className="flex justify-end gap-2 absolute bottom-5 right-5">

@@ -5,20 +5,20 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { getPropertyList, getPropertyTempId } from "../../api/Listing.api";
 import { useAuthStore } from "../../store/auth.store";
-import { PropertyDetailsProps } from "./PropertyDetails";
 import { useNavigate } from "react-router";
 import { useListingStore } from "../../store/listing.store";
+import { PropertyListItemProps } from "../../interfaces/listing";
 const PropertyDetails = lazy(() => import("./PropertyDetails"));
 
 const PropertyList: React.FC = () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [selectedProperty, setSelectedProperty] = useState<any | null>(null);
+  const [selectedProperty, setSelectedProperty] =
+    useState<PropertyListItemProps | null>(null);
   const { listingFormData, setListingFormData } = useListingStore();
   const { token } = useAuthStore();
   const navigate = useNavigate();
-  const [propertyList, setPropertyList] = useState<PropertyDetailsProps[] | []>(
-    []
-  );
+  const [propertyList, setPropertyList] = useState<
+    PropertyListItemProps[] | []
+  >([]);
 
   useEffect(() => {
     fetchPropertyList();
@@ -49,7 +49,7 @@ const PropertyList: React.FC = () => {
         },
       };
       const { properties } = (await getPropertyList(token, formData)) as {
-        properties: PropertyDetailsProps[];
+        properties: PropertyListItemProps[];
       };
       setPropertyList(properties);
       // console.log(properties);
@@ -65,16 +65,15 @@ const PropertyList: React.FC = () => {
   return (
     <>
       <div className="min-h-screen flex flex-col gap-4">
-        {propertyList?.map((property: PropertyDetailsProps, index) => (
+        {propertyList?.map((property, index) => (
           <PropertyCard
             key={index}
-            name={property.name}
-            address={
-              property.propertyAddress.addressLine1 +", " +
-              property.propertyAddress.addressLine2
+            {...property}
+            imagePath={
+              property.imagePath
+                ? `${import.meta.env.VITE_CDN_URL}${property.imagePath}`
+                : ""
             }
-            pricePerNight={property.pricePerNight}
-            thumbnail={property.imagePath ? `${import.meta.env.VITE_CDN_URL}${property.imagePath}` : ""}
             onClick={() => setSelectedProperty(property)}
           />
         ))}

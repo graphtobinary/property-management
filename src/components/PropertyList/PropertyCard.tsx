@@ -1,18 +1,12 @@
+import { PropertyCardProps } from "../../interfaces/listing";
 import Button from "../ui/button/Button";
 const fallBackImg = "images/product/placeholder-thumb.jpg";
-export interface PropertyCardProps {
-  name: string;
-  address: string;
-  pricePerNight: string;
-  thumbnail?: string;
-  onClick: () => void;
-}
 
 const PropertyCard: React.FC<PropertyCardProps> = ({
   name,
-  address,
+  propertyAddress,
   pricePerNight,
-  thumbnail,
+  imagePath,
   onClick,
 }) => {
   return (
@@ -22,13 +16,13 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
     >
       <div className="flex items-center gap-8">
         <img
-          src={thumbnail || fallBackImg}
+          src={imagePath || fallBackImg}
           alt="Property"
           className="w-12 h-12 rounded-md object-cover"
         />
         <div className="w-32">
           <h3 className="text-md font-medium">{name}</h3>
-          <p className="text-xs text-gray-500">{address}</p>
+          <p className="text-xs text-gray-500">{`${propertyAddress?.addressLine1}, ${propertyAddress?.addressLine2}, ${propertyAddress?.city} ${propertyAddress?.state} ${propertyAddress?.zipCode}`}</p>
         </div>
         {/* Price section */}
         <div className="border-l border-l-gray-200 pl-4">
