@@ -1,20 +1,19 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
-import DatePicker from "react-horizontal-datepicker";
-// import "./Calender.css";
+import DatePicker from "../DatePicker";
 
 export default function CustomCalendar() {
-  const selectedDay = (val: string) => {
-    console.log(val);
+  const selectedDay = (day: Date) => {
+    console.log(day);
   };
   return (
-    <div className="w-full overflow-hidden mb-5">
-      <DatePicker
-        getSelectedDay={selectedDay}
-        labelFormat={"MMMM"}
-        color={"#F26724"}
-        enableDaysBefore={2}
-      />
+    <div className="w-full overflow-hidden mb-5 flex justify-end">
+      <div className="w-full overflow-hidden mb-5 relative">
+        <DatePicker
+          getSelectedDay={selectedDay}
+          labelFormat={"MMMM yyyy"}
+          color={"#F26724"}
+          endDate={30}
+        />
+      </div>
     </div>
   );
 }

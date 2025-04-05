@@ -174,3 +174,18 @@ export interface PropertyImageProps {
 export interface CreatePropertProps {
   tempId: string;
 }
+
+export interface DatePickerProps {
+  endDate?: number;
+  selectDate?: Date;
+  getSelectedDay?: (day: Date) => void;
+  color?: string;
+  labelFormat?: string;
+}
+
+export interface PriceEntryProps {
+  id: number;
+  name: string;
+  location: string;
+  prices: Record<string, string>; // key = yyyy-MM-dd, value = price
+}
