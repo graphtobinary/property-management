@@ -171,11 +171,11 @@ export const getPropertyPriceRules = (formData: {
 
 export const getPropertyUnavailability = (formData: {
   propertyId: number;
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
 }) => {
   return doPost(
-    API_CONSTANTS.GET_PROPERTY_PRICE_RULES,
+    API_CONSTANTS.GET_PROPERTY_UNAVAILABILITY,
     {},
     {
       headers: {},

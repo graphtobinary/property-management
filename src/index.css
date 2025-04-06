@@ -670,7 +670,7 @@ span.flatpickr-weekday,
   @apply rounded-lg py-2.5 pl-4 pr-3;
 }
 .event-fc-color .fc-event-title {
-  @apply p-0 text-sm font-normal text-gray-700;
+  @apply p-0 text-xs font-normal text-gray-700;
 }
 .fc-daygrid-event-dot {
   @apply w-1 h-5 ml-0 mr-3 border-none rounded-sm;
@@ -820,7 +820,7 @@ span.flatpickr-weekday,
 }
 .event-fc-color.fc-event-main.fc-bg-danger{
   justify-content: center;
-  padding: 5px;
+  padding: 2px;
 }
 .fc .fc-daygrid-event-harness-abs{
   top: 50px
@@ -831,4 +831,14 @@ span.flatpickr-weekday,
 }
 ._monthYearLabel_ghqxn_50{
   visibility: hidden!important;
+}
+
+.custom-calendar .fc.fc-media-screen{
+  min-height: auto;
+}
+.fc .fc-daygrid-day.fc-day-disabled {
+  background: white;
+}
+.event-fc-color.fc-bg-danger .fc-event-title{
+  @apply  text-red-700;
 }

@@ -158,6 +158,10 @@ export interface PricingCardProps {
 }
 
 export interface CalendarEvent extends EventInput {
+  id: string;
+  title: string;
+  start: string;
+  end?: string;
   extendedProps: {
     calendar: string;
     price: number;

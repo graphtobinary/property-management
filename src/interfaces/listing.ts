@@ -1,3 +1,5 @@
+import { EventInput } from "@fullcalendar/core/index.js";
+
 export interface ListTypeProps {
   id: string;
   name: string;
@@ -76,6 +78,16 @@ export interface PropertyPriceItemProps {
   endDate: string;
   startDate: string;
 }
+
+export interface PropertydailyUnavailabilityProps {
+  unavailableOnDate: string;
+  unavailabilityRule: {
+    id: number;
+    comment: string;
+  };
+  endDate: string;
+  startDate: string;
+}
 export interface PropertyCardProps extends PropertyListItemProps {
   onClick: () => void;
 }
@@ -124,4 +136,35 @@ export interface PropertyDetailsProps {
   // [x: string]: any;
   property: PropertyListItemProps;
   onClose: () => void;
+}
+
+export type DailyPrice = {
+  pricedAt: string;
+  price: number;
+  currency: {
+    id: number;
+    currencyCode: string;
+    currencyName: string;
+  };
+};
+
+export type DailyUnavailability = {
+  unavailableOnDate: string;
+  unavailabilityRule: {
+    id: number;
+    comment: string;
+  };
+};
+
+export interface CalendarEvent extends EventInput {
+  id: string;
+  title: string;
+  start: string;
+  end?: string;
+  extendedProps: {
+    calendar: string;
+    price?: number | string;
+    availability: string;
+    privateNote: string;
+  };
 }

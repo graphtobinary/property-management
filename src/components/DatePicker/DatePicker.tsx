@@ -133,7 +133,13 @@ export default function DatePicker({
           className={`flex items-center gap-2 pl-2 w-[300px] h-[55px] shrink-0 sticky left-0 z-10 bg-gray-50 border-t border-r border-gray-300 cursor-pointer ${
             isLastRow ? "border-b border-gray-300" : ""
           }`}
-          onClick={() => navigate(`/calendar/${property.id}`)}
+          onClick={() =>
+            navigate(`/calendar/${property.id}`, {
+              state: {
+                property,
+              },
+            })
+          }
         >
           <img
             src={`${import.meta.env.VITE_CDN_URL}${property?.imagePath}`}

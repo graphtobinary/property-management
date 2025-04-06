@@ -1,3 +1,8 @@
+import {
+  CalendarEvent,
+  DailyPrice,
+  DailyUnavailability,
+} from "../interfaces/listing";
 import { AUTH_COOKIES, getCookie } from "./cookie";
 
 export const getDaysFromMilliseconds = (time: number) => {
@@ -71,3 +76,90 @@ export function convertTo12HourFormat(time24h: string): string {
 
   return String(`${hours}:${String(minutes).padStart(2, "0")} ${modifier}`);
 }
+
+export const getMonthRange = (date: Date) => {
+  const startDate = new Date(date.getFullYear(), date.getMonth(), 1);
+  const endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+  return {
+    startDate: startDate.toISOString().split("T")[0],
+    endDate: endDate.toISOString().split("T")[0],
+  };
+};
+
+export const generateCalendarEvents = (
+  dailyPrices: DailyPrice[],
+  dailyUnavailabilities: DailyUnavailability[]
+): CalendarEvent[] => {
+  const events: CalendarEvent[] = [];
+
+  // Convert unavailability list to a Set for quick lookup
+  const blockedDatesSet = new Set(
+    dailyUnavailabilities?.map((d) => d.unavailableOnDate)
+  );
+  const commentMap = new Map(
+    dailyUnavailabilities?.map((d) => [
+      d.unavailableOnDate,
+      d.unavailabilityRule.comment,
+    ])
+  );
+
+  // Group consecutive unavailable dates
+  const sortedUnavailable = [...blockedDatesSet].sort();
+  const blockedRanges: { start: string; end: string; comment: string }[] = [];
+
+  let rangeStart = sortedUnavailable[0];
+  let prevDate = new Date(rangeStart);
+
+  for (let i = 1; i <= sortedUnavailable.length; i++) {
+    const current = sortedUnavailable[i];
+    const currentDate = new Date(current);
+    const nextExpected = new Date(prevDate);
+    nextExpected.setDate(prevDate.getDate() + 1);
+
+    if (!current || currentDate.getTime() !== nextExpected.getTime()) {
+      blockedRanges.push({
+        start: rangeStart,
+        end: new Date(prevDate).toISOString().split("T")[0],
+        comment: commentMap.get(rangeStart) || "",
+      });
+      rangeStart = current;
+    }
+    prevDate = currentDate;
+  }
+
+  // Add blocked events
+  blockedRanges.forEach((range, i) => {
+    events.push({
+      id: `blocked-${i}`,
+      title: "Blocked",
+      start: range.start,
+      end: range.end !== range.start ? range.end : undefined,
+      extendedProps: {
+        calendar: "Danger",
+        availability: "blocked",
+        privateNote: range.comment,
+        price: "Blocked",
+      },
+    });
+  });
+
+  // Add open dates with prices
+  dailyPrices.forEach((priceObj, i) => {
+    const date = priceObj.pricedAt;
+    if (!blockedDatesSet.has(date)) {
+      events.push({
+        id: `price-${i}`,
+        title: "Available",
+        start: date,
+        extendedProps: {
+          calendar: "Success",
+          availability: "open",
+          privateNote: "",
+          price: priceObj.price,
+        },
+      });
+    }
+  });
+
+  return events;
+};
