@@ -63,6 +63,25 @@ export default function DatePicker({
     setSelectedDate(day);
     getSelectedDay?.(day);
   };
+  const [visibleMonth, setVisibleMonth] = useState(
+    format(startDate, labelFormat || "MMMM yyyy")
+  );
+  useEffect(() => {
+    const container = document.getElementById("container");
+
+    const handleScroll = () => {
+      if (!container) return;
+
+      const scrollLeft = container.scrollLeft;
+      const dayWidth = 75; // width of each date cell
+      const index = Math.floor(scrollLeft / dayWidth);
+      const visibleDate = addDays(startDate, index);
+      setVisibleMonth(format(visibleDate, labelFormat || "MMMM yyyy"));
+    };
+
+    container?.addEventListener("scroll", handleScroll);
+    return () => container?.removeEventListener("scroll", handleScroll);
+  }, [startDate]);
 
   const renderPriceRowForProperty = (
     property: PriceEntryProps,
@@ -127,37 +146,40 @@ export default function DatePicker({
     }
 
     return (
-      <div
-        id="container"
-        className="flex overflow-x-scroll no-scrollbar -ml-[40px] scroll-smooth w-full"
-      >
-        <div className="flex flex-col">
-          <span className="sticky -top-1 left-0 text-lg font-normal text-gray-700 mb-2 h-[55px]">
-            Calendar | {format(startDate, labelFormat || "MMMM yyyy")}
+      <>
+        <div className="absolute top-0  z-10 left-0">
+          <span className="text-lg font-semibold text-gray-700">
+            Calendar | {visibleMonth}
           </span>
-
-          <div className="flex">
-            {/* Empty placeholder for alignment with property cells */}
-            <div className="w-[200px] h-[49px] shrink-0 "></div>
-            {dateList.map((day) => (
-              <div
-                id={getId(day)}
-                className="flex flex-col items-center cursor-pointer ml-[0px] w-[75px] h-[49px] shrink-0 border-r border-gray-300"
-                style={getStyles(day)}
-                key={day.toString()}
-                onClick={() => onDateClick(day)}
-              >
-                <div className="text-xs mt-1">{format(day, dayFormat)}</div>
-                <div className="text-lg">{format(day, dateFormat)}</div>
-              </div>
-            ))}
-          </div>
-
-          {priceData.map((property, index) =>
-            renderPriceRowForProperty(property, index)
-          )}
         </div>
-      </div>
+        <div
+          id="container"
+          className="flex overflow-x-scroll no-scrollbar -ml-[40px] scroll-smooth w-full mt-16"
+        >
+          <div className="flex flex-col">
+            <div className="flex">
+              {/* Empty placeholder for alignment with property cells */}
+              <div className="w-[200px] h-[49px] shrink-0 border-r border-gray-300"></div>
+              {dateList.map((day) => (
+                <div
+                  id={getId(day)}
+                  className={`flex flex-col items-center cursor-pointer ml-[0px] w-[75px] h-[49px] shrink-0 border-r border-gray-300`}
+                  style={getStyles(day)}
+                  key={day.toString()}
+                  onClick={() => onDateClick(day)}
+                >
+                  <div className="text-xs mt-1">{format(day, dayFormat)}</div>
+                  <div className="text-lg">{format(day, dateFormat)}</div>
+                </div>
+              ))}
+            </div>
+
+            {priceData.map((property, index) =>
+              renderPriceRowForProperty(property, index)
+            )}
+          </div>
+        </div>
+      </>
     );
   };
 
