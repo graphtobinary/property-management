@@ -31,7 +31,7 @@ const useUser = () => {
   const getUserData = async () => {
     try {
       setToken(token);
-      const { aclUser } = (await getUser(token)) as AclUserProps;
+      const { aclUser } = (await getUser()) as AclUserProps;
       setUser(aclUser);
       setUserData(aclUser);
     } catch (e) {

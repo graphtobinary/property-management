@@ -153,10 +153,7 @@ const CalendarDetails: React.FC = () => {
   const navigate = useNavigate();
   return (
     <>
-      <PageMeta
-        title="Manzil"
-        description="Property Management Dashboard"
-      />
+      <PageMeta title="Manzil" description="Property Management Dashboard" />
       {/* <PageBreadcrumb pageTitle="Calendar" /> */}
       <div className="flex justify-between flex-col gap-1 mb-6">
         <div className="flex gap-3 items-center">
@@ -193,6 +190,8 @@ const CalendarDetails: React.FC = () => {
             select={handleDateSelect}
             eventClick={handleEventClick}
             eventContent={renderEventContent}
+            // showNonCurrentDates={false}
+            fixedWeekCount={false}
           />
         </div>
         <Modal

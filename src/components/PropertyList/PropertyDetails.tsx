@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import Button from "../ui/button/Button";
 import { motion } from "framer-motion";
 import { CrossIcon } from "../../icons";
-import { useAuthStore } from "../../store/auth.store";
 import { getPropertyById } from "../../api/Listing.api";
 import {
   PropertyProps,
@@ -19,8 +18,6 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
   onClose,
 }) => {
   const { propertyAddress } = property;
-
-  const { token } = useAuthStore();
   const [propertyDetails, setPropertyDetails] = useState<PropertyProps>();
   const [imagesList, setImagesList] = useState<PhotosProps[]>([]);
   const [amenitiesList, setAmenitiesList] = useState<AmenityProps[]>([]);
@@ -46,7 +43,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
         amenities,
         tags,
         rooms,
-      } = (await getPropertyById(token, formData)) as {
+      } = (await getPropertyById(formData)) as {
         property: PropertyProps;
         photos: PhotosProps[];
         amenities: AmenityProps[];

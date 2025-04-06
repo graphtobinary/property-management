@@ -1,5 +1,4 @@
 import { ListingFormDataProps } from "../interfaces";
-import { getHeaders } from "../utils/utils";
 import API_CONSTANTS from "./constants";
 import { doPost } from "./index";
 
@@ -93,80 +92,93 @@ export const getTags = () => {
   );
 };
 
-export const getPropertyTempId = (accessToken: string) => {
+export const getPropertyTempId = () => {
   return doPost(
     API_CONSTANTS.GET_PROPERTY_TEMPID,
     {},
     {
-      headers: getHeaders(accessToken),
       body: JSON.stringify({}),
     }
   );
 };
 
-export const createProperty = (
-  accessToken: string,
-  formData: ListingFormDataProps
-) => {
+export const createProperty = (formData: ListingFormDataProps) => {
   return doPost(
     API_CONSTANTS.CREATE_PROPERTY,
     {},
     {
-      headers: getHeaders(accessToken),
       body: JSON.stringify(formData),
     }
   );
 };
 
-export const uploadImages = (
-  accessToken: string,
-  formData: FormData,
-  tempId: string
-) => {
+export const uploadImages = (formData: FormData, tempId: string) => {
   return doPost(
     API_CONSTANTS.UPLOAD_IMAGE,
     { tempId },
     {
-      headers: getHeaders(accessToken),
       body: JSON.stringify(formData),
     }
   );
 };
 
-export const getPropertyList = (
-  accessToken: string,
-  formData: {
-    pagination: {
-      page: number;
-      limit: number;
-    };
-  }
-) => {
+export const getPropertyList = (formData: {
+  pagination: {
+    page: number;
+    limit: number;
+  };
+}) => {
   return doPost(
     API_CONSTANTS.GET_PROPERTY_LIST,
     {},
     {
-      headers: getHeaders(accessToken),
       body: JSON.stringify(formData),
     }
   );
 };
 
-export const getPropertyById = (
-  accessToken: string,
-  formData: {
-    propertyId: number;
-    includeRooms: boolean;
-    includeAmenities: boolean;
-    includeTags: boolean;
-    includePhotos: boolean;
-  }
-) => {
+export const getPropertyById = (formData: {
+  propertyId: number;
+  includeRooms: boolean;
+  includeAmenities: boolean;
+  includeTags: boolean;
+  includePhotos: boolean;
+}) => {
   return doPost(
     API_CONSTANTS.GET_PROPERTY_BY_ID,
     {},
     {
-      headers: getHeaders(accessToken),
+      headers: {},
+      body: JSON.stringify(formData),
+    }
+  );
+};
+
+export const getPropertyPriceRules = (formData: {
+  propertyId: number;
+  startDate: string;
+  endDate: string;
+}) => {
+  return doPost(
+    API_CONSTANTS.GET_PROPERTY_PRICE_RULES,
+    {},
+    {
+      headers: {},
+      body: JSON.stringify(formData),
+    }
+  );
+};
+
+export const getPropertyUnavailability = (formData: {
+  propertyId: number;
+  startDate: Date;
+  endDate: Date;
+}) => {
+  return doPost(
+    API_CONSTANTS.GET_PROPERTY_PRICE_RULES,
+    {},
+    {
+      headers: {},
       body: JSON.stringify(formData),
     }
   );

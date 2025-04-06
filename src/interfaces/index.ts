@@ -187,5 +187,6 @@ export interface PriceEntryProps {
   id: number;
   name: string;
   location: string;
+  imagePath: string;
   prices: Record<string, string>; // key = yyyy-MM-dd, value = price
 }

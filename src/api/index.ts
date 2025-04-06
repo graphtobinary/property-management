@@ -1,5 +1,5 @@
 import ApiException from "./Api.exception";
-import { isBrowser, replaceParamInString } from "../utils/utils";
+import { getHeaders, isBrowser, replaceParamInString } from "../utils/utils";
 
 export const GetCookie = (name: string): string | undefined => {
   if (typeof document === "undefined") {
@@ -42,6 +42,7 @@ const doCall = async (
 
   const headers: HeadersInit = {
     "content-type": "application/json",
+    ...getHeaders(),
     ...option.headers,
   };
 

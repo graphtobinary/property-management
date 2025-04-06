@@ -34,12 +34,11 @@ export const loginUser = (formData: { email: string; password: string }) => {
   );
 };
 
-export const getUser = (accessToken: string) => {
+export const getUser = () => {
   return doPost(
     API_CONSTANTS.GET_USER,
     {},
     {
-      headers: getHeaders(accessToken),
       body: JSON.stringify({}),
     }
   );

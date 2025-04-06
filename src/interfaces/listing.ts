@@ -50,12 +50,31 @@ export interface TagsProps {
   };
 }
 
+export interface CurrencyProps {
+  currencyCode: string;
+  currencyName: string;
+  id: number;
+}
+
 export interface PropertyListItemProps {
   id: number;
   name: string;
   propertyAddress: AddressProps;
   pricePerNight: string;
   imagePath: string;
+}
+
+export interface DailyPriceItemProps {
+  price: number;
+  currency: CurrencyProps;
+  pricedAt: string;
+}
+
+export interface PropertyPriceItemProps {
+  dailyPrices: DailyPriceItemProps[];
+  propertyId: number;
+  endDate: string;
+  startDate: string;
 }
 export interface PropertyCardProps extends PropertyListItemProps {
   onClick: () => void;

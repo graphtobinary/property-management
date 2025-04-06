@@ -4,7 +4,6 @@ import PropertyCard from "./PropertyCard";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import { getPropertyList, getPropertyTempId } from "../../api/Listing.api";
-import { useAuthStore } from "../../store/auth.store";
 import { useNavigate } from "react-router";
 import { useListingStore } from "../../store/listing.store";
 import { PropertyListItemProps } from "../../interfaces/listing";
@@ -14,7 +13,6 @@ const PropertyList: React.FC = () => {
   const [selectedProperty, setSelectedProperty] =
     useState<PropertyListItemProps | null>(null);
   const { listingFormData, setListingFormData } = useListingStore();
-  const { token } = useAuthStore();
   const navigate = useNavigate();
   const [propertyList, setPropertyList] = useState<
     PropertyListItemProps[] | []
@@ -26,7 +24,7 @@ const PropertyList: React.FC = () => {
 
   const handlePropertyTempId = async () => {
     try {
-      const { propertyId } = (await getPropertyTempId(token)) as {
+      const { propertyId } = (await getPropertyTempId()) as {
         propertyId: string;
       };
 
@@ -48,7 +46,7 @@ const PropertyList: React.FC = () => {
           limit: 10,
         },
       };
-      const { properties } = (await getPropertyList(token, formData)) as {
+      const { properties } = (await getPropertyList(formData)) as {
         properties: PropertyListItemProps[];
       };
       setPropertyList(properties);

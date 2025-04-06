@@ -8,7 +8,6 @@ import { useListingStore } from "../../store/listing.store";
 import { Modal } from "../../components/ui/modal";
 import { CheckLineIcon } from "../../icons";
 import { useModal } from "../../hooks/useModal";
-import { useAuthStore } from "../../store/auth.store";
 
 const StepTwelve: React.FC = () => {
   const [selected, setSelected] = useState<string[]>([]);
@@ -60,12 +59,10 @@ const StepTwelve: React.FC = () => {
     });
   };
 
-  const { token } = useAuthStore();
-
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      await createProperty(token, listingFormData);
+      await createProperty(listingFormData);
       openModal();
     } catch (error) {
       console.log(error);
@@ -76,10 +73,7 @@ const StepTwelve: React.FC = () => {
 
   return (
     <>
-      <PageMeta
-        title="Manzil"
-        description="Property Management Dashboard"
-      />
+      <PageMeta title="Manzil" description="Property Management Dashboard" />
       <>
         <div className="bg-white p-0 md:p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-0 mb-5">
           <div className="flex justify-between">

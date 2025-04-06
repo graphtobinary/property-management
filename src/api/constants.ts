@@ -21,6 +21,10 @@ const API_CONSTANTS = {
   GET_PROPERTY_LIST:
     "/property.service.v1.PropertyService/GetPropertiesCollection",
   GET_PROPERTY_BY_ID: "/property.service.v1.PropertyService/GetProperty",
+  GET_PROPERTY_PRICE_RULES:
+    "/property.service.v1.PropertyService/GetPropertyPriceRules",
+  GET_PROPERTY_UNAVAILABILITY:
+    "/property.service.v1.PropertyService/GetPropertyUnavailability",
 };
 
 export default API_CONSTANTS;
