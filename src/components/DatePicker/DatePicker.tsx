@@ -25,6 +25,16 @@ const priceData: PriceEntryProps[] = [
       // more dates...
     },
   },
+  {
+    id: 2,
+    name: "Hathi Mahal Resort",
+    location: "Panji",
+    prices: {
+      "2025-04-05": "₹3,999",
+      "2025-04-06": "₹7,199",
+      // more dates...
+    },
+  },
 ];
 
 export default function DatePicker({
@@ -54,7 +64,10 @@ export default function DatePicker({
     getSelectedDay?.(day);
   };
 
-  const renderPriceRowForProperty = (property: PriceEntryProps) => {
+  const renderPriceRowForProperty = (
+    property: PriceEntryProps,
+    index: number
+  ) => {
     const dateList: Date[] = [];
     const totalDays = endDate || 30;
 
@@ -62,20 +75,45 @@ export default function DatePicker({
       dateList.push(addDays(startDate, i));
     }
 
-    const prices = dateList.map((day) => {
-      const key = format(day, "yyyy-MM-dd");
-      const price = property.prices[key] || "-";
-      return (
-        <div
-          key={`${property.name}-${key}`}
-          className="flex items-center justify-center ml-[0px] w-[75px] h-[55px] shrink-0 border-r border-t border-gray-300 text-sm text-gray-700"
-        >
-          {price}
-        </div>
-      );
-    });
+    const isLastRow = index + 1 === priceData.length;
 
-    return <div className="flex">{prices}</div>;
+    return (
+      <div className="flex">
+        {/* Property image + name + location */}
+        <div
+          className={`flex items-center gap-2 pl-2 w-[200px] h-[55px] shrink-0 border-t border-r border-gray-300 ${
+            isLastRow ? "border-b border-gray-300" : ""
+          }`}
+          onClick={() => navigate(`/calendar/${property.id}`)}
+        >
+          <img
+            src="https://manzil-dev.s3.ap-south-1.amazonaws.com/properties/cf_drtzcDeR2k0eVsC/1743743242371-nI1ZF6.166b1c21-7b9f-43f8-b5af-ca11b03b98e7"
+            alt="Property"
+            className="w-10 h-10 rounded-md object-cover"
+          />
+          <div className="flex flex-col justify-center">
+            <p className="text-sm font-medium text-gray-800">{property.name}</p>
+            <p className="text-xs text-gray-500">{property.location}</p>
+          </div>
+        </div>
+
+        {/* Prices */}
+        {dateList.map((day) => {
+          const key = format(day, "yyyy-MM-dd");
+          const price = property.prices[key] || "-";
+          return (
+            <div
+              key={`${property.name}-${key}`}
+              className={`flex items-center justify-center ml-[0px] w-[75px] h-[55px] shrink-0 border-r border-t border-gray-300 text-sm text-gray-700 ${
+                isLastRow ? "border-b border-gray-300" : ""
+              }`}
+            >
+              {price}
+            </div>
+          );
+        })}
+      </div>
+    );
   };
 
   const renderDays = () => {
@@ -85,35 +123,39 @@ export default function DatePicker({
     const totalDays = endDate || 30;
 
     for (let i = 0; i < totalDays; i++) {
-      const currentDay = addDays(startDate, i);
-      dateList.push(currentDay);
+      dateList.push(addDays(startDate, i));
     }
-
-    const dateCells = dateList.map((day) => (
-      <div
-        id={getId(day)}
-        className="flex flex-col items-center cursor-pointer ml-[0px] w-[75px] h-[49px] shrink-0 border-r border-gray-300"
-        style={getStyles(day)}
-        key={day.toString()}
-        onClick={() => onDateClick(day)}
-      >
-        <div className="text-xs mt-1">{format(day, dayFormat)}</div>
-        <div className="text-lg">{format(day, dateFormat)}</div>
-      </div>
-    ));
 
     return (
       <div
         id="container"
-        className="flex overflow-x-scroll no-scrollbar -ml-[40px] scroll-smooth w-[90%]"
+        className="flex overflow-x-scroll no-scrollbar -ml-[40px] scroll-smooth w-full"
       >
         <div className="flex flex-col">
-          <span className="sticky -top-1 left-0 self-start text-lg font-normal text-gray-700  mb-2 h-[55px]">
+          <span className="sticky -top-1 left-0 text-lg font-normal text-gray-700 mb-2 h-[55px]">
             Calendar | {format(startDate, labelFormat || "MMMM yyyy")}
           </span>
 
-          <div className="flex">{dateCells}</div>
-          {priceData.map((property) => renderPriceRowForProperty(property))}
+          <div className="flex">
+            {/* Empty placeholder for alignment with property cells */}
+            <div className="w-[200px] h-[49px] shrink-0 "></div>
+            {dateList.map((day) => (
+              <div
+                id={getId(day)}
+                className="flex flex-col items-center cursor-pointer ml-[0px] w-[75px] h-[49px] shrink-0 border-r border-gray-300"
+                style={getStyles(day)}
+                key={day.toString()}
+                onClick={() => onDateClick(day)}
+              >
+                <div className="text-xs mt-1">{format(day, dayFormat)}</div>
+                <div className="text-lg">{format(day, dateFormat)}</div>
+              </div>
+            ))}
+          </div>
+
+          {priceData.map((property, index) =>
+            renderPriceRowForProperty(property, index)
+          )}
         </div>
       </div>
     );
@@ -155,24 +197,6 @@ export default function DatePicker({
   const navigate = useNavigate();
   return (
     <div className="flex w-full bg-inherit ml-6 justify-center">
-      <div className="flex flex-col w-80 ">
-        <div className="flex items-center gap-2 border-b border-gray-300 h-[113px]"></div>
-        <div className="flex flex-col w-full gap-4">
-          {priceData.map((property, i) => (
-            <div
-              key={i}
-              className="flex items-center gap-2 border-b border-gray-300 h-[55px]"
-              onClick={() => navigate(`/calendar/${property.id}`)}
-            >
-              <div className="w-8 h-8 bg-gray-500"></div>
-              <div className="cursor-pointer">
-                <p>{property.name}</p>
-                <p className="text-xs text-gray-500">{property.location}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
       <div className="flex items-end z-[2] bg-inherit absolute right-12 top-1.5">
         <button
           className="rounded-full w-10 h-10 text-white text-xl font-bold flex items-center justify-center mb-1"
