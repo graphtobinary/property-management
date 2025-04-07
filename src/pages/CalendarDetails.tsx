@@ -175,14 +175,14 @@ const CalendarDetails: React.FC = () => {
 
   // const renderDayCells = (e) => {
   //   console.log(e, "render cells");
-  //   return <h1>Hello</h1>;
+  //   return <div className="flex justify-end items-end">Hello</div>;
   // };
 
   return (
     <>
       <PageMeta title="Manzil" description="Property Management Dashboard" />
       {/* <PageBreadcrumb pageTitle="Calendar" /> */}
-      <div className="flex justify-between flex-row gap-1 mb-6">
+      <div className="flex justify-between flex-col sm:flex-row gap-1 mb-6">
         <div className="flex gap-3 items-center">
           <div
             onClick={() => navigate(-1)}
@@ -402,6 +402,7 @@ const renderEventContent = (eventInfo: {
     start: number;
     extendedProps: {
       price: number;
+      availability: string;
     };
   };
 }) => {
@@ -413,9 +414,15 @@ const renderEventContent = (eventInfo: {
     <div
       className={`event-fc-color flex fc-event-main ${colorClass} p-1 rounded-sm`}
     >
-      <div className="fc-event-title">
-        {eventInfo.event.extendedProps.price}
-      </div>
+      {colorClass ? (
+        <div className="fc-event-title">
+          {eventInfo.event.extendedProps.availability}
+        </div>
+      ) : (
+        <div className="fc-event-title">
+          {eventInfo.event.extendedProps.price}
+        </div>
+      )}
     </div>
   );
 };

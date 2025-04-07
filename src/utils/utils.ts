@@ -129,16 +129,18 @@ export const generateCalendarEvents = (
 
   // Add blocked events
   blockedRanges.forEach((range, i) => {
+    const endDate = new Date(range.end);
+    endDate.setDate(endDate.getDate() + 1); // Add one extra day
+
     events.push({
       id: `blocked-${i}`,
       title: "Blocked",
       start: range.start,
-      end: range.end !== range.start ? range.end : undefined,
+      end: endDate.toISOString().split("T")[0], // use updated end date
       extendedProps: {
         calendar: "Danger",
         availability: "blocked",
         privateNote: range.comment,
-        price: "Blocked",
       },
     });
   });
