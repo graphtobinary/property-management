@@ -1,3 +1,4 @@
+import { getCurrencySymbol } from "../constants";
 import {
   CalendarEvent,
   DailyPrice,
@@ -78,11 +79,14 @@ export function convertTo12HourFormat(time24h: string): string {
 }
 
 export const getMonthRange = (date: Date) => {
-  const startDate = new Date(date.getFullYear(), date.getMonth(), 1);
-  const endDate = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+  const year = date.getFullYear();
+  const month = date.getMonth(); // 0-indexed
+
+  const startDate = new Date(year, month, 1);
+  const endDate = new Date(year, month + 1, 0); // last day of current month
   return {
-    startDate: startDate.toISOString().split("T")[0],
-    endDate: endDate.toISOString().split("T")[0],
+    startDate: startDate.toLocaleDateString("en-CA"),
+    endDate: endDate.toLocaleDateString("en-CA"),
   };
 };
 
@@ -157,11 +161,22 @@ export const generateCalendarEvents = (
           calendar: "Success",
           availability: "open",
           privateNote: "",
-          price: priceObj.price,
+          price: Math.ceil(priceObj.price),
+          currency: getCurrencySymbol[priceObj?.currency?.currencyCode],
         },
       });
     }
   });
 
   return events;
+};
+
+export const isPastDate = (inputDate: string | Date): boolean => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0); // Strip time from today
+
+  const dateToCheck = new Date(inputDate);
+  dateToCheck.setHours(0, 0, 0, 0); // Strip time from input
+
+  return dateToCheck < today;
 };

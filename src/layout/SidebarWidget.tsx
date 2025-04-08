@@ -1,7 +1,7 @@
 import { useRef, useState } from "react";
 import useOutsideClick from "../hooks/useOutsideClick";
 import { AUTH_COOKIES, removeCookie } from "../utils/cookie";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import useUserStore from "../store/user.store";
 
 export default function SidebarWidget() {
@@ -31,12 +31,12 @@ export default function SidebarWidget() {
         <p className="mb-4 text-gray-500 text-theme-sm dark:text-gray-400">
           Get access to all the features to manage your properties effortlessly
         </p>
-        <a
-          href="/purchase-plan"
+        <Link
+          to="/purchase-plan"
           className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-primary text-theme-sm hover:bg-primary"
         >
           Purchase Plan
-        </a>
+        </Link>
       </div>
       <div className="relative" ref={userMenuRef}>
         {/* User Profile Button */}
@@ -49,7 +49,7 @@ export default function SidebarWidget() {
           </span>
           <div>
             <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-            {user?.tenant?.firstName} {user?.tenant?.lastName}
+              {user?.tenant?.firstName} {user?.tenant?.lastName}
             </span>
             <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
               {user?.email}

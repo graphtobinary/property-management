@@ -134,7 +134,7 @@ export interface PropertyProps {
 }
 export interface PropertyDetailsProps {
   // [x: string]: any;
-  property: PropertyListItemProps;
+  property?: PropertyListItemProps | null;
   onClose: () => void;
 }
 
@@ -164,7 +164,25 @@ export interface CalendarEvent extends EventInput {
   extendedProps: {
     calendar: string;
     price?: number | string;
+    currency?: string;
     availability: string;
     privateNote: string;
   };
+}
+
+export interface EventUpdateFormProps {
+  selectedEvent: CalendarEvent | null;
+  eventStartDate: string;
+  setEventStartDate: (val: string) => void;
+  eventEndDate: string;
+  setEventEndDate: (val: string) => void;
+  eventCurrency: string;
+  eventPrice: string;
+  setEventPrice: (val: string) => void;
+  eventAvailability: string;
+  eventPrivateNote: string;
+  setEventPrivateNote: (val: string) => void;
+  handleRadioChange: (val: string) => void;
+  handleAddOrUpdateEvent: () => void;
+  closeModal: () => void;
 }

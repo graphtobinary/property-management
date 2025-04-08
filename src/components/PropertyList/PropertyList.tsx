@@ -2,11 +2,11 @@ import { Plus } from "../../icons";
 import Button from "../ui/button/Button";
 import PropertyCard from "./PropertyCard";
 import { lazy, Suspense, useEffect, useState } from "react";
-import { AnimatePresence } from "framer-motion";
 import { getPropertyList, getPropertyTempId } from "../../api/Listing.api";
 import { useNavigate } from "react-router";
 import { useListingStore } from "../../store/listing.store";
 import { PropertyListItemProps } from "../../interfaces/listing";
+import AnimatedSidebar from "../AnimatedSidebar";
 const PropertyDetails = lazy(() => import("./PropertyDetails"));
 
 const PropertyList: React.FC = () => {
@@ -75,16 +75,14 @@ const PropertyList: React.FC = () => {
             onClick={() => setSelectedProperty(property)}
           />
         ))}
-        <AnimatePresence>
-          {selectedProperty && (
-            <Suspense fallback={<h2>Loading...</h2>}>
-              <PropertyDetails
-                property={selectedProperty}
-                onClose={handleClose}
-              />
-            </Suspense>
-          )}
-        </AnimatePresence>
+        <AnimatedSidebar isOpen={!!selectedProperty} onClose={handleClose}>
+          <Suspense fallback={<h2>Loading...</h2>}>
+            <PropertyDetails
+              property={selectedProperty}
+              onClose={handleClose}
+            />
+          </Suspense>
+        </AnimatedSidebar>
 
         <div className="flex justify-center mt-6">
           <Button variant="primary" onClick={handlePropertyTempId}>
