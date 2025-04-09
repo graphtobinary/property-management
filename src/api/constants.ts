@@ -25,6 +25,8 @@ const API_CONSTANTS = {
     "/property.service.v1.PropertyService/GetPropertyPriceRules",
   GET_PROPERTY_UNAVAILABILITY:
     "/property.service.v1.PropertyService/GetPropertyUnavailabilityRules",
+  CREATE_PROPERTY_RULES:
+    "/property.service.v1.PropertyService/CreatePropertyRules",
 };
 
 export default API_CONSTANTS;

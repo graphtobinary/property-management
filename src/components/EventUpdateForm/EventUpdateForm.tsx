@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import { EventUpdateFormProps } from "../../interfaces/listing";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
@@ -7,7 +7,6 @@ import TextArea from "../form/input/TextArea";
 import Button from "../ui/button/Button";
 
 const EventUpdateForm: FC<EventUpdateFormProps> = ({
-  selectedEvent,
   eventStartDate,
   setEventStartDate,
   eventEndDate,
@@ -15,18 +14,43 @@ const EventUpdateForm: FC<EventUpdateFormProps> = ({
   eventCurrency,
   eventPrice,
   setEventPrice,
-  eventAvailability,
+  eventAvailability = "open",
   eventPrivateNote,
   setEventPrivateNote,
   handleRadioChange,
   handleAddOrUpdateEvent,
   closeModal,
 }) => {
+  const [errors, setErrors] = useState({
+    eventStartDate: "",
+    eventEndDate: "",
+    eventPrice: "",
+    eventAvailability: "",
+    eventPrivateNote: "",
+  });
+  const validateAndSubmit = () => {
+    const newErrors = {
+      eventStartDate: !eventStartDate ? "Start date is required." : "",
+      eventEndDate: !eventEndDate ? "End date is required." : "",
+      eventPrice: !eventPrice ? "Price is required." : "",
+      eventAvailability: !eventAvailability ? "Availability is required." : "",
+      eventPrivateNote: !eventPrivateNote ? "Private note is required." : "",
+    };
+
+    setErrors(newErrors);
+
+    // If there's any error, don't submit
+    const hasError = Object.values(newErrors).some((error) => error !== "");
+    if (hasError) return;
+
+    handleAddOrUpdateEvent(); // Call the original handler if all is valid
+  };
+
   return (
     <div className="flex flex-col px-2 overflow-y-auto custom-scrollbar">
       <div>
         <h5 className="mb-2 font-semibold text-gray-800 modal-title text-theme-xl dark:text-white/90 lg:text-2xl">
-          {selectedEvent ? "Edit Event" : "Add Event"}
+          Edit Event
         </h5>
       </div>
       <div>
@@ -39,6 +63,8 @@ const EventUpdateForm: FC<EventUpdateFormProps> = ({
                 type="date"
                 value={eventStartDate}
                 onChange={(e) => setEventStartDate(e.target.value)}
+                error={Boolean(errors?.eventStartDate ?? false)}
+                hint={errors.eventStartDate}
               />
             </div>
           </div>
@@ -51,6 +77,8 @@ const EventUpdateForm: FC<EventUpdateFormProps> = ({
                 type="date"
                 value={eventEndDate}
                 onChange={(e) => setEventEndDate(e.target.value)}
+                error={Boolean(errors?.eventEndDate ?? false)}
+                hint={errors.eventEndDate}
               />
             </div>
           </div>
@@ -65,9 +93,11 @@ const EventUpdateForm: FC<EventUpdateFormProps> = ({
                 type="number"
                 value={eventPrice}
                 onChange={(e) => setEventPrice(e.target.value)}
-                className="pl-[62px]"
+                className="pl-[50px]"
+                error={Boolean(errors?.eventPrice ?? false)}
+                hint={errors.eventPrice}
               />
-              <span className="absolute left-0 top-1/2 -translate-y-1/2 border-r border-gray-200 px-3.5 py-3 text-gray-500 dark:border-gray-800 dark:text-gray-400">
+              <span className="absolute left-0 top-0 border-r border-gray-200 px-3.5 py-3 text-gray-500 dark:border-gray-800 dark:text-gray-400">
                 {eventCurrency}
               </span>
             </div>
@@ -118,6 +148,8 @@ const EventUpdateForm: FC<EventUpdateFormProps> = ({
               onChange={(value) => setEventPrivateNote(value)}
               rows={4}
               placeholder="Lorem ipsum dolor sit amet, "
+              error={Boolean(errors?.eventPrivateNote ?? false)}
+              hint={errors.eventPrivateNote}
             />
           </div>
         </div>
@@ -126,8 +158,8 @@ const EventUpdateForm: FC<EventUpdateFormProps> = ({
         <Button onClick={closeModal} variant="outline">
           Close
         </Button>
-        <Button onClick={handleAddOrUpdateEvent} variant="primary">
-          {selectedEvent ? "Update Changes" : "Add Event"}
+        <Button onClick={validateAndSubmit} variant="primary">
+          Update Changes
         </Button>
       </div>
     </div>

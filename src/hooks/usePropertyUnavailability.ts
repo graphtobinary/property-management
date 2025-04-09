@@ -1,13 +1,7 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { PropertydailyUnavailabilityProps } from "../interfaces/listing";
 import { getPropertyUnavailability } from "../api/Listing.api";
 import { format } from "date-fns";
-
-export interface PriceData {
-  propertyId: string;
-  date: string;
-  price: number;
-}
 
 export const usePropertyUnavailability = (
   startDate: string,
@@ -19,28 +13,31 @@ export const usePropertyUnavailability = (
   >([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchUnavilablePrices = useCallback(async () => {
+    setLoading(true);
+    try {
+      const formattedStart = format(startDate, "yyyy-MM-dd");
+      const formattedEnd = format(endDate, "yyyy-MM-dd");
+      const { dailyUnavailabilities } = (await getPropertyUnavailability({
+        propertyId: id,
+        startDate: formattedStart,
+        endDate: formattedEnd,
+      })) as { dailyUnavailabilities: PropertydailyUnavailabilityProps[] };
+
+      setUnavailabilities(dailyUnavailabilities);
+    } catch (error) {
+      console.error("Error fetching prices:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [startDate, endDate, id]);
   useEffect(() => {
-    const fetchPrices = async () => {
-      setLoading(true);
-      try {
-        const formattedStart = format(startDate, "yyyy-MM-dd");
-        const formattedEnd = format(endDate, "yyyy-MM-dd");
-        const { dailyUnavailabilities } = (await getPropertyUnavailability({
-          propertyId: id,
-          startDate: formattedStart,
-          endDate: formattedEnd,
-        })) as { dailyUnavailabilities: PropertydailyUnavailabilityProps[] };
-
-        setUnavailabilities(dailyUnavailabilities);
-      } catch (error) {
-        console.error("Error fetching prices:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPrices();
+    fetchUnavilablePrices();
   }, [startDate, endDate]);
 
-  return { unavailabilities, loading };
+  return {
+    unavailabilities,
+    unavailablityLoading: loading,
+    refetchUnavailablity: fetchUnavilablePrices,
+  };
 };

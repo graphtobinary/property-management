@@ -8,7 +8,6 @@ import Radio from "../form/input/Radio";
 import { getUser, patchUser } from "../../api/User.api";
 import { AclUserProps, UpdateUserDataProps } from "../../interfaces";
 import useCountries from "../../hooks/useCountries";
-import { AUTH_COOKIES, getCookie } from "../../utils/cookie";
 import useUserStore from "../../store/user.store";
 import { IApiException } from "../../api/Api.exception";
 
@@ -74,8 +73,7 @@ export default function UpdateUserForm() {
   const { setUser } = useUserStore();
   const getUserData = async () => {
     try {
-      const token = getCookie(AUTH_COOKIES.ACCESS_TOKEN) || "";
-      const { aclUser } = (await getUser(token)) as AclUserProps;
+      const { aclUser } = (await getUser()) as AclUserProps;
       setUser(aclUser);
     } catch (e) {
       const error = e as IApiException;

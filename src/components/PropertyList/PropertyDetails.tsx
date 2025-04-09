@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import Button from "../ui/button/Button";
-import { CrossIcon } from "../../icons";
 import { getPropertyById } from "../../api/Listing.api";
 import {
   PropertyProps,
@@ -65,14 +64,6 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
 
   return (
     <>
-      {/* Close Button */}
-      <button
-        onClick={onClose}
-        className="absolute top-0 left-0 text-gray-500 hover:text-black w-8 h-8 z-10 flex justify-center items-center"
-      >
-        <CrossIcon />
-      </button>
-
       <div className="">
         {/* Title & Price */}
         <div className="flex justify-between items-center mb-4">

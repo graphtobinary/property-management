@@ -139,6 +139,9 @@ export interface PropertyDetailsProps {
 }
 
 export type DailyPrice = {
+  priceRule?: {
+    comment: string;
+  };
   pricedAt: string;
   price: number;
   currency: {
@@ -185,4 +188,19 @@ export interface EventUpdateFormProps {
   handleRadioChange: (val: string) => void;
   handleAddOrUpdateEvent: () => void;
   closeModal: () => void;
+}
+
+export interface CreatePropertyRulesProps {
+  propertyId: string;
+  startDate: string;
+  endDate: string;
+  isAvailable: boolean;
+  price?: string;
+  comment: string;
+}
+
+export interface PriceData {
+  propertyId: string;
+  date: string;
+  price: number;
 }

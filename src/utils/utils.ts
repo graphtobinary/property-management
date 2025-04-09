@@ -160,9 +160,9 @@ export const generateCalendarEvents = (
         extendedProps: {
           calendar: "Success",
           availability: "open",
-          privateNote: "",
           price: Math.ceil(priceObj.price),
           currency: getCurrencySymbol[priceObj?.currency?.currencyCode],
+          privateNote: priceObj?.priceRule?.comment || "",
         },
       });
     }

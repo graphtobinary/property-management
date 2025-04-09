@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   DailyPriceItemProps,
   PropertyPriceItemProps,
@@ -6,38 +6,32 @@ import {
 import { getPropertyPriceRules } from "../api/Listing.api";
 import { format } from "date-fns";
 
-export interface PriceData {
-  propertyId: string;
-  date: string;
-  price: number;
-}
-
 export const usePrices = (startDate: string, endDate: string, id: number) => {
   const [prices, setPrices] = useState<DailyPriceItemProps[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const fetchPrices = useCallback(async () => {
+    setLoading(true);
+    try {
+      const formattedStart = format(startDate, "yyyy-MM-dd");
+      const formattedEnd = format(endDate, "yyyy-MM-dd");
+      const { dailyPrices } = (await getPropertyPriceRules({
+        propertyId: id,
+        startDate: formattedStart,
+        endDate: formattedEnd,
+      })) as PropertyPriceItemProps;
+
+      setPrices(dailyPrices);
+    } catch (error) {
+      console.error("Error fetching prices:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [startDate, endDate, id]);
+
   useEffect(() => {
-    const fetchPrices = async () => {
-      setLoading(true);
-      try {
-        const formattedStart = format(startDate, "yyyy-MM-dd");
-        const formattedEnd = format(endDate, "yyyy-MM-dd");
-        const { dailyPrices } = (await getPropertyPriceRules({
-          propertyId: id,
-          startDate: formattedStart,
-          endDate: formattedEnd,
-        })) as PropertyPriceItemProps;
-
-        setPrices(dailyPrices);
-      } catch (error) {
-        console.error("Error fetching prices:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchPrices();
   }, [startDate, endDate]);
 
-  return { prices, loading };
+  return { prices, loading, refetchPrices: fetchPrices };
 };

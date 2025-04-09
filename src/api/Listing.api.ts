@@ -1,4 +1,5 @@
 import { ListingFormDataProps } from "../interfaces";
+import { CreatePropertyRulesProps } from "../interfaces/listing";
 import API_CONSTANTS from "./constants";
 import { doPost } from "./index";
 
@@ -176,6 +177,17 @@ export const getPropertyUnavailability = (formData: {
 }) => {
   return doPost(
     API_CONSTANTS.GET_PROPERTY_UNAVAILABILITY,
+    {},
+    {
+      headers: {},
+      body: JSON.stringify(formData),
+    }
+  );
+};
+
+export const createPropertyRules = (formData: CreatePropertyRulesProps) => {
+  return doPost(
+    API_CONSTANTS.CREATE_PROPERTY_RULES,
     {},
     {
       headers: {},

@@ -13,12 +13,14 @@ import {
 } from "../utils/utils";
 import { ChevronLeftIcon } from "../icons";
 import { useLocation, useNavigate, useParams } from "react-router";
-import { CalendarEvent } from "../interfaces/listing";
+import { CalendarEvent, CreatePropertyRulesProps } from "../interfaces/listing";
 import { usePrices } from "../hooks/usePrices";
 import { usePropertyUnavailability } from "../hooks/usePropertyUnavailability";
 import { getCurrencySymbol } from "../constants";
 import AnimatedSidebar from "../components/AnimatedSidebar";
 import EventUpdateForm from "../components/EventUpdateForm";
+import { createPropertyRules } from "../api/Listing.api";
+import DotsLoader from "../components/DotsLoader";
 
 const CalendarDetails: React.FC = () => {
   const { id } = useParams();
@@ -30,7 +32,7 @@ const CalendarDetails: React.FC = () => {
   const [eventStartDate, setEventStartDate] = useState("");
   const [eventPrice, setEventPrice] = useState("");
   const [eventCurrency, setEventCurrency] = useState("");
-  const [eventAvailability, setEventAvailability] = useState("");
+  const [eventAvailability, setEventAvailability] = useState("open");
   const [eventPrivateNote, setEventPrivateNote] = useState("");
   const [eventEndDate, setEventEndDate] = useState("");
   const [eventLevel, setEventLevel] = useState("");
@@ -39,12 +41,16 @@ const CalendarDetails: React.FC = () => {
   const { isOpen, openModal, closeModal } = useModal();
   const [currentDate, setCurrentDate] = useState(new Date());
   const { startDate, endDate } = getMonthRange(currentDate);
-  const { prices } = usePrices(startDate, endDate, Number(id));
-  const { unavailabilities = [] } = usePropertyUnavailability(
+  const { prices, refetchPrices, loading } = usePrices(
     startDate,
     endDate,
     Number(id)
   );
+  const {
+    unavailabilities = [],
+    refetchUnavailablity,
+    unavailablityLoading,
+  } = usePropertyUnavailability(startDate, endDate, Number(id));
 
   const allEvents = useMemo(() => {
     return generateCalendarEvents(prices, unavailabilities);
@@ -61,6 +67,7 @@ const CalendarDetails: React.FC = () => {
     resetModalFields();
     setEventStartDate(selectInfo.startStr);
     setEventEndDate(selectInfo.endStr || selectInfo.startStr);
+    setEventAvailability("open");
     openModal();
   };
 
@@ -71,8 +78,13 @@ const CalendarDetails: React.FC = () => {
     setSelectedEvent(event as unknown as CalendarEvent);
     setEventTitle(event.title || "Bookings");
     setEventStartDate(event.start?.toLocaleDateString("en-CA") || "");
-    setEventEndDate(event.end?.toLocaleDateString("en-CA") || "");
+    setEventEndDate(
+      event.end?.toLocaleDateString("en-CA") ||
+        event.start?.toLocaleDateString("en-CA") ||
+        ""
+    );
 
+    console.log(event, "event");
     const extendedProps = event.extendedProps;
     setEventLevel(extendedProps.calendar || "");
     setEventPrice(extendedProps.price || 0);
@@ -81,6 +93,16 @@ const CalendarDetails: React.FC = () => {
     setEventPrivateNote(extendedProps.privateNote || "");
 
     openModal();
+  };
+
+  const handleCreatePropertyRules = async (
+    formData: CreatePropertyRulesProps
+  ) => {
+    try {
+      await createPropertyRules(formData);
+    } catch (error) {
+      console.log("Create Property Rule Error: ", error);
+    }
   };
 
   const handleAddOrUpdateEvent = () => {
@@ -111,7 +133,7 @@ const CalendarDetails: React.FC = () => {
         id: Date.now().toString(),
         title: eventTitle || "Reserved",
         start: eventStartDate,
-        end: eventEndDate,
+        end: eventEndDate || eventStartDate,
         allDay: true,
         extendedProps: {
           calendar: eventLevel,
@@ -121,6 +143,22 @@ const CalendarDetails: React.FC = () => {
         },
       };
       setEvents((prevEvents) => [...prevEvents, newEvent]);
+    }
+    if (id) {
+      const formData: CreatePropertyRulesProps = {
+        propertyId: id,
+        startDate: eventStartDate,
+        endDate: eventEndDate || eventStartDate,
+        isAvailable: eventAvailability === "open",
+        ...(eventAvailability === "open" &&
+          eventPrice && { price: eventPrice }),
+        comment: eventPrivateNote || "Test",
+      };
+      handleCreatePropertyRules(formData);
+      setTimeout(() => {
+        refetchPrices(); // refetch price data
+        refetchUnavailablity();
+      }, 100);
     }
     closeModal();
     resetModalFields();
@@ -179,6 +217,46 @@ const CalendarDetails: React.FC = () => {
     return (
       <div className="flex justify-end items-end text-sm">
         {e?.dayNumberText}
+      </div>
+    );
+  };
+
+  const renderEventContent = (eventInfo: {
+    event: {
+      end: number;
+      start: number;
+      extendedProps: {
+        price: number;
+        currency: string;
+        availability: string;
+      };
+    };
+  }) => {
+    const colorClass =
+      eventInfo.event.extendedProps.availability !== "open"
+        ? `fc-bg-danger`
+        : "";
+    if (loading || unavailablityLoading) return <DotsLoader />;
+    return (
+      <div className="">
+        {/* <div className="absolute w-full h-full left-0 top-0 bg-red-400"></div> */}
+        <div
+          className={`event-fc-color flex fc-event-main ${colorClass} p-1 rounded-sm cursor-pointer`}
+        >
+          {eventInfo.event.extendedProps.availability !== "open" ? (
+            <div className="fc-event-main-frame px-2">
+              <div className="fc-event-title-container">
+                <span className="fc-event-title fc-sticky">
+                  {eventInfo.event.extendedProps.availability}
+                </span>
+              </div>
+            </div>
+          ) : (
+            <div className="fc-event-title text-sm font-bold">
+              {`${eventInfo.event.extendedProps.currency}${eventInfo.event.extendedProps?.price}`}
+            </div>
+          )}
+        </div>
       </div>
     );
   };
@@ -280,6 +358,7 @@ const CalendarDetails: React.FC = () => {
           eventClick={handleEventClick}
           eventContent={renderEventContent}
           fixedWeekCount={false}
+          eventOverlap={true}
           headerToolbar={{
             left: "title",
             right: "",
@@ -288,6 +367,7 @@ const CalendarDetails: React.FC = () => {
           height="auto"
           contentHeight="auto"
           dayCellContent={renderDayCells}
+          dayCellClassNames={"bg-green"}
         />
       </div>
       <AnimatedSidebar isOpen={isOpen} onClose={closeModal}>
@@ -309,41 +389,6 @@ const CalendarDetails: React.FC = () => {
         />
       </AnimatedSidebar>
     </>
-  );
-};
-
-const renderEventContent = (eventInfo: {
-  event: {
-    end: number;
-    start: number;
-    extendedProps: {
-      price: number;
-      currency: string;
-      availability: string;
-    };
-  };
-}) => {
-  const colorClass =
-    eventInfo.event.extendedProps.availability !== "open" ? `fc-bg-danger` : "";
-  return (
-    <div
-      className={`event-fc-color flex fc-event-main ${colorClass} p-1 rounded-sm`}
-    >
-      {eventInfo.event.extendedProps.availability !== "open" ? (
-        <div className="fc-event-main-frame px-2">
-          <div className="fc-event-title-container">
-            <span className="fc-event-title fc-sticky">
-              {eventInfo.event.extendedProps.availability}
-            </span>
-          </div>
-        </div>
-      ) : (
-        <div className="fc-event-title text-sm font-bold">
-          {eventInfo.event.extendedProps.currency}
-          {eventInfo.event.extendedProps.price}
-        </div>
-      )}
-    </div>
   );
 };
 
