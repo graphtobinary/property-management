@@ -8,7 +8,6 @@ import useUserStore from "../../store/user.store";
 import { useListingStore } from "../../store/listing.store";
 import Button from "../../components/ui/button/Button";
 import { getPropertyTempId } from "../../api/Listing.api";
-import { useAuthStore } from "../../store/auth.store";
 
 const EcommerceMetrics = lazy(
   () => import("../../components/ecommerce/EcommerceMetrics")
@@ -22,13 +21,9 @@ const EmptyState: React.FC<PropertyEmptyStateProps> = ({
   title = "Nothing to see here",
   description = "You need to add at least 2-3 properties to be able to view data on dashboard.",
 }) => {
-  // const { listingFormData, setListingFormData } = useListingStore();
-  const { token } = useAuthStore();
-  // const navigate = useNavigate();
-
   const handlePropertyTempId = async () => {
     try {
-      const data = await getPropertyTempId(token);
+      const data = await getPropertyTempId();
       console.log(data);
       // navigate("/create-listing-step-one")
     } catch (error) {
@@ -62,11 +57,10 @@ export default function Home() {
   }, [user]);
 
   const { listingFormData, setListingFormData } = useListingStore();
-  const { token } = useAuthStore();
 
   const handlePropertyTempId = async () => {
     try {
-      const { propertyId } = (await getPropertyTempId(token)) as {
+      const { propertyId } = (await getPropertyTempId()) as {
         propertyId: string;
       };
 
@@ -78,16 +72,13 @@ export default function Home() {
     } catch (error) {
       console.log(error);
     }
-  }; 
+  };
   // console.log(listingFormData);
   // eslint-disable-next-line no-constant-condition
   if (false) return <EmptyState />;
   return (
     <>
-      <PageMeta
-        title="Manzil"
-        description="Property Management Dashboard"
-      />
+      <PageMeta title="Manzil" description="Property Management Dashboard" />
 
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <h2
@@ -100,11 +91,11 @@ export default function Home() {
           <div className="flex">
             <Button
               onClick={handlePropertyTempId}
-              // to="/create-listing-step-one"
-              // className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-primary text-theme-sm hover:bg-primary"
+              size="sm"
+              variant="primary"
+              startIcon={<Plus className="size-5" />}
             >
-              <Plus stroke="#fff" />{" "}
-              <span className="pl-1"> Create Listing</span>
+              Create Listing
             </Button>
           </div>
         </div>

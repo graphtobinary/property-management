@@ -53,7 +53,8 @@ export default function DatePicker({
             dailyPrices?.forEach((item: DailyPriceItemProps) => {
               const date = item.pricedAt;
               priceMap[date] = `${
-                getCurrencySymbol[item.currency.currencyCode]
+                getCurrencySymbol[item.currency.currencyCode] ||
+                item.currency.currencyCode
               }${Math.ceil(item.price)}`;
             });
 
@@ -125,7 +126,7 @@ export default function DatePicker({
     }
 
     const isLastRow = index + 1 === priceData.length;
-
+    console.log(property?.prices, "dateList");
     return (
       <div className="flex">
         {/* Property image + name + location */}
@@ -156,7 +157,7 @@ export default function DatePicker({
         <div className="flex flex-1">
           {dateList.map((day) => {
             const key = format(day, "yyyy-MM-dd");
-            const price = property.prices[key] || "-";
+            const price = property?.prices[key] || "-";
             return (
               <div
                 key={`${property.name}-${key}`}

@@ -12,12 +12,9 @@ const StepSeven: React.FC = () => {
 
   return (
     <>
-      <PageMeta
-        title="Manzil"
-        description="Property Management Dashboard"
-      />
+      <PageMeta title="Manzil" description="Property Management Dashboard" />
       <>
-        <div className="bg-white p-0 md:p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-0 mb-5 h-full">
+        <div className="flex flex-col bg-white p-0 md:p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-0 h-full">
           <div className="flex justify-between">
             <h3 className="mb-1 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-2">
               Step 7
@@ -36,18 +33,7 @@ const StepSeven: React.FC = () => {
               plus 5 or more photos. Then you’ll create a title and description.
             </span>
           </div>
-          <div className="flex flex-col ">
-            <span className="mb-3 text-base font-semibold text-gray-800 dark:text-white/90">
-              Add a few basic details of your property
-            </span>
-            <div className=" gap-4 md:gap-6 ">
-              <div className="col-span-12 space-y-12 ">
-                {/*  */}
-                <DynamicRoomSelector />
-                {/*  */}
-              </div>
-            </div>
-          </div>
+          <DynamicRoomSelector />
         </div>
       </>
     </>

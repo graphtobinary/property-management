@@ -42,7 +42,9 @@ const AnimatedSidebar: React.FC<SidebarProps> = ({
               </div>
 
               {/* Scrollable Content */}
-              <div className="h-full overflow-y-auto">{children}</div>
+              <div className="h-full overflow-y-auto no-scrollbar">
+                {children}
+              </div>
             </motion.div>
           </div>
         )}

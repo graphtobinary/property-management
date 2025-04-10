@@ -37,18 +37,13 @@ const ManageProperties: React.FC = () => {
         </h2>
         <div className="flex justify-end mb-3">
           <div className="flex">
-            {/* <Link
-              to="/create-listing-step-one"
-              className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-primary text-theme-sm hover:bg-primary"
-            >
-              <Plus stroke="#fff" /> <span className="pl-1"> Add Property</span>
-            </Link> */}
             <Button
               onClick={handlePropertyTempId}
-              // to="/create-listing-step-one"
-              // className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-primary text-theme-sm hover:bg-primary"
+              size="sm"
+              variant="primary"
+              startIcon={<Plus className="size-5" />}
             >
-              <Plus stroke="#fff" /> <span className="pl-1">Add Property</span>
+              Add Property
             </Button>
           </div>
         </div>

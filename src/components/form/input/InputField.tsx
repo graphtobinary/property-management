@@ -18,6 +18,7 @@ interface InputProps {
   error?: boolean;
   hint?: string;
   maxLength?: number;
+  customStyle?: React.CSSProperties;
 }
 
 const Input: FC<InputProps> = ({
@@ -37,6 +38,7 @@ const Input: FC<InputProps> = ({
   error = false,
   hint,
   maxLength = 100,
+  customStyle = {},
 }) => {
   let inputClasses = ` h-11 w-full rounded-lg border appearance-none px-4 py-2.5 text-sm shadow-theme-xs placeholder:text-gray-400 focus:outline-hidden focus:ring-3  dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none ${className} `;
 
@@ -67,6 +69,7 @@ const Input: FC<InputProps> = ({
           disabled={disabled}
           className={inputClasses}
           maxLength={maxLength}
+          style={customStyle}
         />
       </div>
       {hint && (

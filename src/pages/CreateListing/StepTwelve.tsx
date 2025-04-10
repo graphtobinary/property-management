@@ -6,7 +6,7 @@ import { createProperty, getTags } from "../../api/Listing.api";
 import { ListTypeProps } from "../../interfaces/listing";
 import { useListingStore } from "../../store/listing.store";
 import { Modal } from "../../components/ui/modal";
-import { CheckLineIcon } from "../../icons";
+import { CheckLineIcon, Plus } from "../../icons";
 import { useModal } from "../../hooks/useModal";
 
 const StepTwelve: React.FC = () => {
@@ -109,7 +109,7 @@ const StepTwelve: React.FC = () => {
                       onClick={() => handleSelect(category.id)}
                       className={`border  bg-white shadow-lg cursor-pointer ${
                         selected.includes(category.id)
-                          ? "border-black"
+                          ? "border-primary"
                           : "border-none"
                       }`}
                     >
@@ -157,7 +157,7 @@ const StepTwelve: React.FC = () => {
         >
           <div className="flex flex-col items-center justify-center  p-6">
             {/* Success Icon */}
-            <div className="flex items-center justify-center w-20 h-20 rounded-full bg-gray-400">
+            <div className="flex items-center justify-center w-20 h-20 rounded-full bg-green-700">
               <CheckLineIcon width={50} height={50} />
             </div>
 
@@ -185,8 +185,9 @@ const StepTwelve: React.FC = () => {
                 size="sm"
                 variant="primary"
                 onClick={() => navigate("/create-listing-step-one")}
+                startIcon={<Plus className="size-5" />}
               >
-                <span className="text-lg">+</span> Add Another
+                Add Another
               </Button>
             </div>
           </div>

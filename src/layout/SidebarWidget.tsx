@@ -3,6 +3,7 @@ import useOutsideClick from "../hooks/useOutsideClick";
 import { AUTH_COOKIES, removeCookie } from "../utils/cookie";
 import { Link, useNavigate } from "react-router";
 import useUserStore from "../store/user.store";
+import Button from "../components/ui/button/Button";
 
 export default function SidebarWidget() {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
@@ -31,11 +32,8 @@ export default function SidebarWidget() {
         <p className="mb-4 text-gray-500 text-theme-sm dark:text-gray-400">
           Get access to all the features to manage your properties effortlessly
         </p>
-        <Link
-          to="/purchase-plan"
-          className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-primary text-theme-sm hover:bg-primary"
-        >
-          Purchase Plan
+        <Link to="/purchase-plan">
+          <Button variant="primary">Purchase Plan</Button>
         </Link>
       </div>
       <div className="relative" ref={userMenuRef}>

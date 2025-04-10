@@ -85,10 +85,12 @@ const PropertyList: React.FC = () => {
         </AnimatedSidebar>
 
         <div className="flex justify-center mt-6">
-          <Button variant="primary" onClick={handlePropertyTempId}>
-            <span className="text-lg">
-              <Plus stroke="#fff" />
-            </span>{" "}
+          <Button
+            variant="primary"
+            onClick={handlePropertyTempId}
+            size="sm"
+            startIcon={<Plus className="size-5" />}
+          >
             Add Another Property
           </Button>
         </div>

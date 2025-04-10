@@ -47,10 +47,7 @@ const StepOne: React.FC = () => {
 
   return (
     <>
-      <PageMeta
-        title="Manzil"
-        description="Property Management Dashboard"
-      />
+      <PageMeta title="Manzil" description="Property Management Dashboard" />
 
       <>
         <div className="bg-white p-0 md:p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-0 mb-5">
@@ -87,7 +84,7 @@ const StepOne: React.FC = () => {
                       onClick={() => setSelected(category?.id)}
                       className={`border  bg-white shadow-lg cursor-pointer ${
                         selected === category?.id
-                          ? "border-black"
+                          ? "border-primary"
                           : "border-none"
                       }`}
                     >

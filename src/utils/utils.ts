@@ -161,7 +161,9 @@ export const generateCalendarEvents = (
           calendar: "Success",
           availability: "open",
           price: Math.ceil(priceObj.price),
-          currency: getCurrencySymbol[priceObj?.currency?.currencyCode],
+          currency:
+            getCurrencySymbol[priceObj?.currency?.currencyCode] ||
+            priceObj?.currency?.currencyCode,
           privateNote: priceObj?.priceRule?.comment || "",
         },
       });

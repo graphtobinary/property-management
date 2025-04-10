@@ -46,10 +46,7 @@ const StepTwo: React.FC = () => {
 
   return (
     <>
-      <PageMeta
-        title="Manzil"
-        description="Property Management Dashboard"
-      />
+      <PageMeta title="Manzil" description="Property Management Dashboard" />
 
       <>
         <div className="bg-white p-0 md:p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-0 mb-5 h-full">
@@ -85,9 +82,9 @@ const StepTwo: React.FC = () => {
                       key={option.id}
                       className={`flex items-center gap-4 p-4 border rounded-lg cursor-pointer w-full md:w-xl ${
                         selected === option.id
-                          ? "border-black"
+                          ? "border-primary"
                           : "border-gray-300"
-                      } hover:border-black transition`}
+                      } hover:border-primary transition`}
                       onClick={() => setSelected(option.id)}
                     >
                       {/* Placeholder for Image */}

@@ -103,8 +103,8 @@ const HouseRulesForm = () => {
 
   console.log(errors?.checkinTime, "errors?.checkInTime");
   return (
-    <div className="space-y-4">
-      <div className="space-y-4 w-full md:w-1/2 ">
+    <>
+      <div className="space-y-4 w-full md:w-1/2 flex-1">
         {/* <span className="mb-3 text-base font-semibold text-gray-800 dark:text-white/90">
           What is the checkin time
         </span> */}
@@ -211,7 +211,7 @@ const HouseRulesForm = () => {
           <Button onClick={handleSubmit}>Next</Button>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -1,4 +1,5 @@
-import { FC, useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { FC, useEffect, useRef, useState } from "react";
 import { EventUpdateFormProps } from "../../interfaces/listing";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
@@ -45,6 +46,14 @@ const EventUpdateForm: FC<EventUpdateFormProps> = ({
 
     handleAddOrUpdateEvent(); // Call the original handler if all is valid
   };
+  const [currencyBoxWidth, setCurrencyBoxWidth] = useState(55);
+  const currencyRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (currencyRef.current?.clientWidth > 0) {
+      setCurrencyBoxWidth(currencyRef.current?.clientWidth + 10);
+    }
+  }, [eventCurrency]);
 
   return (
     <div className="flex flex-col px-2 overflow-y-auto custom-scrollbar">
@@ -93,11 +102,15 @@ const EventUpdateForm: FC<EventUpdateFormProps> = ({
                 type="number"
                 value={eventPrice}
                 onChange={(e) => setEventPrice(e.target.value)}
-                className="pl-[50px]"
+                className={`pl-[${currencyBoxWidth || 55}px]`}
+                customStyle={{ paddingLeft: currencyBoxWidth || 55 }}
                 error={Boolean(errors?.eventPrice ?? false)}
                 hint={errors.eventPrice}
               />
-              <span className="absolute left-0 top-0 border-r border-gray-200 px-3.5 py-3 text-gray-500 dark:border-gray-800 dark:text-gray-400">
+              <span
+                ref={currencyRef}
+                className="absolute left-0 top-0 border-r border-gray-200 px-3 py-2.5 text-gray-500 dark:border-gray-800 dark:text-gray-400"
+              >
                 {eventCurrency}
               </span>
             </div>
