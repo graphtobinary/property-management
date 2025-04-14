@@ -5,36 +5,8 @@ import Button from "../../components/ui/button/Button";
 import { getAmenities } from "../../api/Listing.api";
 import { ListTypeProps } from "../../interfaces/listing";
 import { useListingStore } from "../../store/listing.store";
-// const categories = [
-//   { id: 1, name: "Wifi" },
-//   { id: 2, name: "TV" },
-//   { id: 3, name: "Kitchen" },
-//   { id: 4, name: "Washing Machine" },
-//   { id: 5, name: "Dish Washer" },
-//   { id: 6, name: "Free Parking" },
-//   { id: 7, name: "Air Conditioning" },
-//   { id: 8, name: "Workspace" },
-//   { id: 9, name: "Pool" },
-//   { id: 10, name: "Hot Tub" },
-//   { id: 11, name: "Patio" },
-//   { id: 12, name: "BBQ Grill" },
-//   { id: 13, name: "Dining Table" },
-//   { id: 14, name: "House" },
-//   { id: 15, name: "Pool Table" },
-//   { id: 16, name: "Fireplace" },
-//   { id: 17, name: "Beach Access" },
-//   { id: 18, name: "Fire Extinguisher" },
-//   { id: 19, name: "Piano" },
-//   { id: 20, name: "Guitar" },
-//   { id: 21, name: "Closet" },
-//   { id: 22, name: "Toilet Paper" },
-//   { id: 23, name: "Shower" },
-//   { id: 24, name: "Toilet" },
-//   { id: 25, name: "Hair Dryer" },
-//   { id: 26, name: "Bathtub" },
-//   { id: 27, name: "Toiletries" },
-//   { id: 28, name: "Bathrobes" },
-// ];
+import ExitButton from "../../components/ExitButton";
+
 const StepEight: React.FC = () => {
   const [selected, setSelected] = useState<string[]>([]);
   const [amenitiesList, setAmenitiesList] = useState<ListTypeProps[] | []>([]);
@@ -93,9 +65,7 @@ const StepEight: React.FC = () => {
             <h3 className="mb-1 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-2">
               Step 8
             </h3>
-            <Button size="sm" variant="outline" onClick={() => navigate("/")}>
-              Exit
-            </Button>
+            <ExitButton isListingPage />
           </div>
           <div className="flex flex-col w-2/3">
             <span className="text-lg pb-1 text-gray-500 dark:text-gray-400">

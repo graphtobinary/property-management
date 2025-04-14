@@ -9,6 +9,11 @@ export interface SigninFormProps {
   password?: string;
 }
 
+export interface ResetFormProps {
+  password?: string;
+  confirmPassword?: string;
+}
+
 export interface AuthState {
   token: string;
   setToken: (token: string) => void;

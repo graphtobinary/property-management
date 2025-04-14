@@ -17,6 +17,7 @@ const API_CONSTANTS = {
   GET_TAGS: "/master.service.v1.MasterCachedService/GetTags",
   GET_PROPERTY_TEMPID: "/property.service.v1.PropertyService/GetPropertyTempId",
   CREATE_PROPERTY: "/property.service.v1.PropertyService/CreateProperty",
+  UPDATE_PROPERTY: "/property.service.v1.PropertyService/UpdateProperty",
   UPLOAD_IMAGE: "/upload-image/1/{tempID}",
   GET_PROPERTY_LIST:
     "/property.service.v1.PropertyService/GetPropertiesCollection",
@@ -27,6 +28,7 @@ const API_CONSTANTS = {
     "/property.service.v1.PropertyService/GetPropertyUnavailabilityRules",
   CREATE_PROPERTY_RULES:
     "/property.service.v1.PropertyService/CreatePropertyRules",
+  DELETE_IMAGE: "/images.service.v1.ImageService/DeleteUploadedImage",
 };
 
 export default API_CONSTANTS;

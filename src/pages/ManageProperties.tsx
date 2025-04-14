@@ -7,11 +7,13 @@ import { useListingStore } from "../store/listing.store";
 import { getPropertyTempId } from "../api/Listing.api";
 
 const ManageProperties: React.FC = () => {
-  const { listingFormData, setListingFormData } = useListingStore();
+  const { listingFormData, setListingFormData, clearListingStore } =
+    useListingStore();
   const navigate = useNavigate();
 
   const handlePropertyTempId = async () => {
     try {
+      clearListingStore();
       const { propertyId } = (await getPropertyTempId()) as {
         propertyId: string;
       };

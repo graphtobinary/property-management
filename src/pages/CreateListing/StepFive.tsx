@@ -6,6 +6,7 @@ import { MinusIcon, Plus } from "../../icons";
 import Label from "../../components/form/Label";
 import Input from "../../components/form/input/InputField";
 import { useListingStore } from "../../store/listing.store";
+import ExitButton from "../../components/ExitButton";
 
 const StepFive: React.FC = () => {
   const navigate = useNavigate();
@@ -45,10 +46,7 @@ const StepFive: React.FC = () => {
 
   return (
     <>
-      <PageMeta
-        title="Manzil"
-        description="Property Management Dashboard"
-      />
+      <PageMeta title="Manzil" description="Property Management Dashboard" />
 
       <>
         <div className="bg-white p-0 md:p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-0 mb-5 h-full">
@@ -56,9 +54,7 @@ const StepFive: React.FC = () => {
             <h3 className="mb-1 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-2">
               Step 5
             </h3>
-            <Button size="sm" variant="outline" onClick={() => navigate("/")}>
-              Exit
-            </Button>
+            <ExitButton isListingPage />
           </div>
           <div className="flex flex-col w-2/3">
             <span className="text-lg pb-1 text-gray-500 dark:text-gray-400">

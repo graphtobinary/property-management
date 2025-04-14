@@ -1,6 +1,7 @@
 import { FormEvent, ReactNode } from "react";
 import { UserProfileProps } from "./user";
 import { EventInput } from "@fullcalendar/core/index.js";
+import { PhotosProps } from "./listing";
 
 export interface UpdateUserDataProps {
   firstName?: string;
@@ -106,6 +107,7 @@ export interface PropertyDetailsProps {
 }
 
 export interface ListingFormDataProps {
+  isUpdateListing: boolean;
   propertyTempId: string;
   propertyTypeId: string;
   bookingPlaceTypeId: string;
@@ -129,6 +131,7 @@ export interface ListingFormDataProps {
   areaInSqMeter: number;
   roomDetails: PropertyDetailsProps[];
   amenityIds: string[];
+  photos: PhotosProps[];
   pricePerNight: number;
   checkinTime: string;
   checkoutTime: string;
@@ -142,6 +145,7 @@ export interface ListingFormDataProps {
 export interface ListingState {
   listingFormData: ListingFormDataProps;
   setListingFormData: (data: ListingFormDataProps) => void;
+  clearListingStore: () => void;
 }
 
 export interface PropertyEmptyStateProps {
@@ -193,4 +197,9 @@ export interface PriceEntryProps {
   location: string;
   imagePath: string;
   prices: Record<string, string>; // key = yyyy-MM-dd, value = price
+}
+
+export interface ExitButtonProps {
+  isListingPage?: boolean;
+  link?: string;
 }

@@ -7,7 +7,7 @@ export interface ListTypeProps {
 
 export interface RoomProps {
   id: string;
-  quantity: string;
+  quantity: number;
   roomType: {
     id: string;
     name: string;
@@ -108,19 +108,23 @@ export interface AddressProps {
   city: string;
   state: string;
   zipCode: string;
+  countryId: string;
+  landmark: string;
+  longitude: number;
+  latitude: number;
 }
 export interface PropertyProps {
   id: number;
   name: string;
   location: string;
-  pricePerNight: string;
+  pricePerNight: number;
   thumbnail: string;
   bhkType: {
-    id: number;
+    id: string;
     name: string;
   };
   furnishingType: {
-    id: number;
+    id: string;
     name: string;
   };
   country: {
@@ -129,8 +133,20 @@ export interface PropertyProps {
   };
   areaInSqMeter: number;
   description: string;
+  nanoId: string;
   guestCapacity: number;
   propertyAddress: AddressProps;
+  propertyType: {
+    id: string;
+  };
+  bookingPlaceType: {
+    id: string;
+  };
+  petAllowed: boolean;
+  smokingAllowed: boolean;
+  needsAccessibility: boolean;
+  checkinTime: string;
+  checkoutTime: string;
 }
 export interface PropertyDetailsProps {
   // [x: string]: any;
@@ -203,4 +219,12 @@ export interface PriceData {
   propertyId: string;
   date: string;
   price: number;
+}
+
+export interface FetchPropertyPayload {
+  propertyId: number;
+  includeRooms: boolean;
+  includeAmenities: boolean;
+  includeTags: boolean;
+  includePhotos: boolean;
 }

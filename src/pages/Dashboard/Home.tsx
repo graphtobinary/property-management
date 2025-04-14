@@ -56,10 +56,12 @@ export default function Home() {
     if (!user?.tenant?.tenantBusinessType) navigate("tell-us-about-you");
   }, [user]);
 
-  const { listingFormData, setListingFormData } = useListingStore();
+  const { listingFormData, setListingFormData, clearListingStore } =
+    useListingStore();
 
   const handlePropertyTempId = async () => {
     try {
+      clearListingStore();
       const { propertyId } = (await getPropertyTempId()) as {
         propertyId: string;
       };

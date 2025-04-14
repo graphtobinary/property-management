@@ -113,6 +113,16 @@ export const createProperty = (formData: ListingFormDataProps) => {
   );
 };
 
+export const updateProperty = (formData: Partial<ListingFormDataProps>) => {
+  return doPost(
+    API_CONSTANTS.UPDATE_PROPERTY,
+    {},
+    {
+      body: JSON.stringify(formData),
+    }
+  );
+};
+
 export const uploadImages = (formData: FormData, tempId: string) => {
   return doPost(
     API_CONSTANTS.UPLOAD_IMAGE,
@@ -188,6 +198,17 @@ export const getPropertyUnavailability = (formData: {
 export const createPropertyRules = (formData: CreatePropertyRulesProps) => {
   return doPost(
     API_CONSTANTS.CREATE_PROPERTY_RULES,
+    {},
+    {
+      headers: {},
+      body: JSON.stringify(formData),
+    }
+  );
+};
+
+export const deletePropertyImage = (formData: { image_id: string }) => {
+  return doPost(
+    API_CONSTANTS.DELETE_IMAGE,
     {},
     {
       headers: {},

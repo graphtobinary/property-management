@@ -5,6 +5,7 @@ import Button from "../../components/ui/button/Button";
 import { getBookingPlaceTypes } from "../../api/Listing.api";
 import { ListTypeProps } from "../../interfaces/listing";
 import { useListingStore } from "../../store/listing.store";
+import ExitButton from "../../components/ExitButton";
 
 const StepTwo: React.FC = () => {
   const [selected, setSelected] = useState<string>("");
@@ -54,9 +55,7 @@ const StepTwo: React.FC = () => {
             <h3 className="mb-1 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-2">
               Step 2
             </h3>
-            <Button size="sm" variant="outline" onClick={() => navigate("/")}>
-              Exit
-            </Button>
+            <ExitButton isListingPage />
           </div>
           <div className="flex flex-col w-2/3">
             <span className="text-lg pb-1 text-gray-500 dark:text-gray-400">

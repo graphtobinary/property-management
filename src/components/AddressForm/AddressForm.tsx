@@ -70,7 +70,10 @@ export default function AddressForm() {
   const validateForm = useCallback(() => {
     const newErrors: AddressFormProps = {};
     Object.keys(formValues).forEach((key) => {
-      if (!formValues[key as keyof typeof formValues].trim()) {
+      if (
+        typeof formValues[key as keyof typeof formValues] === "string" &&
+        !formValues[key as keyof typeof formValues]?.trim()
+      ) {
         newErrors[key as keyof typeof errors] = "This field is required";
       }
     });

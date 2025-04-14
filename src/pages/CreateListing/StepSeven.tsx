@@ -1,15 +1,12 @@
 import PageMeta from "../../components/common/PageMeta";
-import { useNavigate } from "react-router";
-import Button from "../../components/ui/button/Button";
 import { lazy } from "react";
+import ExitButton from "../../components/ExitButton";
 
 const DynamicRoomSelector = lazy(
   () => import("../../components/DynamicRoomSelector")
 );
 
 const StepSeven: React.FC = () => {
-  const navigate = useNavigate();
-
   return (
     <>
       <PageMeta title="Manzil" description="Property Management Dashboard" />
@@ -19,9 +16,7 @@ const StepSeven: React.FC = () => {
             <h3 className="mb-1 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-2">
               Step 7
             </h3>
-            <Button size="sm" variant="outline" onClick={() => navigate("/")}>
-              Exit
-            </Button>
+            <ExitButton isListingPage />
           </div>
           <div className="flex flex-col w-2/3">
             <span className="text-lg pb-1 text-gray-500 dark:text-gray-400">

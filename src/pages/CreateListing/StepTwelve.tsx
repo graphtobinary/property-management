@@ -2,20 +2,24 @@ import PageMeta from "../../components/common/PageMeta";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
-import { createProperty, getTags } from "../../api/Listing.api";
+import { createProperty, getTags, updateProperty } from "../../api/Listing.api";
 import { ListTypeProps } from "../../interfaces/listing";
 import { useListingStore } from "../../store/listing.store";
 import { Modal } from "../../components/ui/modal";
 import { CheckLineIcon, Plus } from "../../icons";
 import { useModal } from "../../hooks/useModal";
+import ExitButton from "../../components/ExitButton";
+import { useToast } from "../../hooks/useToast";
 
 const StepTwelve: React.FC = () => {
   const [selected, setSelected] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [highlights, setHighlights] = useState<ListTypeProps[]>([]);
   const navigate = useNavigate();
-  const { listingFormData, setListingFormData } = useListingStore();
+  const { listingFormData, setListingFormData, clearListingStore } =
+    useListingStore();
   const { isOpen, openModal, closeModal } = useModal();
+  const { showToast } = useToast();
 
   useEffect(() => {
     fetchPropertyTypeList();
@@ -62,8 +66,25 @@ const StepTwelve: React.FC = () => {
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      await createProperty(listingFormData);
-      openModal();
+      if (!listingFormData.isUpdateListing) {
+        await createProperty(listingFormData);
+        openModal();
+      } else {
+        const newListingData = {
+          ...listingFormData,
+          propertyNanoId: listingFormData.propertyTempId,
+        } as Partial<typeof listingFormData>;
+        delete newListingData.propertyTempId;
+        delete newListingData.isUpdateListing;
+        delete newListingData.photos;
+        await updateProperty(newListingData);
+        showToast({
+          type: "success",
+          message: "Property updated successfully!",
+        });
+        navigate("/manage-properties");
+      }
+      clearListingStore();
     } catch (error) {
       console.log(error);
     } finally {
@@ -80,9 +101,7 @@ const StepTwelve: React.FC = () => {
             <h3 className="mb-1 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-2">
               Step 12
             </h3>
-            <Button size="sm" variant="outline" onClick={() => navigate("/")}>
-              Exit
-            </Button>
+            <ExitButton isListingPage />
           </div>
           <div className="flex flex-col w-2/3">
             <span className="text-lg pb-1 text-gray-500 dark:text-gray-400">
@@ -147,7 +166,11 @@ const StepTwelve: React.FC = () => {
               Back
             </Button>
 
-            <Button onClick={handleSubmit}>Complete Registration</Button>
+            <Button onClick={handleSubmit}>
+              {listingFormData.isUpdateListing
+                ? "Update Property"
+                : "Complete Registration"}
+            </Button>
           </div>
         </div>
         <Modal

@@ -1,10 +1,11 @@
 import PageMeta from "../../components/common/PageMeta";
 import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
-import { lazy, useState } from "react";
+import { lazy, useEffect, useState } from "react";
 import { PropertyImageProps } from "../../interfaces";
 import { useAuthStore } from "../../store/auth.store";
 import { useListingStore } from "../../store/listing.store";
+import ExitButton from "../../components/ExitButton";
 
 const UploadPropertyPhotos = lazy(
   () => import("../../components/UploadPropertyPhotos")
@@ -21,7 +22,7 @@ const StepEleven: React.FC = () => {
     } else {
       setError("");
     }
-    console.log("form submitted", images);
+    // console.log("form submitted", images);
     navigate("/create-listing-step-twelve");
   };
 
@@ -44,22 +45,23 @@ const StepEleven: React.FC = () => {
         method: "POST",
         headers: myHeaders,
         body: formdata,
-        redirect: "follow" as RequestRedirect
+        redirect: "follow" as RequestRedirect,
       };
 
       const apiResponse = await fetch(
-        `${import.meta.env.VITE_BASE_API_ENDPOINT}/upload-image/1/${listingFormData.propertyTempId}`,
+        `${import.meta.env.VITE_BASE_API_ENDPOINT}/upload-image/1/${
+          listingFormData.propertyTempId
+        }`,
         requestOptions
       );
-      
+
       const data = await apiResponse.json();
       console.log(data, "uploaded img");
     } catch (error) {
-      console.error('Upload error:', error);
+      console.error("Upload error:", error);
     }
   };
 
-  console.log(images);
   const handleImageUpload = (data: PropertyImageProps[], isRemove = false) => {
     if (isRemove) {
       setImages(data);
@@ -69,12 +71,22 @@ const StepEleven: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    if (listingFormData.photos.length > 0) {
+      setImages(
+        listingFormData.photos.map((image) => {
+          return {
+            id: image.id,
+            url: `${import.meta.env.VITE_CDN_URL}${image?.imagePath}`,
+          };
+        })
+      );
+    }
+  }, [listingFormData]);
+
   return (
     <>
-      <PageMeta
-        title="Manzil"
-        description="Property Management Dashboard"
-      />
+      <PageMeta title="Manzil" description="Property Management Dashboard" />
 
       <>
         <div className="bg-white p-0 md:p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-0 mb-5 h-full">
@@ -82,9 +94,7 @@ const StepEleven: React.FC = () => {
             <h3 className="mb-1 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-2">
               Step 11
             </h3>
-            <Button size="sm" variant="outline" onClick={() => navigate("/")}>
-              Exit
-            </Button>
+            <ExitButton isListingPage />
           </div>
           <div className="flex flex-col w-2/3">
             <span className="text-lg pb-1 text-gray-500 dark:text-gray-400">

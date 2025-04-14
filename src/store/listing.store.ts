@@ -3,6 +3,7 @@ import { ListingState } from "../interfaces";
 
 const listingFormDataInitialValue = {
   listingFormData: {
+    isUpdateListing: false,
     propertyTempId: "",
     propertyTypeId: "",
     bookingPlaceTypeId: "",
@@ -26,8 +27,8 @@ const listingFormDataInitialValue = {
     areaInSqMeter: 0,
     roomDetails: [],
     amenityIds: [],
+    photos: [],
     pricePerNight: 0,
-
     checkinTime: "",
     checkoutTime: "",
     smokingAllowed: true,
@@ -44,4 +45,5 @@ export const useListingStore = create<ListingState>()((set) => ({
     set((state) => ({
       listingFormData: { ...state.listingFormData, ...value },
     })),
+  clearListingStore: () => set(listingFormDataInitialValue),
 }));

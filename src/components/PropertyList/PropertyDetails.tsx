@@ -1,67 +1,47 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import Button from "../ui/button/Button";
-import { getPropertyById } from "../../api/Listing.api";
-import {
-  PropertyProps,
-  PropertyDetailsProps,
-  RoomProps,
-  AmenityProps,
-  TagsProps,
-  PhotosProps,
-} from "../../interfaces/listing";
+import { PropertyDetailsProps, PhotosProps } from "../../interfaces/listing";
 import useOutsideClick from "../../hooks/useOutsideClick";
 import ServicesList from "../ServicesList";
+import { usePropertyDetails } from "../../hooks/usePropertyDetails";
+import Loader from "../Loader/Loader";
 const PropertyDetails: React.FC<PropertyDetailsProps> = ({
   property,
   onClose,
 }) => {
   const { propertyAddress } = { ...property };
-  const [propertyDetails, setPropertyDetails] = useState<PropertyProps>();
-  const [imagesList, setImagesList] = useState<PhotosProps[]>([]);
-  const [amenitiesList, setAmenitiesList] = useState<AmenityProps[]>([]);
-  const [tagsList, setTagsList] = useState<TagsProps[]>([]);
-  const [roomsList, setRoomsList] = useState<RoomProps[]>([]);
+
+  const {
+    propertyDetails,
+    imagesList,
+    amenitiesList,
+    tagsList,
+    roomsList,
+    loading,
+    fetchProperty,
+  } = usePropertyDetails();
 
   useEffect(() => {
-    fetchPropertyById();
+    if (property?.id) {
+      const formData = {
+        propertyId: property?.id,
+        includeRooms: true,
+        includeAmenities: true,
+        includeTags: true,
+        includePhotos: true,
+      };
+      fetchProperty(formData);
+    }
   }, []);
 
-  const fetchPropertyById = async () => {
-    try {
-      if (property) {
-        const formData = {
-          propertyId: property.id,
-          includeRooms: true,
-          includeAmenities: true,
-          includeTags: true,
-          includePhotos: true,
-        };
-        const {
-          property: propertyData,
-          photos,
-          amenities,
-          tags,
-          rooms,
-        } = (await getPropertyById(formData)) as {
-          property: PropertyProps;
-          photos: PhotosProps[];
-          amenities: AmenityProps[];
-          tags: TagsProps[];
-          rooms: RoomProps[];
-        };
-        setPropertyDetails(propertyData);
-        setImagesList(photos);
-        setAmenitiesList(amenities);
-        setTagsList(tags);
-        setRoomsList(rooms);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
   const sidebarRef = useRef<HTMLDivElement | null>(null);
   useOutsideClick(sidebarRef, () => onClose());
-
+  if (loading)
+    return (
+      <div className="flex w-full h-full justify-center items-center">
+        <Loader size="large" />
+      </div>
+    );
   return (
     <>
       <div className="">

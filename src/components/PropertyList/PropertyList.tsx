@@ -12,7 +12,8 @@ const PropertyDetails = lazy(() => import("./PropertyDetails"));
 const PropertyList: React.FC = () => {
   const [selectedProperty, setSelectedProperty] =
     useState<PropertyListItemProps | null>(null);
-  const { listingFormData, setListingFormData } = useListingStore();
+  const { listingFormData, setListingFormData, clearListingStore } =
+    useListingStore();
   const navigate = useNavigate();
   const [propertyList, setPropertyList] = useState<
     PropertyListItemProps[] | []
@@ -24,6 +25,7 @@ const PropertyList: React.FC = () => {
 
   const handlePropertyTempId = async () => {
     try {
+      clearListingStore();
       const { propertyId } = (await getPropertyTempId()) as {
         propertyId: string;
       };

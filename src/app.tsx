@@ -32,6 +32,9 @@ import Loader from "./components/Loader/Loader";
 import useUserStore from "./store/user.store";
 import TermsConditions from "./pages/TermsConditions";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
+import ResetPassword from "./pages/AuthPages/ResetPassword";
+import ForgotPassword from "./pages/AuthPages/ForgotPassword";
+import { ToastProvider } from "./context/ToastProvider";
 
 // PrivateRoute component to handle authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -43,7 +46,6 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
 
   return user ? <>{children}</> : <Navigate to="/signin" replace />;
 };
-
 export default function App() {
   const { user, loading } = useUser();
 
@@ -56,77 +58,112 @@ export default function App() {
   }
 
   return (
-    <Router>
-      <ScrollToTop />
-      <Routes>
-        <Route
-          path="/signin"
-          element={
-            user === undefined ? (
-              <Loader />
-            ) : !user ? (
-              <SignIn />
-            ) : (
-              <Navigate replace to="/" />
-            )
-          }
-        />
-        <Route
-          path="/signup"
-          element={
-            user === undefined ? (
-              <Loader />
-            ) : user ? (
-              <Navigate replace to="/" />
-            ) : (
-              <SignUp />
-            )
-          }
-        />
+    <ToastProvider>
+      <Router>
+        <ScrollToTop />
+        <Routes>
+          <Route
+            path="/signin"
+            element={
+              user === undefined ? (
+                <Loader />
+              ) : !user ? (
+                <SignIn />
+              ) : (
+                <Navigate replace to="/" />
+              )
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              user === undefined ? (
+                <Loader />
+              ) : user ? (
+                <Navigate replace to="/" />
+              ) : (
+                <SignUp />
+              )
+            }
+          />
+          <Route
+            path="/reset-password"
+            element={
+              user === undefined ? (
+                <Loader />
+              ) : !user ? (
+                <ResetPassword />
+              ) : (
+                <Navigate replace to="/" />
+              )
+            }
+          />
+          <Route
+            path="/forgot-password"
+            element={
+              user === undefined ? (
+                <Loader />
+              ) : !user ? (
+                <ForgotPassword />
+              ) : (
+                <Navigate replace to="/" />
+              )
+            }
+          />
 
-        {/* Protected Routes */}
-        <Route
-          element={
-            <PrivateRoute>
-              <AppLayout />
-            </PrivateRoute>
-          }
-        >
-          <Route index path="/" element={<Home />} />
-          <Route path="/calendar" element={<Calendar />} />
-          <Route path="calendar/:id" element={<CalendarDetails />} />
-          <Route path="/manage-properties" element={<ManageProperties />} />
-        </Route>
-        <Route path="/tell-us-about-you" element={<UpdateUserProfile />} />
-        {/* Create Listing Routes */}
-        <Route
-          element={
-            <PrivateRoute>
-              <CreateListingPageLayout />
-            </PrivateRoute>
-          }
-        >
-          <Route path="/create-listing-step-one" element={<StepOne />} />
-          <Route path="/create-listing-step-two" element={<StepTwo />} />
-          <Route path="/create-listing-step-three" element={<StepThree />} />
-          <Route path="/create-listing-step-four" element={<StepFour />} />
-          <Route path="/create-listing-step-five" element={<StepFive />} />
-          <Route path="/create-listing-step-six" element={<StepSix />} />
-          <Route path="/create-listing-step-seven" element={<StepSeven />} />
-          <Route path="/create-listing-step-eight" element={<StepEight />} />
-          <Route path="/create-listing-step-nine" element={<StepNine />} />
-          <Route path="/create-listing-step-ten" element={<StepTen />} />
-          <Route path="/create-listing-step-eleven" element={<StepEleven />} />
-          <Route path="/create-listing-step-twelve" element={<StepTwelve />} />
-          <Route path="/purchase-plan" element={<PurchasePlan />} />
-        </Route>
+          {/* Protected Routes */}
+          <Route
+            element={
+              <PrivateRoute>
+                <AppLayout />
+              </PrivateRoute>
+            }
+          >
+            <Route index path="/" element={<Home />} />
+            <Route path="/calendar" element={<Calendar />} />
+            <Route path="calendar/:id" element={<CalendarDetails />} />
+            <Route path="/manage-properties" element={<ManageProperties />} />
+          </Route>
+          <Route path="/tell-us-about-you" element={<UpdateUserProfile />} />
+          {/* Create Listing Routes */}
+          <Route
+            element={
+              <PrivateRoute>
+                <CreateListingPageLayout />
+              </PrivateRoute>
+            }
+          >
+            <Route path="/create-listing-step-one" element={<StepOne />} />
+            <Route path="/create-listing-step-two" element={<StepTwo />} />
+            <Route path="/create-listing-step-three" element={<StepThree />} />
+            <Route path="/create-listing-step-four" element={<StepFour />} />
+            <Route path="/create-listing-step-five" element={<StepFive />} />
+            <Route path="/create-listing-step-six" element={<StepSix />} />
+            <Route path="/create-listing-step-seven" element={<StepSeven />} />
+            <Route path="/create-listing-step-eight" element={<StepEight />} />
+            <Route path="/create-listing-step-nine" element={<StepNine />} />
+            <Route path="/create-listing-step-ten" element={<StepTen />} />
+            <Route
+              path="/create-listing-step-eleven"
+              element={<StepEleven />}
+            />
+            <Route
+              path="/create-listing-step-twelve"
+              element={<StepTwelve />}
+            />
+            <Route path="/purchase-plan" element={<PurchasePlan />} />
+          </Route>
 
-        {/* Other Routes */}
-        <Route path="/terms-condition" element={<TermsConditions />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/signup-verification/:token" element={<Verification />} />
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </Router>
+          {/* Other Routes */}
+          <Route path="/terms-condition" element={<TermsConditions />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route
+            path="/signup-verification/:token"
+            element={<Verification />}
+          />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Router>
+    </ToastProvider>
   );
 }

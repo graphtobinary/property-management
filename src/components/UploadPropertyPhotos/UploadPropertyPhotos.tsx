@@ -1,5 +1,6 @@
 import { useDropzone } from "react-dropzone";
 import { PropertyImageProps } from "../../interfaces";
+import { deletePropertyImage } from "../../api/Listing.api";
 
 const UploadPropertyPhotos: React.FC<{
   images: PropertyImageProps[];
@@ -16,7 +17,15 @@ const UploadPropertyPhotos: React.FC<{
     handleImageUpload(newImages);
   };
 
-  const removeImage = (id: string) => {
+  const removeImage = async (id: string) => {
+    try {
+      const formData = {
+        image_id: id,
+      };
+      await deletePropertyImage(formData);
+    } catch (error) {
+      console.log("Image Delete Error: ", error);
+    }
     handleImageUpload(
       images.filter((image) => image.id !== id),
       true

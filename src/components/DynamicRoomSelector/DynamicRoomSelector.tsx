@@ -60,9 +60,19 @@ const DynamicRoomSelector = () => {
           return { value: item.id, label: item.name };
         })
       );
-      setRooms([
-        { id: Date.now(), roomTypeId: roomTypes[0].id, quantity: 1 }, // Default new entry
-      ]);
+      if (listingFormData.roomDetails.length > 0) {
+        setRooms(
+          listingFormData.roomDetails?.map((room) => ({
+            id: Number(room.roomTypeId),
+            roomTypeId: room.roomTypeId,
+            quantity: room.quantity,
+          }))
+        );
+      } else {
+        setRooms([
+          { id: Date.now(), roomTypeId: roomTypes[0].id, quantity: 1 }, // Default new entry
+        ]);
+      }
     } catch (error) {
       console.log(error);
     }

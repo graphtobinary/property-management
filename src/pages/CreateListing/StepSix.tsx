@@ -4,6 +4,7 @@ import Button from "../../components/ui/button/Button";
 import TextArea from "../../components/form/input/TextArea";
 import { useEffect, useState } from "react";
 import { useListingStore } from "../../store/listing.store";
+import ExitButton from "../../components/ExitButton";
 
 const StepSix: React.FC = () => {
   const [description, setDescription] = useState("");
@@ -41,10 +42,7 @@ const StepSix: React.FC = () => {
 
   return (
     <>
-      <PageMeta
-        title="Manzil"
-        description="Property Management Dashboard"
-      />
+      <PageMeta title="Manzil" description="Property Management Dashboard" />
 
       <>
         <div className="bg-white p-0 md:p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-0 mb-5 h-full">
@@ -52,9 +50,7 @@ const StepSix: React.FC = () => {
             <h3 className="mb-1 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-2">
               Step 6
             </h3>
-            <Button size="sm" variant="outline" onClick={() => navigate("/")}>
-              Exit
-            </Button>
+            <ExitButton isListingPage />
           </div>
           <div className="flex flex-col w-2/3">
             <span className="text-lg pb-1 text-gray-500 dark:text-gray-400">
