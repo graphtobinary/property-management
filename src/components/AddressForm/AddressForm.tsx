@@ -235,9 +235,7 @@ export default function AddressForm() {
               Back
             </Button>
 
-            <Button type="submit" variant="primary">
-              Next
-            </Button>
+            <Button type="submit">Next</Button>
           </div>
         </div>
       </form>

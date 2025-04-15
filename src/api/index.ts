@@ -41,7 +41,6 @@ const doCall = async (
   }
 
   const headers: HeadersInit = {
-    "content-type": "application/json",
     ...getHeaders(),
     ...option.headers,
   };

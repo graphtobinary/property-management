@@ -8,6 +8,9 @@ export const getCountryList = () => {
     API_CONSTANTS.GET_COUNTRY_LIST,
     {},
     {
+      headers: {
+        "content-type": "application/json",
+      },
       body: JSON.stringify({}),
     }
   );
@@ -18,6 +21,9 @@ export const getAmenities = () => {
     API_CONSTANTS.GET_AMENITIES,
     {},
     {
+      headers: {
+        "content-type": "application/json",
+      },
       body: JSON.stringify({}),
     }
   );
@@ -28,6 +34,9 @@ export const getBedTypes = () => {
     API_CONSTANTS.GET_AMENITIES,
     {},
     {
+      headers: {
+        "content-type": "application/json",
+      },
       body: JSON.stringify({}),
     }
   );
@@ -38,6 +47,9 @@ export const GetBhkTypes = () => {
     API_CONSTANTS.GET_BHK_TYPES,
     {},
     {
+      headers: {
+        "content-type": "application/json",
+      },
       body: JSON.stringify({}),
     }
   );
@@ -48,6 +60,9 @@ export const getBookingPlaceTypes = () => {
     API_CONSTANTS.GET_BOOKING_PLACE_TYPES,
     {},
     {
+      headers: {
+        "content-type": "application/json",
+      },
       body: JSON.stringify({}),
     }
   );
@@ -58,6 +73,9 @@ export const getFurnishingTypes = () => {
     API_CONSTANTS.GET_FURNISHING_TYPES,
     {},
     {
+      headers: {
+        "content-type": "application/json",
+      },
       body: JSON.stringify({}),
     }
   );
@@ -68,6 +86,9 @@ export const getPropertyTypes = () => {
     API_CONSTANTS.GET_PROPERTY_TYPES,
     {},
     {
+      headers: {
+        "content-type": "application/json",
+      },
       body: JSON.stringify({}),
     }
   );
@@ -78,6 +99,9 @@ export const getRoomTypes = () => {
     API_CONSTANTS.GET_ROOM_TYPES,
     {},
     {
+      headers: {
+        "content-type": "application/json",
+      },
       body: JSON.stringify({}),
     }
   );
@@ -88,6 +112,9 @@ export const getTags = () => {
     API_CONSTANTS.GET_TAGS,
     {},
     {
+      headers: {
+        "content-type": "application/json",
+      },
       body: JSON.stringify({}),
     }
   );
@@ -98,16 +125,22 @@ export const getPropertyTempId = () => {
     API_CONSTANTS.GET_PROPERTY_TEMPID,
     {},
     {
+      headers: {
+        "content-type": "application/json",
+      },
       body: JSON.stringify({}),
     }
   );
 };
 
-export const createProperty = (formData: ListingFormDataProps) => {
+export const createProperty = (formData: Partial<ListingFormDataProps>) => {
   return doPost(
     API_CONSTANTS.CREATE_PROPERTY,
     {},
     {
+      headers: {
+        "content-type": "application/json",
+      },
       body: JSON.stringify(formData),
     }
   );
@@ -118,17 +151,32 @@ export const updateProperty = (formData: Partial<ListingFormDataProps>) => {
     API_CONSTANTS.UPDATE_PROPERTY,
     {},
     {
+      headers: {
+        "content-type": "application/json",
+      },
       body: JSON.stringify(formData),
     }
   );
 };
 
-export const uploadImages = (formData: FormData, tempId: string) => {
+export const uploadImages = (formData: FormData, tempID: string) => {
   return doPost(
     API_CONSTANTS.UPLOAD_IMAGE,
-    { tempId },
+    { tempID },
     {
-      body: JSON.stringify(formData),
+      headers: {},
+      body: formData,
+    }
+  );
+};
+
+export const updateUploadedImages = (formData: FormData, nanoId: string) => {
+  return doPost(
+    API_CONSTANTS.UPDATE_PROPERTY_IMAGE,
+    { nanoId },
+    {
+      headers: {},
+      body: formData,
     }
   );
 };
@@ -143,6 +191,9 @@ export const getPropertyList = (formData: {
     API_CONSTANTS.GET_PROPERTY_LIST,
     {},
     {
+      headers: {
+        "content-type": "application/json",
+      },
       body: JSON.stringify(formData),
     }
   );
@@ -159,7 +210,9 @@ export const getPropertyById = (formData: {
     API_CONSTANTS.GET_PROPERTY_BY_ID,
     {},
     {
-      headers: {},
+      headers: {
+        "content-type": "application/json",
+      },
       body: JSON.stringify(formData),
     }
   );
@@ -174,7 +227,9 @@ export const getPropertyPriceRules = (formData: {
     API_CONSTANTS.GET_PROPERTY_PRICE_RULES,
     {},
     {
-      headers: {},
+      headers: {
+        "content-type": "application/json",
+      },
       body: JSON.stringify(formData),
     }
   );
@@ -189,7 +244,9 @@ export const getPropertyUnavailability = (formData: {
     API_CONSTANTS.GET_PROPERTY_UNAVAILABILITY,
     {},
     {
-      headers: {},
+      headers: {
+        "content-type": "application/json",
+      },
       body: JSON.stringify(formData),
     }
   );
@@ -200,18 +257,37 @@ export const createPropertyRules = (formData: CreatePropertyRulesProps) => {
     API_CONSTANTS.CREATE_PROPERTY_RULES,
     {},
     {
-      headers: {},
+      headers: {
+        "content-type": "application/json",
+      },
       body: JSON.stringify(formData),
     }
   );
 };
 
-export const deletePropertyImage = (formData: { image_id: string }) => {
+export const deletePropertyImageById = (formData: {
+  propertyPhotoId: string;
+}) => {
   return doPost(
-    API_CONSTANTS.DELETE_IMAGE,
+    API_CONSTANTS.DELETE_IMAGE_BY_ID,
     {},
     {
-      headers: {},
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    }
+  );
+};
+
+export const deletePropertyImageByImageId = (formData: { imageId: string }) => {
+  return doPost(
+    API_CONSTANTS.DELETE_IMAGE_BY_IMAGE_ID,
+    {},
+    {
+      headers: {
+        "content-type": "application/json",
+      },
       body: JSON.stringify(formData),
     }
   );

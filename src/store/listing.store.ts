@@ -31,9 +31,9 @@ const listingFormDataInitialValue = {
     pricePerNight: 0,
     checkinTime: "",
     checkoutTime: "",
-    smokingAllowed: true,
-    petAllowed: true,
-    needsAccessibility: true,
+    smokingAllowed: false,
+    petAllowed: false,
+    needsAccessibility: false,
 
     // propertyPhotos: [],
     tagIds: [],

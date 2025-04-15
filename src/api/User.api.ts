@@ -1,5 +1,4 @@
 import { UpdateUserDataProps } from "../interfaces";
-import { getHeaders } from "../utils/utils";
 import API_CONSTANTS from "./constants";
 import { doPost } from "./index";
 
@@ -8,6 +7,9 @@ export const signupUser = (formData: { email: string; password: string }) => {
     API_CONSTANTS.USER_SIGNUP,
     {},
     {
+      headers: {
+        "content-type": "application/json",
+      },
       body: JSON.stringify(formData),
     }
   );
@@ -18,6 +20,9 @@ export const verifyEmail = (formData: { invitation_token: string }) => {
     API_CONSTANTS.SIGNUP_VERIFY,
     {},
     {
+      headers: {
+        "content-type": "application/json",
+      },
       body: JSON.stringify(formData),
     }
   );
@@ -28,7 +33,9 @@ export const loginUser = (formData: { email: string; password: string }) => {
     API_CONSTANTS.USER_LOGIN,
     {},
     {
-      headers: {},
+      headers: {
+        "content-type": "application/json",
+      },
       body: JSON.stringify(formData),
     }
   );
@@ -39,6 +46,9 @@ export const getUser = () => {
     API_CONSTANTS.GET_USER,
     {},
     {
+      headers: {
+        "content-type": "application/json",
+      },
       body: JSON.stringify({}),
     }
   );
@@ -49,7 +59,9 @@ export const patchUser = (formData: UpdateUserDataProps) => {
     API_CONSTANTS.PATCH_USER,
     {},
     {
-      headers: getHeaders(),
+      headers: {
+        "content-type": "application/json",
+      },
       body: JSON.stringify(formData),
     }
   );

@@ -101,7 +101,6 @@ const HouseRulesForm = () => {
     }
   }, [listingFormData]);
 
-  console.log(errors?.checkinTime, "errors?.checkInTime");
   return (
     <>
       <div className="space-y-4 w-full md:w-1/2 flex-1">

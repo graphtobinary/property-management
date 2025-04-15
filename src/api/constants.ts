@@ -19,6 +19,7 @@ const API_CONSTANTS = {
   CREATE_PROPERTY: "/property.service.v1.PropertyService/CreateProperty",
   UPDATE_PROPERTY: "/property.service.v1.PropertyService/UpdateProperty",
   UPLOAD_IMAGE: "/upload-image/1/{tempID}",
+  UPDATE_PROPERTY_IMAGE: "/upload-property-image/1/{nanoId}",
   GET_PROPERTY_LIST:
     "/property.service.v1.PropertyService/GetPropertiesCollection",
   GET_PROPERTY_BY_ID: "/property.service.v1.PropertyService/GetProperty",
@@ -28,7 +29,10 @@ const API_CONSTANTS = {
     "/property.service.v1.PropertyService/GetPropertyUnavailabilityRules",
   CREATE_PROPERTY_RULES:
     "/property.service.v1.PropertyService/CreatePropertyRules",
-  DELETE_IMAGE: "/images.service.v1.ImageService/DeleteUploadedImage",
+  DELETE_IMAGE_BY_IMAGE_ID:
+    "/images.service.v1.ImageService/DeleteUploadedImage",
+  DELETE_IMAGE_BY_ID:
+    "/property.service.v1.PropertyService/DeletePropertyPhoto",
 };
 
 export default API_CONSTANTS;

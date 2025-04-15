@@ -223,7 +223,13 @@ const DynamicRoomSelector = () => {
                       placeholder="100"
                       type="number"
                       className="pr-[62px]"
-                      value={formValues.propertySize ?? ""}
+                      value={
+                        formValues.propertySize === 0 ||
+                        formValues.propertySize === undefined ||
+                        formValues.propertySize === null
+                          ? ""
+                          : formValues.propertySize
+                      }
                       onChange={(e) =>
                         handleChange("propertySize", e.target.value)
                       }

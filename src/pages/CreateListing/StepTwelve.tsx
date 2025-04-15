@@ -10,6 +10,7 @@ import { CheckLineIcon, Plus } from "../../icons";
 import { useModal } from "../../hooks/useModal";
 import ExitButton from "../../components/ExitButton";
 import { useToast } from "../../hooks/useToast";
+import { ListingFormDataProps } from "../../interfaces";
 
 const StepTwelve: React.FC = () => {
   const [selected, setSelected] = useState<string[]>([]);
@@ -66,27 +67,38 @@ const StepTwelve: React.FC = () => {
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      if (!listingFormData.isUpdateListing) {
-        await createProperty(listingFormData);
-        openModal();
-      } else {
-        const newListingData = {
-          ...listingFormData,
+
+      // Use the actual type instead of typeof a value
+      let newListingData: Partial<ListingFormDataProps> = {
+        ...listingFormData,
+      };
+
+      const isUpdate = listingFormData.isUpdateListing;
+
+      // Remove the flag in both cases
+      delete newListingData.isUpdateListing;
+      delete newListingData.photos;
+      if (isUpdate) {
+        // Update case
+        newListingData = {
+          ...newListingData,
           propertyNanoId: listingFormData.propertyTempId,
         } as Partial<typeof listingFormData>;
         delete newListingData.propertyTempId;
-        delete newListingData.isUpdateListing;
-        delete newListingData.photos;
         await updateProperty(newListingData);
         showToast({
           type: "success",
           message: "Property updated successfully!",
         });
         navigate("/manage-properties");
+      } else {
+        // Create case
+        await createProperty(newListingData);
+        openModal();
       }
       clearListingStore();
     } catch (error) {
-      console.log(error);
+      console.error("Submission error:", error);
     } finally {
       setLoading(false);
     }

@@ -3,9 +3,9 @@ import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
 import { lazy, useEffect, useState } from "react";
 import { PropertyImageProps } from "../../interfaces";
-import { useAuthStore } from "../../store/auth.store";
 import { useListingStore } from "../../store/listing.store";
 import ExitButton from "../../components/ExitButton";
+import { updateUploadedImages, uploadImages } from "../../api/Listing.api";
 
 const UploadPropertyPhotos = lazy(
   () => import("../../components/UploadPropertyPhotos")
@@ -26,37 +26,56 @@ const StepEleven: React.FC = () => {
     navigate("/create-listing-step-twelve");
   };
 
-  const { token } = useAuthStore();
   const { listingFormData } = useListingStore();
   const uploadMedia = async (media: { url: string; id: string }) => {
-    console.log(media, "img data");
-    try {
-      const myHeaders = new Headers();
-      myHeaders.append("Authorization", `Bearer ${token}`);
+    if (!listingFormData?.propertyTempId) {
+      console.error("Missing propertyTempId for image upload");
+      return;
+    }
 
-      const formdata = new FormData();
-      // Get the file object from the URL
+    try {
       const fileResponse = await fetch(media.url);
       const blob = await fileResponse.blob();
-      const file = new File([blob], media.id, { type: blob.type });
-      formdata.append("file", file);
 
-      const requestOptions: RequestInit = {
-        method: "POST",
-        headers: myHeaders,
-        body: formdata,
-        redirect: "follow" as RequestRedirect,
-      };
+      const extension = blob.type.split("/")[1];
+      const filename = media.id.includes(".")
+        ? media.id
+        : `${media.id}.${extension}`;
+      const file = new File([blob], filename, { type: blob.type });
 
-      const apiResponse = await fetch(
-        `${import.meta.env.VITE_BASE_API_ENDPOINT}/upload-image/1/${
+      const formData = new FormData();
+      formData.append("file", file);
+      if (listingFormData.isUpdateListing) {
+        const res = (await updateUploadedImages(
+          formData,
           listingFormData.propertyTempId
-        }`,
-        requestOptions
-      );
-
-      const data = await apiResponse.json();
-      console.log(data, "uploaded img");
+        )) as {
+          imageId: string;
+        };
+        setImages((prevImages) =>
+          prevImages.map((item) => {
+            if (item.id === media.id) {
+              return { ...item, id: res.imageId };
+            } else return item;
+          })
+        );
+        return res;
+      } else {
+        const data = (await uploadImages(
+          formData,
+          listingFormData.propertyTempId
+        )) as {
+          imageId: string;
+        };
+        setImages((prevImages) =>
+          prevImages.map((item) => {
+            if (item.id === media.id) {
+              return { ...item, id: data.imageId };
+            } else return item;
+          })
+        );
+        return data;
+      }
     } catch (error) {
       console.error("Upload error:", error);
     }
@@ -72,9 +91,9 @@ const StepEleven: React.FC = () => {
   };
 
   useEffect(() => {
-    if (listingFormData.photos.length > 0) {
+    if (listingFormData?.photos?.length > 0) {
       setImages(
-        listingFormData.photos.map((image) => {
+        listingFormData?.photos?.map((image) => {
           return {
             id: image.id,
             url: `${import.meta.env.VITE_CDN_URL}${image?.imagePath}`,

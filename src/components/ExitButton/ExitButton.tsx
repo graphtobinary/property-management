@@ -10,11 +10,13 @@ const ExitButton: FC<ExitButtonProps> = (
 ) => {
   const navigate = useNavigate();
   const { listingFormData } = useListingStore();
-  const exitLink = isListingPage
+  const exitLink = link
+    ? link
+    : isListingPage
     ? listingFormData.isUpdateListing
       ? "/manage-properties"
       : "/"
-    : link;
+    : "/";
   return (
     <Button size="sm" variant="outline" onClick={() => navigate(exitLink)}>
       Exit

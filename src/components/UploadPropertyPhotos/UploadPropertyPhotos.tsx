@@ -1,6 +1,10 @@
 import { useDropzone } from "react-dropzone";
 import { PropertyImageProps } from "../../interfaces";
-import { deletePropertyImage } from "../../api/Listing.api";
+import {
+  deletePropertyImageById,
+  deletePropertyImageByImageId,
+} from "../../api/Listing.api";
+import { useListingStore } from "../../store/listing.store";
 
 const UploadPropertyPhotos: React.FC<{
   images: PropertyImageProps[];
@@ -8,6 +12,7 @@ const UploadPropertyPhotos: React.FC<{
   error?: boolean;
   hint?: string;
 }> = ({ images, handleImageUpload, error, hint }) => {
+  const { listingFormData } = useListingStore();
   const onDrop = (acceptedFiles: File[]) => {
     const newImages: PropertyImageProps[] = acceptedFiles.map((file) => ({
       id: URL.createObjectURL(file), // Unique ID for preview
@@ -19,10 +24,17 @@ const UploadPropertyPhotos: React.FC<{
 
   const removeImage = async (id: string) => {
     try {
-      const formData = {
-        image_id: id,
-      };
-      await deletePropertyImage(formData);
+      if (listingFormData.isUpdateListing) {
+        const formData = {
+          propertyPhotoId: id,
+        };
+        await deletePropertyImageById(formData);
+      } else {
+        const formData = {
+          imageId: id,
+        };
+        await deletePropertyImageByImageId(formData);
+      }
     } catch (error) {
       console.log("Image Delete Error: ", error);
     }
@@ -40,7 +52,7 @@ const UploadPropertyPhotos: React.FC<{
       "image/webp": [],
       "image/svg+xml": [],
     },
-    multiple: true, // Enable multiple image selection
+    multiple: false, // Enable multiple image selection
   });
 
   let uploadPhotoClasses =

@@ -52,11 +52,8 @@ const StepFour: React.FC = () => {
               Back
             </Button>
 
-            <Link
-              to="/create-listing-step-five"
-              className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-primary text-theme-sm hover:bg-primaryDark"
-            >
-              Next
+            <Link to="/create-listing-step-five">
+              <Button>Next</Button>
             </Link>
           </div>
         </div>

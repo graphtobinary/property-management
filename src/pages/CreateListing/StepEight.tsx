@@ -124,11 +124,8 @@ const StepEight: React.FC = () => {
             <Button size="sm" variant="outline" onClick={() => navigate(-1)}>
               Back
             </Button>
-            <Link
-              to="/create-listing-step-nine"
-              className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-primary text-theme-sm hover:bg-primaryDark"
-            >
-              Next
+            <Link to="/create-listing-step-nine">
+              <Button>Next</Button>
             </Link>
           </div>
         </div>
