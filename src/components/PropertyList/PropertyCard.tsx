@@ -14,7 +14,6 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   imagePath,
   onClick,
 }) => {
-  const { clearListingStore } = useListingStore();
   const {
     propertyDetails,
     imagesList,
@@ -23,7 +22,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
     roomsList,
     fetchProperty,
   } = usePropertyDetails();
-  const { listingFormData, setListingFormData } = useListingStore();
+  const { listingFormData, setListingFormData, clearListingStore } = useListingStore();
   const navigate = useNavigate();
 
   const formData = {
@@ -31,7 +30,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
     includeRooms: true,
     includeAmenities: true,
     includeTags: true,
-    includePhotos: true,
+    includePhotos: true, 
   };
   useEffect(() => {
     if (propertyDetails) {

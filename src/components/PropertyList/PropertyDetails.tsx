@@ -5,12 +5,15 @@ import useOutsideClick from "../../hooks/useOutsideClick";
 import ServicesList from "../ServicesList";
 import { usePropertyDetails } from "../../hooks/usePropertyDetails";
 import Loader from "../Loader/Loader";
+import { useListingStore } from "../../store/listing.store";
+import { useNavigate } from "react-router";
 const PropertyDetails: React.FC<PropertyDetailsProps> = ({
   property,
   onClose,
 }) => {
   const { propertyAddress } = { ...property };
-
+  const navigate = useNavigate();
+  const { listingFormData, setListingFormData, clearListingStore } = useListingStore();
   const {
     propertyDetails,
     imagesList,
@@ -34,8 +37,71 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
     }
   }, []);
 
+  useEffect(() => {
+    console.log("Property Details", propertyDetails);
+    if (propertyDetails) {
+      clearListingStore();
+      setListingFormData({
+        ...listingFormData,
+        // property related data
+        isUpdateListing: true,
+        propertyTempId: propertyDetails.nanoId,
+        propertyTypeId: propertyDetails.propertyType.id,
+        bookingPlaceTypeId: propertyDetails.bookingPlaceType.id,
+        address: {
+          countryId: propertyDetails.propertyAddress.countryId,
+          addressLine1: propertyDetails.propertyAddress.addressLine1,
+          addressLine2: propertyDetails.propertyAddress.addressLine2,
+          landmark: propertyDetails.propertyAddress.landmark,
+          city: propertyDetails.propertyAddress.city,
+          state: propertyDetails.propertyAddress.state,
+          zipCode: propertyDetails.propertyAddress.zipCode,
+          latitude: propertyDetails.propertyAddress.latitude,
+          longitude: propertyDetails.propertyAddress.longitude,
+        },
+        bhkTypeId: propertyDetails.bhkType.id,
+        furnishingTypeId: propertyDetails.furnishingType.id,
+        guestCapacity: propertyDetails.guestCapacity,
+        areaInSqMeter: propertyDetails.areaInSqMeter,
+        pricePerNight: propertyDetails.pricePerNight,
+        checkinTime: propertyDetails.checkinTime,
+        checkoutTime: propertyDetails.checkoutTime,
+        ...(propertyDetails.petAllowed && {
+          petAllowed: propertyDetails.petAllowed,
+        }),
+        ...(propertyDetails.needsAccessibility && {
+          needsAccessibility: propertyDetails.needsAccessibility,
+        }),
+        ...(propertyDetails.smokingAllowed && {
+          smokingAllowed: propertyDetails.smokingAllowed,
+        }),
+        name: propertyDetails.name,
+        description: propertyDetails.description,
+        // other data
+        photos: imagesList,
+        roomDetails: roomsList.map((room) => ({
+          roomTypeId: room.roomType.id,
+          quantity: room.quantity,
+        })),
+        amenityIds: amenitiesList
+          .map((item) => item.amenity?.id)
+          .filter((id): id is string => Boolean(id)),
+        tagIds: tagsList
+          .map((item) => item.tag?.id)
+          .filter((id): id is string => Boolean(id)),
+      });
+    }
+  }, [propertyDetails, imagesList, amenitiesList, tagsList, roomsList]);
+
+  const handleEdit = async () => {
+    navigate("/create-listing-step-one");
+  };
+
   const sidebarRef = useRef<HTMLDivElement | null>(null);
-  useOutsideClick(sidebarRef, () => onClose());
+  useOutsideClick(sidebarRef, () => {
+    
+    onClose();
+  });
   if (loading)
     return (
       <div className="flex w-full h-full justify-center items-center">
@@ -161,7 +227,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
           </div> */}
         {/* Buttons */}
         <div className="flex justify-end gap-2 bottom-5 right-5">
-          <Button variant="outline">Edit</Button>
+          <Button variant="outline" onClick={handleEdit}>Edit</Button>
           <Button variant="outline">Delist</Button>
           <Button variant="primary">Publish Property</Button>
         </div>

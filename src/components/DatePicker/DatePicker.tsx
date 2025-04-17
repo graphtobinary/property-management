@@ -126,7 +126,6 @@ export default function DatePicker({
     }
 
     const isLastRow = index + 1 === priceData.length;
-    console.log(property?.prices, "dateList");
     return (
       <div className="flex">
         {/* Property image + name + location */}

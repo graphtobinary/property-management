@@ -5,28 +5,36 @@ import { Plus } from "../icons";
 import Button from "../components/ui/button/Button";
 import { useListingStore } from "../store/listing.store";
 import { getPropertyTempId } from "../api/Listing.api";
+import { useEffect } from "react";
 
 const ManageProperties: React.FC = () => {
   const { listingFormData, setListingFormData, clearListingStore } =
     useListingStore();
   const navigate = useNavigate();
 
+  useEffect(() => {
+    clearListingStore();
+  }, []);
+
   const handlePropertyTempId = async () => {
     try {
-      clearListingStore();
       const { propertyId } = (await getPropertyTempId()) as {
         propertyId: string;
       };
-
-      setListingFormData({
-        ...listingFormData,
-        propertyTempId: propertyId,
-      });
-      navigate("/create-listing-step-one");
+      navigateToCreateListing(propertyId);
     } catch (error) {
       console.log(error);
     }
   };
+
+  const navigateToCreateListing = (propertyId: string) => {
+    setListingFormData({
+      ...listingFormData,
+      propertyTempId: propertyId,
+    });
+    navigate("/create-listing-step-one");
+  };
+
   return (
     <>
       <PageMeta title="Manzil" description="Property Management Dashboard" />
