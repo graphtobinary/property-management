@@ -5,6 +5,8 @@ import Input from "../form/input/InputField";
 import Button from "../ui/button/Button";
 import Alert from "../ui/alert/Alert";
 import { ResetFormProps } from "../../interfaces/auth";
+import { useSearchParams } from "react-router";
+import { resetPassword } from "../../api/User.api";
 
 export default function ResetPasswordForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -23,7 +25,7 @@ export default function ResetPasswordForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
 
   const formRef = useRef<HTMLFormElement | null>(null);
-
+  const [serachParams] = useSearchParams();
   const validate = (pwd: string, confirmPwd: string): ResetFormProps => {
     const newErrors: ResetFormProps = { password: "", confirmPassword: "" };
 
@@ -66,7 +68,8 @@ export default function ResetPasswordForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    const token = serachParams.get("token");
+    if (!token) return;
     const finalTouched = { password: true, confirmPassword: true };
     setTouched(finalTouched);
 
@@ -77,7 +80,11 @@ export default function ResetPasswordForm() {
 
     try {
       setLoading(true);
-      // await signupUser({ password });
+      const formData = {
+        resetToken: token,
+        password,
+      };
+      await resetPassword(formData);
       setIsSuccess(true);
       setPassword("");
       setConfirmPassword("");

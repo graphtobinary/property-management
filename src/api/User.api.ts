@@ -1,4 +1,8 @@
-import { UpdateUserDataProps } from "../interfaces";
+import {
+  ForgotPasswordProps,
+  ResetPasswordProps,
+  UpdateUserDataProps,
+} from "../interfaces";
 import API_CONSTANTS from "./constants";
 import { doPost } from "./index";
 
@@ -57,6 +61,32 @@ export const getUser = () => {
 export const patchUser = (formData: UpdateUserDataProps) => {
   return doPost(
     API_CONSTANTS.PATCH_USER,
+    {},
+    {
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    }
+  );
+};
+
+export const forgotPassword = (formData: ForgotPasswordProps) => {
+  return doPost(
+    API_CONSTANTS.FORGOT_PASSWORD,
+    {},
+    {
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    }
+  );
+};
+
+export const resetPassword = (formData: ResetPasswordProps) => {
+  return doPost(
+    API_CONSTANTS.RESET_PASSWORD,
     {},
     {
       headers: {

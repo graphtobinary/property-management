@@ -6,6 +6,7 @@ import Button from "../ui/button/Button";
 import { validateEmail } from "../../utils/utils";
 import { SigninFormProps } from "../../interfaces/auth";
 import Alert from "../ui/alert/Alert";
+import { forgotPassword } from "../../api/User.api";
 
 export default function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
@@ -57,8 +58,10 @@ export default function ForgotPasswordForm() {
 
       try {
         setLoading(true);
-        // Simulate async request
-        // await sendResetLink(email);
+        const formData = {
+          email,
+        };
+        await forgotPassword(formData);
         setIsSuccess(true);
         formRef.current?.reset();
         setEmail("");

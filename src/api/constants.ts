@@ -4,6 +4,8 @@ const API_CONSTANTS = {
   USER_LOGIN: "/acl.service.v1.LoginService/Login",
   GET_USER: "/acl.service.v1.AclUserService/GetAclUserProfile",
   PATCH_USER: "/acl.service.v1.TenantService/PatchTenantProfile",
+  FORGOT_PASSWORD: "/acl.service.v1.ForgotPasswordService/ForgotPassword",
+  RESET_PASSWORD: "/acl.service.v1.ResetPasswordService/ResetPassword",
   GET_COUNTRY_LIST: "/master.service.v1.MasterCachedService/GetCountries",
   GET_AMENITIES: "/master.service.v1.MasterCachedService/GetAmenities",
   GET_BED_TYPES: "/master.service.v1.MasterCachedService/GetBedTypes",

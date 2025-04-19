@@ -12,6 +12,15 @@ export interface UpdateUserDataProps {
   approxNumOfListings?: string;
 }
 
+export interface ForgotPasswordProps {
+  email?: string;
+}
+
+export interface ResetPasswordProps {
+  resetToken: string;
+  password: string;
+}
+
 export interface AclUserProps {
   aclUser: UserProfileProps;
 }

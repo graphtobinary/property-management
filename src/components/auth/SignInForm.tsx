@@ -63,10 +63,7 @@ export default function SignInForm() {
           setCookie(AUTH_COOKIES.ACCESS_TOKEN, response.accessToken);
           setCookie(AUTH_COOKIES.REFRESH_TOKEN, response.refreshToken);
           setToken(response.accessToken);
-
-          const { aclUser } = (await getUser(
-            response.accessToken
-          )) as AclUserProps;
+          const { aclUser } = (await getUser()) as AclUserProps;
           setUser(aclUser);
           navigate(
             aclUser?.tenant?.tenantBusinessType ? "/" : "/tell-us-about-you"
@@ -142,7 +139,7 @@ export default function SignInForm() {
                     </span>
                   </div>
                   <Link
-                    to="/reset-password"
+                    to="/forgot-password"
                     className="text-sm text-primary hover:text-primary dark:text-primary"
                   >
                     Forgot password?
