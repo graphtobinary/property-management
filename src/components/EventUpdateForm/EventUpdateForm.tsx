@@ -33,7 +33,12 @@ const EventUpdateForm: FC<EventUpdateFormProps> = ({
     const newErrors = {
       eventStartDate: !eventStartDate ? "Start date is required." : "",
       eventEndDate: !eventEndDate ? "End date is required." : "",
-      eventPrice: !eventPrice ? "Price is required." : "",
+      eventPrice:
+        eventAvailability === "blocked"
+          ? ""
+          : !eventPrice
+          ? "Price is required."
+          : "",
       eventAvailability: !eventAvailability ? "Availability is required." : "",
       eventPrivateNote: !eventPrivateNote ? "Private note is required." : "",
     };
@@ -102,10 +107,15 @@ const EventUpdateForm: FC<EventUpdateFormProps> = ({
                 type="number"
                 value={eventPrice}
                 onChange={(e) => setEventPrice(e.target.value)}
-                className={`pl-[${currencyBoxWidth || 55}px]`}
                 customStyle={{ paddingLeft: currencyBoxWidth || 55 }}
                 error={Boolean(errors?.eventPrice ?? false)}
                 hint={errors.eventPrice}
+                className={`pl-[${currencyBoxWidth || 55}px] ${
+                  eventAvailability === "blocked"
+                    ? "bg-gray-100 cursor-not-allowed text-gray-500"
+                    : ""
+                }`}
+                disabled={eventAvailability === "blocked"}
               />
               <span
                 ref={currencyRef}
