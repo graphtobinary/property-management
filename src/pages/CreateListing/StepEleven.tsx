@@ -131,8 +131,6 @@ const StepEleven: React.FC = () => {
       });
     }
   }, [listingFormData]);
-  console.log(listingFormData.photos, "photos");
-  console.log(images, "images");
   return (
     <>
       <PageMeta title="Manzil" description="Property Management Dashboard" />
