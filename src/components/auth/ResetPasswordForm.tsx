@@ -84,13 +84,15 @@ export default function ResetPasswordForm() {
         resetToken: token,
         password,
       };
-      await resetPassword(formData);
-      setIsSuccess(true);
-      setPassword("");
-      setConfirmPassword("");
-      setErrors({ password: "", confirmPassword: "" });
-      setTouched({ password: false, confirmPassword: false });
-      formRef.current?.reset();
+      const results =  await resetPassword(formData);
+      if (results) {
+        setIsSuccess(true);
+        setPassword("");
+        setConfirmPassword("");
+        setErrors({ password: "", confirmPassword: "" });
+        setTouched({ password: false, confirmPassword: false });
+        formRef.current?.reset();
+      }
     } catch (err) {
       console.log(err);
     } finally {

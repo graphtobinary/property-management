@@ -54,7 +54,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
           addressLine2: propertyDetails.propertyAddress.addressLine2,
           landmark: propertyDetails.propertyAddress.landmark,
           city: propertyDetails.propertyAddress.city,
-          state: propertyDetails.propertyAddress.state,
+          // state: propertyDetails.propertyAddress.state,
           zipCode: propertyDetails.propertyAddress.zipCode,
           latitude: propertyDetails.propertyAddress.latitude,
           longitude: propertyDetails.propertyAddress.longitude,
@@ -115,7 +115,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
           <div>
             <h2 className="text-lg font-semibold">{property?.name}</h2>
             <p className="text-gray-500 text-xs font-light">
-              {`${propertyAddress?.addressLine1}, ${propertyAddress?.addressLine2}, ${propertyAddress?.city} ${propertyAddress?.state} ${propertyAddress?.zipCode}`}
+              {`${propertyAddress?.addressLine1}, ${propertyAddress?.addressLine2}, ${propertyAddress?.city} ${propertyAddress?.zipCode}`}
             </p>
           </div>
           <div className=" bg-gray-100 p-2">

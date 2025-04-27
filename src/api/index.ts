@@ -51,14 +51,12 @@ const doCall = async (
 
     if (!response.ok) {
       const res = await response.json();
-      const message = isBrowser()
-        ? res.error?.message || `Request: ${uri} ${response.statusText}`
-        : `Request: ${uri} ${response.statusText}`;
+      const message =
+        res?.message ||
+        res?.error?.message ||
+        `Request: ${uri} ${response.statusText}`;
 
-      throw new ApiException(message, response.status, {
-        ...res.error,
-        status: response.status,
-      });
+      throw new ApiException(message, response.status, res);
     }
 
     const contentType = response.headers.get("content-type") || "";
@@ -78,12 +76,11 @@ const doCall = async (
     return response.text();
   } catch (error) {
     if (error instanceof ApiException) {
-      console.log(error, "error");
-      toast.error(error.message || "Something went wrong!");
+      toast.error(error?.message || "Something went wrong!");
     } else {
       toast.error("Network error. Please try again.");
     }
-    throw error; // still rethrow so local catch() can also handle if needed
+    // throw error; // still rethrow so local catch() can also handle if needed
   }
 };
 

@@ -295,7 +295,7 @@ const CalendarDetails: React.FC = () => {
               {!isPastDate(String(eventInfo?.event?.start)) ? (
                 `${eventInfo.event.extendedProps.currency}${eventInfo.event.extendedProps?.price}`
               ) : (
-                <span className="text-gray-400">
+                <span className="text-gray-400 cursor-not-allowed">
                   {`${eventInfo.event.extendedProps.currency}${eventInfo.event.extendedProps?.price}`}
                 </span>
               )}

@@ -47,7 +47,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
           addressLine2: propertyDetails.propertyAddress.addressLine2,
           landmark: propertyDetails.propertyAddress.landmark,
           city: propertyDetails.propertyAddress.city,
-          state: propertyDetails.propertyAddress.state,
+          // state: propertyDetails.propertyAddress.state,
           zipCode: propertyDetails.propertyAddress.zipCode,
           latitude: propertyDetails.propertyAddress.latitude,
           longitude: propertyDetails.propertyAddress.longitude,
@@ -106,7 +106,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         />
         <div className="w-full md:w-56">
           <h3 className="text-md font-medium">{name}</h3>
-          <p className="text-xs text-gray-500">{`${propertyAddress?.addressLine1}, ${propertyAddress?.addressLine2}, ${propertyAddress?.city} ${propertyAddress?.state} ${propertyAddress?.zipCode}`}</p>
+          <p className="text-xs text-gray-500">{`${propertyAddress?.addressLine1}, ${propertyAddress?.addressLine2}, ${propertyAddress?.city} ${propertyAddress?.zipCode}`}</p>
         </div>
         {/* Price section */}
         <div className="border-l border-l-gray-200 pl-4">

@@ -56,6 +56,7 @@ export default function AddressForm() {
 
   useEffect(() => {
     if (listingFormData.address) {
+      if (listingFormData.address.countryId) fetchCities(listingFormData.address.countryId)
       setFormValues((prev) => ({
         ...prev,
         countryId: listingFormData.address.countryId,

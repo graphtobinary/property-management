@@ -85,18 +85,22 @@ const StepTwelve: React.FC = () => {
           propertyNanoId: listingFormData.propertyTempId,
         } as Partial<typeof listingFormData>;
         delete newListingData.propertyTempId;
-        await updateProperty(newListingData);
-        showToast({
-          type: "success",
-          message: "Property updated successfully!",
-        });
-        navigate("/manage-properties");
+        const updateRes =  await updateProperty(newListingData);
+        if (updateRes) {
+          showToast({
+            type: "success",
+            message: "Property updated successfully!",
+          });
+          navigate("/manage-properties");
+        }
       } else {
         // Create case
-        await createProperty(newListingData);
-        openModal();
+        const createResponce =  await createProperty(newListingData);
+        if (createResponce) {
+          openModal(); 
+          clearListingStore();
+        }
       }
-      clearListingStore();
     } catch (error) {
       console.error("Submission error:", error);
     } finally {
