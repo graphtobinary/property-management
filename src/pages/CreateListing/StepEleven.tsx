@@ -75,31 +75,18 @@ const StepEleven: React.FC = () => {
             } else return item;
           })
         );
-        console.log(listingFormData, "store before update");
-        // setListingFormData({
-        //   ...listingFormData,
-        //   photos: [
-        //     ...listingFormData.photos,
-        //     {
-        //       id: data.imageId || media.id,
-        //       imagePath: media.url,
-        //     },
-        //   ],
-        // });
-        // Read current formData manually
-        const updatedPhotos = [
-          ...(listingFormData.photos || []), // ensure photos exists
-          {
-            id: data.imageId || media.id,
-            imagePath: media.url,
-          },
-        ];
 
-        // Update store manually
-        setListingFormData({
-          ...listingFormData,
-          photos: updatedPhotos,
-        });
+        // Update store with the new photo while preserving existing photos
+        setListingFormData((prev) => ({
+          ...prev,
+          photos: [
+            ...(prev.photos || []),
+            {
+              id: data.imageId || media.id,
+              imagePath: media.url,
+            },
+          ],
+        }));
         return data;
       }
     } catch (error) {

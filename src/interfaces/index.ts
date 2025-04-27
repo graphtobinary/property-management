@@ -153,7 +153,9 @@ export interface ListingFormDataProps {
 
 export interface ListingState {
   listingFormData: ListingFormDataProps;
-  setListingFormData: (data: ListingFormDataProps) => void;
+  setListingFormData: (
+    data: ListingFormDataProps | ((prev: ListingFormDataProps) => ListingFormDataProps)
+  ) => void;
   clearListingStore: () => void;
 }
 

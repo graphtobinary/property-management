@@ -43,7 +43,10 @@ export const useListingStore = create<ListingState>()((set) => ({
   ...listingFormDataInitialValue,
   setListingFormData: (value) =>
     set((state) => ({
-      listingFormData: { ...state.listingFormData, ...value },
+      listingFormData: {
+        ...state.listingFormData,
+        ...(typeof value === "function" ? value(state.listingFormData) : value),
+      },
     })),
   clearListingStore: () => set(listingFormDataInitialValue),
 }));
