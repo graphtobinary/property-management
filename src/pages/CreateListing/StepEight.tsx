@@ -82,10 +82,10 @@ const StepEight: React.FC = () => {
             <span className="mb-3 text-base font-semibold text-gray-800 dark:text-white/90">
               Which of these best describes your place?
             </span>
-            <div className="grid grid-cols-12 gap-4 md:gap-6">
+            <div className="grid grid-cols-12 gap-4 md:gap-6 pb-20">
               <div className="col-span-12 space-y-12 ">
                 {/*  */}
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-4 md:gap-6">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-5 md:gap-6">
                   {amenitiesList?.map((category: ListTypeProps) => (
                     <div
                       key={category.id}
@@ -117,16 +117,20 @@ const StepEight: React.FC = () => {
                 {/*  */}
               </div>
             </div>
-          </div>
-        </div>
-        <div className="flex justify-end mb-3">
-          <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={() => navigate(-1)}>
-              Back
-            </Button>
-            <Link to="/create-listing-step-nine">
-              <Button>Next</Button>
-            </Link>
+            <div className="flex justify-end mb-3 fixed bottom-2 right-6">
+              <div className="flex gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => navigate(-1)}
+                >
+                  Back
+                </Button>
+                <Link to="/create-listing-step-nine">
+                  <Button>Next</Button>
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </>

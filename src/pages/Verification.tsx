@@ -73,10 +73,7 @@ export default function Verification() {
 
   return (
     <>
-     <PageMeta
-        title="Manzil"
-        description="Property Management Dashboard"
-      />
+      <PageMeta title="Manzil" description="Property Management Dashboard" />
 
       <AuthLayout>
         <div className="flex flex-col flex-1">
@@ -88,14 +85,14 @@ export default function Verification() {
                 </div>
               ) : (
                 <div className="flex flex-col flex-1 w-full max-w-md mx-auto justify-center">
-                  {isSuccess ? (
+                  {!isSuccess ? (
                     <Alert
                       variant="success"
                       title="Email verified Successful"
                       message="Grow from 1 listing to 1000s in a single platform"
                       showLink={true}
                       linkHref="/"
-                      linkText="Signin"
+                      linkText="Sign In"
                     />
                   ) : (
                     <>

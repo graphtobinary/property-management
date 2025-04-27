@@ -12,7 +12,7 @@ const UploadPropertyPhotos: React.FC<{
   error?: boolean;
   hint?: string;
 }> = ({ images, handleImageUpload, error, hint }) => {
-  const { listingFormData } = useListingStore();
+  const { listingFormData, setListingFormData } = useListingStore();
   const onDrop = (acceptedFiles: File[]) => {
     const newImages: PropertyImageProps[] = acceptedFiles.map((file) => ({
       id: URL.createObjectURL(file), // Unique ID for preview
@@ -35,6 +35,10 @@ const UploadPropertyPhotos: React.FC<{
         };
         await deletePropertyImageByImageId(formData);
       }
+      setListingFormData({
+        ...listingFormData,
+        photos: listingFormData.photos.filter((item) => item.id !== id),
+      });
     } catch (error) {
       console.log("Image Delete Error: ", error);
     }
@@ -47,12 +51,12 @@ const UploadPropertyPhotos: React.FC<{
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      "image/png": [],
+      // "image/png": [],
       "image/jpeg": [],
-      "image/webp": [],
-      "image/svg+xml": [],
+      // "image/webp": [],
+      // "image/svg+xml": [],
     },
-    multiple: false, // Enable multiple image selection
+    multiple: true, // Enable multiple image selection
   });
 
   let uploadPhotoClasses =
@@ -124,7 +128,8 @@ const UploadPropertyPhotos: React.FC<{
               {isDragActive ? "Drop Files Here" : "Drag & Drop Files Here"}
             </h4>
             <span className="text-center mb-5 block w-full max-w-[290px] text-sm text-gray-700 dark:text-gray-400">
-              Drag and drop your PNG, JPG, WebP, SVG images here or browse
+              {/* Drag and drop your PNG, JPG, WebP, SVG images here or browse */}
+              Drag and drop your JPG images here or browse
             </span>
             <span className="font-medium underline text-theme-sm text-primary">
               Browse Files

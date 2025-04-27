@@ -26,7 +26,7 @@ const StepEleven: React.FC = () => {
     navigate("/create-listing-step-twelve");
   };
 
-  const { listingFormData } = useListingStore();
+  const { listingFormData, setListingFormData } = useListingStore();
   const uploadMedia = async (media: { url: string; id: string }) => {
     if (!listingFormData?.propertyTempId) {
       console.error("Missing propertyTempId for image upload");
@@ -59,6 +59,7 @@ const StepEleven: React.FC = () => {
             } else return item;
           })
         );
+
         return res;
       } else {
         const data = (await uploadImages(
@@ -74,6 +75,31 @@ const StepEleven: React.FC = () => {
             } else return item;
           })
         );
+        console.log(listingFormData, "store before update");
+        // setListingFormData({
+        //   ...listingFormData,
+        //   photos: [
+        //     ...listingFormData.photos,
+        //     {
+        //       id: data.imageId || media.id,
+        //       imagePath: media.url,
+        //     },
+        //   ],
+        // });
+        // Read current formData manually
+        const updatedPhotos = [
+          ...(listingFormData.photos || []), // ensure photos exists
+          {
+            id: data.imageId || media.id,
+            imagePath: media.url,
+          },
+        ];
+
+        // Update store manually
+        setListingFormData({
+          ...listingFormData,
+          photos: updatedPhotos,
+        });
         return data;
       }
     } catch (error) {
@@ -81,28 +107,45 @@ const StepEleven: React.FC = () => {
     }
   };
 
-  const handleImageUpload = (data: PropertyImageProps[], isRemove = false) => {
+  const handleImageUpload = async (
+    data: PropertyImageProps[],
+    isRemove = false
+  ) => {
     if (isRemove) {
       setImages(data);
     } else {
       setImages((prevImages) => [...prevImages, ...data]);
-      data.forEach((image) => uploadMedia({ url: image.url, id: image.id }));
+      // data.forEach((image) => uploadMedia({ url: image.url, id: image.id }));
+      for (const image of data) {
+        await uploadMedia({ url: image.url, id: image.id });
+      }
     }
   };
 
   useEffect(() => {
     if (listingFormData?.photos?.length > 0) {
-      setImages(
-        listingFormData?.photos?.map((image) => {
-          return {
+      setImages((prev) => {
+        // Create a new array of images from listingFormData.photos
+        const newImages =
+          listingFormData?.photos?.map((image) => ({
             id: image.id,
-            url: `${import.meta.env.VITE_CDN_URL}${image?.imagePath}`,
-          };
-        })
-      );
+            url: listingFormData.isUpdateListing
+              ? `${import.meta.env.VITE_CDN_URL}${image?.imagePath}`
+              : image?.imagePath,
+          })) || [];
+
+        // Filter out any new images whose id already exists in prev
+        const filteredNewImages = newImages.filter(
+          (newImage) => !prev.some((prevImage) => prevImage.id === newImage.id)
+        );
+
+        // Return the updated state, combining previous images with the new unique images
+        return [...prev, ...filteredNewImages];
+      });
     }
   }, [listingFormData]);
-
+  console.log(listingFormData.photos, "photos");
+  console.log(images, "images");
   return (
     <>
       <PageMeta title="Manzil" description="Property Management Dashboard" />

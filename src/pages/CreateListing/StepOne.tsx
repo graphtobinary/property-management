@@ -51,7 +51,7 @@ const StepOne: React.FC = () => {
       <PageMeta title="Manzil" description="Property Management Dashboard" />
 
       <>
-        <div className="bg-white p-0 md:p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-0 mb-5">
+        <div className="bg-white p-0 md:p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-0 mb-5 grow">
           <div className="flex justify-between">
             <h3 className="mb-1 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-2">
               Step 1
@@ -76,7 +76,7 @@ const StepOne: React.FC = () => {
             <div className="grid grid-cols-12 gap-4 md:gap-6">
               <div className="col-span-12 space-y-12 ">
                 {/*  */}
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-4 md:gap-6">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-5 md:gap-6">
                   {propertyTypeList?.map((category: ListTypeProps) => (
                     <div
                       key={category?.id}
@@ -91,8 +91,8 @@ const StepOne: React.FC = () => {
                       <div className="relative">
                         <img
                           src="images/product/placeholder-thumb.jpg" // Replace with the actual product image URL
-                          alt="Nike Air Force 1 NDESTRUKT"
-                          className="w-full "
+                          alt={category?.name}
+                          className="w-full"
                         />
                       </div>
 
