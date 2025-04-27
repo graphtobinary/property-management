@@ -3,7 +3,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { DateSelectArg, EventClickArg } from "@fullcalendar/core";
+import { DateSelectArg, DatesSetArg, EventClickArg } from "@fullcalendar/core";
 import { useModal } from "../hooks/useModal";
 import PageMeta from "../components/common/PageMeta";
 import {
@@ -21,6 +21,7 @@ import AnimatedSidebar from "../components/AnimatedSidebar";
 import EventUpdateForm from "../components/EventUpdateForm";
 import { createPropertyRules } from "../api/Listing.api";
 import DotsLoader from "../components/DotsLoader";
+import { usePropertyDetails } from "../hooks/usePropertyDetails";
 
 const CalendarDetails: React.FC = () => {
   const { id } = useParams();
@@ -46,11 +47,23 @@ const CalendarDetails: React.FC = () => {
     endDate,
     Number(id)
   );
+
+  // Handle the date change event (when the user changes the month)
+  const handleDatesSet = (data: DatesSetArg) => {
+    const startDate = data.view.currentStart; // Get the start date of the current view
+    setCurrentDate(startDate);
+  };
   const {
     unavailabilities = [],
-    refetchUnavailablity,
     unavailablityLoading,
-  } = usePropertyUnavailability(startDate, endDate, Number(id));
+    fetchUnavilablePrices,
+  } = usePropertyUnavailability();
+
+  useEffect(() => {
+    if (startDate && endDate && Number(id)) {
+      fetchUnavilablePrices(startDate, endDate, Number(id));
+    }
+  }, [startDate, endDate]);
 
   const allEvents = useMemo(() => {
     return generateCalendarEvents(prices, unavailabilities);
@@ -58,9 +71,25 @@ const CalendarDetails: React.FC = () => {
 
   useEffect(() => {
     if (JSON.stringify(events) !== JSON.stringify(allEvents)) {
+      console.log(allEvents, "allEvents");
       setEvents(allEvents);
     }
   }, [allEvents]);
+
+  const { imagesList, propertyDetails, fetchProperty } = usePropertyDetails();
+
+  useEffect(() => {
+    if (id && !state?.property) {
+      const formData = {
+        propertyId: Number(id),
+        includeRooms: false,
+        includeAmenities: false,
+        includeTags: false,
+        includePhotos: true,
+      };
+      fetchProperty(formData);
+    }
+  }, [state]);
 
   const handleDateSelect = (selectInfo: DateSelectArg) => {
     if (isPastDate(selectInfo.startStr)) return;
@@ -84,7 +113,6 @@ const CalendarDetails: React.FC = () => {
         ""
     );
 
-    console.log(event, "event");
     const extendedProps = event.extendedProps;
     setEventLevel(extendedProps.calendar || "");
     setEventPrice(extendedProps.price || 0);
@@ -157,7 +185,7 @@ const CalendarDetails: React.FC = () => {
       handleCreatePropertyRules(formData);
       setTimeout(() => {
         refetchPrices(); // refetch price data
-        refetchUnavailablity();
+        fetchUnavilablePrices(startDate, endDate, Number(id));
       }, 100);
     }
     closeModal();
@@ -213,9 +241,19 @@ const CalendarDetails: React.FC = () => {
     calendarRef.current?.getApi().gotoDate(prev);
   };
 
-  const renderDayCells = (e: { dayNumberText: string | undefined }) => {
+  const renderDayCells = (e: {
+    dayNumberText: string | undefined;
+    date: Date;
+  }) => {
+    const isPast = isPastDate(e.date); // check if this cell's date is in the past
+
     return (
-      <div className="flex justify-end items-end text-sm">
+      // <div className="flex justify-end items-end text-sm">
+      <div
+        className={`flex justify-end items-end text-sm h-full w-full px-1 py-1 ${
+          isPast ? " text-gray-400 cursor-not-allowed" : ""
+        }`}
+      >
         {e?.dayNumberText}
       </div>
     );
@@ -237,6 +275,7 @@ const CalendarDetails: React.FC = () => {
         ? `fc-bg-danger`
         : "";
     if (loading || unavailablityLoading) return <DotsLoader />;
+
     return (
       <div className="">
         {/* <div className="absolute w-full h-full left-0 top-0 bg-red-400"></div> */}
@@ -253,13 +292,38 @@ const CalendarDetails: React.FC = () => {
             </div>
           ) : (
             <div className="fc-event-title text-sm font-bold">
-              {`${eventInfo.event.extendedProps.currency}${eventInfo.event.extendedProps?.price}`}
+              {!isPastDate(String(eventInfo?.event?.start)) ? (
+                `${eventInfo.event.extendedProps.currency}${eventInfo.event.extendedProps?.price}`
+              ) : (
+                <span className="text-gray-400">
+                  {`${eventInfo.event.extendedProps.currency}${eventInfo.event.extendedProps?.price}`}
+                </span>
+              )}
             </div>
           )}
         </div>
       </div>
     );
   };
+
+  let propertyData: {
+    imagePath?: string;
+    name?: string;
+    location?: string;
+  } = {};
+  if (!state?.property) {
+    propertyData = {
+      imagePath: imagesList[0]?.imagePath,
+      name: propertyDetails?.name,
+      location: propertyDetails?.propertyAddress?.city,
+    };
+  } else {
+    propertyData = {
+      imagePath: state?.property?.imagePath,
+      name: state?.property?.name,
+      location: state?.property?.location,
+    };
+  }
 
   return (
     <>
@@ -274,16 +338,16 @@ const CalendarDetails: React.FC = () => {
             <ChevronLeftIcon />
           </div>
           <img
-            src={`${import.meta.env.VITE_CDN_URL}${state?.property?.imagePath}`}
+            src={`${import.meta.env.VITE_CDN_URL}${propertyData?.imagePath}`}
             alt={state?.property?.name}
             className="w-10 h-10 rounded-md object-cover"
           />
           <div className="flex flex-col">
             <div className="text-sm text-gray-800 font-semibold">
-              {state?.property?.name}
+              {propertyData?.name}
             </div>
             <div className="text-xs text-gray-500 font-normal">
-              {state?.property?.location}
+              {propertyData?.location}
             </div>
           </div>
         </div>
@@ -359,6 +423,7 @@ const CalendarDetails: React.FC = () => {
           eventContent={renderEventContent}
           fixedWeekCount={false}
           eventOverlap={true}
+          datesSet={handleDatesSet}
           headerToolbar={{
             left: "title",
             right: "",

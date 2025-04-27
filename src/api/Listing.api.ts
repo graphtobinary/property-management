@@ -16,6 +16,19 @@ export const getCountryList = () => {
   );
 };
 
+export const getCityList = (formdata: { countryId: string }) => {
+  return doPost(
+    API_CONSTANTS.GET_CITY_LIST,
+    {},
+    {
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(formdata),
+    }
+  );
+};
+
 export const getAmenities = () => {
   return doPost(
     API_CONSTANTS.GET_AMENITIES,

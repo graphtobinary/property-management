@@ -24,8 +24,8 @@ const HouseRulesForm = () => {
   const [smoking, setSmoking] = useState<boolean>(false);
   const [petFriendly, setPetFriendly] = useState<boolean>(false);
   const [specialNeeds, setSpecialNeeds] = useState<boolean>(false);
-  const [checkinTime, setCheckInTime] = useState<string>("");
-  const [checkoutTime, setCheckOutTime] = useState<string>("");
+  const [checkinTime, setCheckInTime] = useState<string>("12:00 PM");
+  const [checkoutTime, setCheckOutTime] = useState<string>("10:00 AM");
   const { listingFormData, setListingFormData } = useListingStore();
   // Error state
   const [errors, setErrors] = useState<ErrorTypes>(INIT_FORM_ELEMENTS);
@@ -56,12 +56,9 @@ const HouseRulesForm = () => {
     Object.entries(timeFields).forEach(([key, value]) => {
       if (!value || value.trim() === "--:-- --") {
         newErrors[key as keyof ErrorTypes] = "This field is required";
+      } else if (value.includes("--")) {
+        newErrors[key as keyof ErrorTypes] = "Please complete the time";
       }
-
-      // else if (!timeFormatRegex.test(value)) {
-      //   newErrors[key as keyof ErrorTypes] =
-      //     "Invalid time format (e.g., 03:00 AM)";
-      // }
     });
 
     setErrors(newErrors);

@@ -6,17 +6,20 @@ import TextArea from "../form/input/TextArea";
 import Button from "../ui/button/Button";
 import { useNavigate } from "react-router";
 import useCountries from "../../hooks/useCountries";
-import { AddressFormProps } from "../../interfaces";
+import {
+  AddressFormProps,
+  CityItemProps,
+  CountryItemProps,
+} from "../../interfaces";
 import { useListingStore } from "../../store/listing.store";
+import { getCityList } from "../../api/Listing.api";
 
 const INIT_FORM_ELEMENTS = {
   countryId: "",
   addressLine1: "",
   addressLine2: "",
   landmark: "",
-  // district: "",
   city: "",
-  state: "",
   zipCode: "",
 };
 
@@ -26,11 +29,29 @@ export default function AddressForm() {
   // Error state
   const [errors, setErrors] = useState<AddressFormProps>(INIT_FORM_ELEMENTS);
   const { listingFormData, setListingFormData } = useListingStore();
+  const [cities, setCities] = useState<CountryItemProps[]>([]);
 
   // Handle input changes
   const handleChange = (field: string, value: string) => {
     setFormValues((prev) => ({ ...prev, [field]: value }));
     setErrors((prev) => ({ ...prev, [field]: "" })); // Clear error when typing
+    if (field === "countryId") fetchCities(value);
+  };
+  const fetchCities = async (countryId: string) => {
+    try {
+      const formData = {
+        countryId,
+      };
+      const { cities } = (await getCityList(formData)) as {
+        cities: CityItemProps[];
+      };
+      const newData = cities?.map((item: CityItemProps) => {
+        return { value: item.name, label: item.name };
+      });
+      setCities(newData);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -58,10 +79,6 @@ export default function AddressForm() {
       setFormValues((prev) => ({
         ...prev,
         zipCode: listingFormData.address.zipCode,
-      }));
-      setFormValues((prev) => ({
-        ...prev,
-        state: listingFormData.address.state,
       }));
     }
   }, [listingFormData]);
@@ -157,56 +174,21 @@ export default function AddressForm() {
               hint={errors.landmark}
             />
           </div>
-          <div>
-            {/* <div>
-              <Label>
-                District<span className="text-error-500">*</span>
-              </Label>
-              <Input
-                type="text"
-                id="input"
-                placeholder="Enter district"
-                onChange={(e) => handleChange("district", e.target.value)}
-                error={Boolean(errors?.district ?? false)}
-                hint={errors.district}
-              />
-            </div> */}
+
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
             <div>
               <Label>
                 City<span className="text-error-500">*</span>
               </Label>
-              <Input
-                type="text"
-                id="input"
-                placeholder="Enter city"
-                value={formValues.city ?? ""}
-                onChange={(e) => handleChange("city", e.target.value)}
+
+              <Select
+                options={cities}
+                placeholder="Select Option"
+                onChange={(value) => handleChange("city", value)}
+                defaultValue={listingFormData.address.city ?? ""}
+                className="dark:bg-dark-900"
                 error={Boolean(errors?.city ?? false)}
                 hint={errors.city}
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
-            <div>
-              <Label>
-                State<span className="text-error-500">*</span>
-              </Label>
-              {/* <Select
-                options={stateOptions}
-                placeholder="Select an option"
-                onChange={(value) => handleChange("state", value)}
-                className="dark:bg-dark-900"
-                error={Boolean(errors?.state ?? false)}
-                hint={errors.state}
-              /> */}
-              <Input
-                type="text"
-                id="input"
-                placeholder="Enter State"
-                value={formValues.state ?? ""}
-                onChange={(e) => handleChange("state", e.target.value)}
-                error={Boolean(errors?.state ?? false)}
-                hint={errors.state}
               />
             </div>
             <div>

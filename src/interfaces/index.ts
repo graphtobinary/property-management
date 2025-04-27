@@ -29,6 +29,11 @@ export interface CountryItemProps {
   value: string;
   label: string;
 }
+
+export interface CityItemProps {
+  id: string;
+  name: string;
+}
 export interface CountryItemApiProps {
   id: string;
   name: string;
@@ -127,7 +132,6 @@ export interface ListingFormDataProps {
     landmark: string;
     // district: string;
     city: string;
-    state: string;
     zipCode: string;
     latitude: number | undefined;
     longitude: number | undefined;

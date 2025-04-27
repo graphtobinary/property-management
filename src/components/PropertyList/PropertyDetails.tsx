@@ -13,7 +13,8 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
 }) => {
   const { propertyAddress } = { ...property };
   const navigate = useNavigate();
-  const { listingFormData, setListingFormData, clearListingStore } = useListingStore();
+  const { listingFormData, setListingFormData, clearListingStore } =
+    useListingStore();
   const {
     propertyDetails,
     imagesList,
@@ -38,7 +39,6 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
   }, []);
 
   useEffect(() => {
-    console.log("Property Details", propertyDetails);
     if (propertyDetails) {
       clearListingStore();
       setListingFormData({
@@ -99,7 +99,6 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
 
   const sidebarRef = useRef<HTMLDivElement | null>(null);
   useOutsideClick(sidebarRef, () => {
-    
     onClose();
   });
   if (loading)
@@ -227,7 +226,9 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
           </div> */}
         {/* Buttons */}
         <div className="flex justify-end gap-2 bottom-5 right-5">
-          <Button variant="outline" onClick={handleEdit}>Edit</Button>
+          <Button variant="outline" onClick={handleEdit}>
+            Edit
+          </Button>
           <Button variant="outline">Delist</Button>
           <Button variant="primary">Publish Property</Button>
         </div>

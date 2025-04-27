@@ -124,9 +124,19 @@ const DynamicRoomSelector = () => {
     Object.keys(formValues).forEach((key) => {
       const value = formValues[key as keyof typeof formValues];
 
+      // Check if the value is an empty string
       if (typeof value === "string" && !value.trim()) {
         newErrors[key as keyof PropertyTypeFormProps] =
           "This field is required";
+      }
+
+      // Additional check for propertySize
+      if (key === "propertySize") {
+        const propertySize = Number(value); // Convert value to a number
+        if (isNaN(propertySize) || propertySize <= 0) {
+          newErrors[key as keyof PropertyTypeFormProps] =
+            "Property size must be greater than 0";
+        }
       }
     });
 

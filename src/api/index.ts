@@ -1,5 +1,6 @@
 import ApiException from "./Api.exception";
 import { getHeaders, isBrowser, replaceParamInString } from "../utils/utils";
+import { toast } from "react-toastify";
 
 export const GetCookie = (name: string): string | undefined => {
   if (typeof document === "undefined") {
@@ -45,7 +46,9 @@ const doCall = async (
     ...option.headers,
   };
 
-  return fetch(url, { ...option, headers }).then(async (response) => {
+  try {
+    const response = await fetch(url, { ...option, headers });
+
     if (!response.ok) {
       const res = await response.json();
       const message = isBrowser()
@@ -73,7 +76,15 @@ const doCall = async (
       return response.url;
     }
     return response.text();
-  });
+  } catch (error) {
+    if (error instanceof ApiException) {
+      console.log(error, "error");
+      toast.error(error.message || "Something went wrong!");
+    } else {
+      toast.error("Network error. Please try again.");
+    }
+    throw error; // still rethrow so local catch() can also handle if needed
+  }
 };
 
 export const doGet = (

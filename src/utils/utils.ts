@@ -90,6 +90,13 @@ export const getMonthRange = (date: Date) => {
   };
 };
 
+export const getFormattedDate = (date: Date) => {
+  const year = date.getFullYear();
+  const month = date.getMonth(); // 0-indexed
+
+  return new Date(year, month, 1).toLocaleDateString("en-CA");
+};
+
 export const generateCalendarEvents = (
   dailyPrices: DailyPrice[],
   dailyUnavailabilities: DailyUnavailability[]
@@ -107,9 +114,18 @@ export const generateCalendarEvents = (
     ])
   );
 
+  // Map prices by date for easy lookup
+  const priceMap = new Map(dailyPrices.map((p) => [p.pricedAt, p]));
+
   // Group consecutive unavailable dates
   const sortedUnavailable = [...blockedDatesSet].sort();
-  const blockedRanges: { start: string; end: string; comment: string }[] = [];
+  const blockedRanges: {
+    start: string;
+    end: string;
+    comment: string;
+    price: number;
+    currency?: string;
+  }[] = [];
 
   let rangeStart = sortedUnavailable[0];
   let prevDate = new Date(rangeStart);
@@ -121,11 +137,17 @@ export const generateCalendarEvents = (
     nextExpected.setDate(prevDate.getDate() + 1);
 
     if (!current || currentDate.getTime() !== nextExpected.getTime()) {
+      // pick price for start date (you could also pick for end or average — depends on your logic)
+      const priceInfo = priceMap.get(rangeStart);
+
       blockedRanges.push({
         start: rangeStart,
         end: new Date(prevDate).toISOString().split("T")[0],
         comment: commentMap.get(rangeStart) || "",
+        price: priceInfo ? Math.ceil(priceInfo.price) : 0,
+        currency: priceInfo?.currency?.currencyCode,
       });
+
       rangeStart = current;
     }
     prevDate = currentDate;
@@ -140,11 +162,15 @@ export const generateCalendarEvents = (
       id: `blocked-${i}`,
       title: "Blocked",
       start: range.start,
-      end: endDate.toISOString().split("T")[0], // use updated end date
+      end: endDate.toISOString().split("T")[0],
       extendedProps: {
         calendar: "Danger",
         availability: "blocked",
         privateNote: range.comment,
+        price: range.price,
+        currency: range.currency
+          ? getCurrencySymbol[range.currency] || range.currency
+          : undefined,
       },
     });
   });

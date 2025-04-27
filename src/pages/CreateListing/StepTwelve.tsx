@@ -133,7 +133,7 @@ const StepTwelve: React.FC = () => {
             <div className="grid grid-cols-12 gap-4 md:gap-6">
               <div className="col-span-12 space-y-12 ">
                 {/*  */}
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-4 md:gap-6">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-5 md:gap-6 pb-16">
                   {highlights?.map((category: ListTypeProps) => (
                     <div
                       key={category.id}
@@ -167,7 +167,7 @@ const StepTwelve: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="flex justify-end mb-3">
+        <div className="flex justify-end mb-3 fixed bottom-2 right-6">
           <div className="flex gap-2">
             <Button
               isLoading={loading}

@@ -10,6 +10,8 @@ import {
 } from "../../interfaces/listing";
 import Loader from "../Loader/Loader";
 import { getCurrencySymbol } from "../../constants";
+import { usePropertyUnavailability } from "../../hooks/usePropertyUnavailability";
+import { getFormattedDate } from "../../utils/utils";
 
 export default function DatePicker({
   endDate,
@@ -23,6 +25,13 @@ export default function DatePicker({
   const primaryColor = color || "rgb(54, 105, 238)";
   const [priceData, setPriceData] = useState<PriceEntryProps[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const {
+    // unavailabilities = [],
+    // // refetchUnavailablity,
+    // unavailablityLoading,
+    fetchUnavilablePrices,
+  } = usePropertyUnavailability();
 
   useEffect(() => {
     const loadData = async () => {
@@ -41,6 +50,7 @@ export default function DatePicker({
         const end = addDays(start, endDate || 30);
         const formattedStart = format(start, "yyyy-MM-dd");
         const formattedEnd = format(end, "yyyy-MM-dd");
+
         const propertiesWithPrices = await Promise.all(
           properties?.map(async (property: PropertyListItemProps) => {
             const { dailyPrices } = (await getPropertyPriceRules({
@@ -49,13 +59,29 @@ export default function DatePicker({
               endDate: formattedEnd,
             })) as PropertyPriceItemProps;
 
+            const dailyUnavailabilities = await fetchUnavilablePrices(
+              getFormattedDate(start),
+              getFormattedDate(end),
+              property.id
+            ); // Fetch unavailabilities for this property
+
+            const unavailabilityDates = new Set(
+              dailyUnavailabilities?.map((item) =>
+                format(new Date(item?.unavailableOnDate), "yyyy-MM-dd")
+              )
+            );
+
             const priceMap: Record<string, string> = {};
             dailyPrices?.forEach((item: DailyPriceItemProps) => {
               const date = item.pricedAt;
-              priceMap[date] = `${
-                getCurrencySymbol[item.currency.currencyCode] ||
-                item.currency.currencyCode
-              }${Math.ceil(item.price)}`;
+              if (unavailabilityDates.has(date)) {
+                priceMap[date] = "blocked";
+              } else {
+                priceMap[date] = `${
+                  getCurrencySymbol[item.currency.currencyCode] ||
+                  item.currency.currencyCode
+                }${Math.ceil(item.price)}`;
+              }
             });
 
             return {
@@ -164,7 +190,11 @@ export default function DatePicker({
                   isLastRow ? "border-b border-gray-300" : ""
                 }`}
               >
-                {price}
+                {price === "blocked" ? (
+                  <span className="font-semibold text-red-700">{price}</span>
+                ) : (
+                  price
+                )}
               </div>
             );
           })}

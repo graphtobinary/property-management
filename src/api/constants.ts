@@ -7,6 +7,7 @@ const API_CONSTANTS = {
   FORGOT_PASSWORD: "/acl.service.v1.ForgotPasswordService/ForgotPassword",
   RESET_PASSWORD: "/acl.service.v1.ResetPasswordService/ResetPassword",
   GET_COUNTRY_LIST: "/master.service.v1.MasterCachedService/GetCountries",
+  GET_CITY_LIST: "/master.service.v1.MasterCachedService/GetCities",
   GET_AMENITIES: "/master.service.v1.MasterCachedService/GetAmenities",
   GET_BED_TYPES: "/master.service.v1.MasterCachedService/GetBedTypes",
   GET_BOOKING_PLACE_TYPES:
