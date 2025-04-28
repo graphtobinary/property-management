@@ -1,9 +1,14 @@
 import { useEffect } from "react";
 import { usePropertyDetails } from "../../hooks/usePropertyDetails";
-import { PropertyCardProps } from "../../interfaces/listing";
+import {
+  PropertyCardProps,
+  PropertySyncStatus,
+} from "../../interfaces/listing";
 import { useListingStore } from "../../store/listing.store";
 import Button from "../ui/button/Button";
 import { useNavigate } from "react-router";
+import { delistProperty, publishProperty } from "../../api/Listing.api";
+import { toast } from "react-toastify";
 const fallBackImg = "images/product/placeholder-thumb.jpg";
 
 const PropertyCard: React.FC<PropertyCardProps> = ({
@@ -12,7 +17,9 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   propertyAddress,
   pricePerNight,
   imagePath,
+  syncStatus,
   onClick,
+  fetchPropertyList,
 }) => {
   const {
     propertyDetails,
@@ -22,7 +29,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
     roomsList,
     fetchProperty,
   } = usePropertyDetails();
-  const { listingFormData, setListingFormData, clearListingStore } = useListingStore();
+  const { listingFormData, setListingFormData, clearListingStore } =
+    useListingStore();
   const navigate = useNavigate();
 
   const formData = {
@@ -30,7 +38,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
     includeRooms: true,
     includeAmenities: true,
     includeTags: true,
-    includePhotos: true, 
+    includePhotos: true,
   };
   useEffect(() => {
     if (propertyDetails) {
@@ -93,6 +101,26 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
     navigate("/create-listing-step-one");
   };
 
+  const handlePublish = async () => {
+    try {
+      await publishProperty({ propertyId: id });
+      fetchPropertyList();
+      toast.success("Property published successfully");
+    } catch (error) {
+      console.log("Publish Property Error: ", error);
+    }
+  };
+
+  const handleDelist = async () => {
+    try {
+      await delistProperty({ propertyId: id });
+      fetchPropertyList();
+      toast.success("Property delisted successfully");
+    } catch (error) {
+      console.log("Delist Property Error: ", error);
+    }
+  };
+  const currentSyncStatus = syncStatus ?? PropertySyncStatus.UNSPECIFIED;
   return (
     <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg flex-col sm:flex-row gap-5">
       <div
@@ -117,13 +145,28 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
 
       {/* Buttons Section */}
       <div className="flex items-center gap-3">
-        <Button size="sm" variant="outline" onClick={handleEdit}>
-          Edit
-        </Button>
-        <Button size="sm" variant="outline">
+        {(currentSyncStatus === PropertySyncStatus.UNSPECIFIED ||
+          currentSyncStatus === PropertySyncStatus.DELISTED) && (
+          <Button size="sm" variant="outline" onClick={handleEdit}>
+            Edit
+          </Button>
+        )}
+
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={handleDelist}
+          disabled={currentSyncStatus !== PropertySyncStatus.PUBLISHED}
+        >
           Delist
         </Button>
-        <Button size="sm" variant="primary">
+
+        <Button
+          size="sm"
+          variant="primary"
+          onClick={handlePublish}
+          disabled={currentSyncStatus === PropertySyncStatus.PUBLISHED}
+        >
           Publish Property
         </Button>
       </div>

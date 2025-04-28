@@ -305,3 +305,29 @@ export const deletePropertyImageByImageId = (formData: { imageId: string }) => {
     }
   );
 };
+
+export const publishProperty = (formData: { propertyId: number }) => {
+  return doPost(
+    API_CONSTANTS.PUBLISH_PROPERTY,
+    {},
+    {
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    }
+  );
+};
+
+export const delistProperty = (formData: { propertyId: number }) => {
+  return doPost(
+    API_CONSTANTS.DELIST_PROPERTY,
+    {},
+    {
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    }
+  );
+};

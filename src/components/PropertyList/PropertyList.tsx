@@ -60,6 +60,7 @@ const PropertyList: React.FC = () => {
 
   const handleClose = () => {
     setTimeout(() => setSelectedProperty(null), 100); // Wait for animation to finish
+    clearListingStore();
   };
 
   return (
@@ -75,6 +76,7 @@ const PropertyList: React.FC = () => {
                 : ""
             }
             onClick={() => setSelectedProperty(property)}
+            fetchPropertyList={fetchPropertyList}
           />
         ))}
         <AnimatedSidebar isOpen={!!selectedProperty} onClose={handleClose}>
@@ -82,6 +84,7 @@ const PropertyList: React.FC = () => {
             <PropertyDetails
               property={selectedProperty}
               onClose={handleClose}
+              fetchPropertyList={fetchPropertyList}
             />
           </Suspense>
         </AnimatedSidebar>

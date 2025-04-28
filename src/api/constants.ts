@@ -36,6 +36,8 @@ const API_CONSTANTS = {
     "/images.service.v1.ImageService/DeleteUploadedImage",
   DELETE_IMAGE_BY_ID:
     "/property.service.v1.PropertyService/DeletePropertyPhoto",
+  PUBLISH_PROPERTY: "/property.service.v1.PropertyService/PublishProperty",
+  DELIST_PROPERTY: "/property.service.v1.PropertyService/DelistProperty",
 };
 
 export default API_CONSTANTS;

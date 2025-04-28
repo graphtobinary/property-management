@@ -1,11 +1,12 @@
 import PageMeta from "../../components/common/PageMeta";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
 import { getAmenities } from "../../api/Listing.api";
 import { ListTypeProps } from "../../interfaces/listing";
 import { useListingStore } from "../../store/listing.store";
 import ExitButton from "../../components/ExitButton";
+import { toast } from "react-toastify";
 
 const StepEight: React.FC = () => {
   const [selected, setSelected] = useState<string[]>([]);
@@ -54,6 +55,14 @@ const StepEight: React.FC = () => {
       });
     }
   }, [selected]);
+
+  const handleNext = () => {
+    if (selected.length === 0) {
+      toast.error("Please select at least one amenity");
+      return;
+    }
+    navigate("/create-listing-step-nine");
+  };
 
   return (
     <>
@@ -126,9 +135,7 @@ const StepEight: React.FC = () => {
                 >
                   Back
                 </Button>
-                <Link to="/create-listing-step-nine">
-                  <Button>Next</Button>
-                </Link>
+                <Button onClick={handleNext}>Next</Button>
               </div>
             </div>
           </div>

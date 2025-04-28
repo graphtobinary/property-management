@@ -1,11 +1,12 @@
 import PageMeta from "../../components/common/PageMeta";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
 import { useListingStore } from "../../store/listing.store";
 import { getPropertyTypes } from "../../api/Listing.api";
 import { ListTypeProps } from "../../interfaces/listing";
 import ExitButton from "../../components/ExitButton";
+import { toast } from "react-toastify";
 
 const StepOne: React.FC = () => {
   const { listingFormData, setListingFormData } = useListingStore();
@@ -45,6 +46,14 @@ const StepOne: React.FC = () => {
   }, [selected]);
 
   const navigate = useNavigate();
+
+  const handleNext = () => {
+    if (!selected) {
+      toast.error("Please select a property type");
+      return;
+    }
+    navigate("/create-listing-step-two");
+  };
 
   return (
     <>
@@ -115,9 +124,7 @@ const StepOne: React.FC = () => {
             <Button size="sm" variant="outline" onClick={() => navigate(-1)}>
               Back
             </Button>
-            <Link to="/create-listing-step-two">
-              <Button>Next</Button>
-            </Link>
+            <Button onClick={handleNext}>Next</Button>
           </div>
         </div>
       </>

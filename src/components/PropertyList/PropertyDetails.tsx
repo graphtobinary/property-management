@@ -1,15 +1,22 @@
 import React, { useEffect, useRef } from "react";
 import Button from "../ui/button/Button";
-import { PropertyDetailsProps, PhotosProps } from "../../interfaces/listing";
+import {
+  PropertyDetailsProps,
+  PhotosProps,
+  PropertySyncStatus,
+} from "../../interfaces/listing";
 import useOutsideClick from "../../hooks/useOutsideClick";
 import ServicesList from "../ServicesList";
 import { usePropertyDetails } from "../../hooks/usePropertyDetails";
 import Loader from "../Loader/Loader";
 import { useListingStore } from "../../store/listing.store";
 import { useNavigate } from "react-router";
+import { delistProperty, publishProperty } from "../../api/Listing.api";
+import { toast } from "react-toastify";
 const PropertyDetails: React.FC<PropertyDetailsProps> = ({
   property,
   onClose,
+  fetchPropertyList,
 }) => {
   const { propertyAddress } = { ...property };
   const navigate = useNavigate();
@@ -97,6 +104,46 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
     navigate("/create-listing-step-one");
   };
 
+  const handlePublish = async () => {
+    if (property?.id) {
+      const formData = {
+        propertyId: property?.id,
+        includeRooms: true,
+        includeAmenities: true,
+        includeTags: true,
+        includePhotos: true,
+      };
+      try {
+        await publishProperty({ propertyId: property.id });
+        fetchProperty(formData);
+        fetchPropertyList();
+        toast.success("Property published successfully");
+      } catch (error) {
+        console.log("Publish Property Error: ", error);
+      }
+    }
+  };
+
+  const handleDelist = async () => {
+    if (property?.id) {
+      const formData = {
+        propertyId: property?.id,
+        includeRooms: true,
+        includeAmenities: true,
+        includeTags: true,
+        includePhotos: true,
+      };
+      try {
+        await delistProperty({ propertyId: property.id });
+        fetchProperty(formData);
+        fetchPropertyList();
+        toast.success("Property delisted successfully");
+      } catch (error) {
+        console.log("Delist Property Error: ", error);
+      }
+    }
+  };
+
   const sidebarRef = useRef<HTMLDivElement | null>(null);
   useOutsideClick(sidebarRef, () => {
     onClose();
@@ -107,6 +154,8 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
         <Loader size="large" />
       </div>
     );
+  const currentSyncStatus =
+    propertyDetails?.syncStatus ?? PropertySyncStatus.UNSPECIFIED;
   return (
     <>
       <div className="">
@@ -226,11 +275,30 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
           </div> */}
         {/* Buttons */}
         <div className="flex justify-end gap-2 bottom-5 right-5">
-          <Button variant="outline" onClick={handleEdit}>
-            Edit
+          {(currentSyncStatus === PropertySyncStatus.UNSPECIFIED ||
+            currentSyncStatus === PropertySyncStatus.DELISTED) && (
+            <Button size="sm" variant="outline" onClick={handleEdit}>
+              Edit
+            </Button>
+          )}
+
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handleDelist}
+            disabled={currentSyncStatus !== PropertySyncStatus.PUBLISHED}
+          >
+            Delist
           </Button>
-          <Button variant="outline">Delist</Button>
-          <Button variant="primary">Publish Property</Button>
+
+          <Button
+            size="sm"
+            variant="primary"
+            onClick={handlePublish}
+            disabled={currentSyncStatus === PropertySyncStatus.PUBLISHED}
+          >
+            Publish Property
+          </Button>
         </div>
       </div>
     </>

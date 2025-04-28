@@ -84,7 +84,7 @@ export default function ResetPasswordForm() {
         resetToken: token,
         password,
       };
-      const results =  await resetPassword(formData);
+      const results = await resetPassword(formData);
       if (results) {
         setIsSuccess(true);
         setPassword("");
@@ -132,7 +132,7 @@ export default function ResetPasswordForm() {
                   <div className="relative">
                     <Input
                       placeholder="Enter your password"
-                      type={showPassword ? "text" : "password"}
+                      type={"password"}
                       onChange={(e) => handlePasswordChange(e.target.value)}
                       value={password}
                       error={Boolean(errors.password)}

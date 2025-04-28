@@ -9,8 +9,8 @@ import { Modal } from "../../components/ui/modal";
 import { CheckLineIcon, Plus } from "../../icons";
 import { useModal } from "../../hooks/useModal";
 import ExitButton from "../../components/ExitButton";
-import { useToast } from "../../hooks/useToast";
 import { ListingFormDataProps } from "../../interfaces";
+import { toast } from "react-toastify";
 
 const StepTwelve: React.FC = () => {
   const [selected, setSelected] = useState<string[]>([]);
@@ -20,7 +20,6 @@ const StepTwelve: React.FC = () => {
   const { listingFormData, setListingFormData, clearListingStore } =
     useListingStore();
   const { isOpen, openModal, closeModal } = useModal();
-  const { showToast } = useToast();
 
   useEffect(() => {
     fetchPropertyTypeList();
@@ -65,6 +64,10 @@ const StepTwelve: React.FC = () => {
   };
 
   const handleSubmit = async () => {
+    if (selected.length === 0) {
+      toast.error("Please select at least one highlight");
+      return;
+    }
     try {
       setLoading(true);
 
@@ -85,19 +88,16 @@ const StepTwelve: React.FC = () => {
           propertyNanoId: listingFormData.propertyTempId,
         } as Partial<typeof listingFormData>;
         delete newListingData.propertyTempId;
-        const updateRes =  await updateProperty(newListingData);
+        const updateRes = await updateProperty(newListingData);
         if (updateRes) {
-          showToast({
-            type: "success",
-            message: "Property updated successfully!",
-          });
+          toast.success("Property updated successfully!");
           navigate("/manage-properties");
         }
       } else {
         // Create case
-        const createResponce =  await createProperty(newListingData);
+        const createResponce = await createProperty(newListingData);
         if (createResponce) {
-          openModal(); 
+          openModal();
           clearListingStore();
         }
       }

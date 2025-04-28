@@ -64,6 +64,7 @@ export interface PropertyListItemProps {
   propertyAddress: AddressProps;
   pricePerNight: string;
   imagePath: string;
+  syncStatus: PropertySyncStatus;
 }
 
 export interface DailyPriceItemProps {
@@ -90,6 +91,7 @@ export interface PropertydailyUnavailabilityProps {
 }
 export interface PropertyCardProps extends PropertyListItemProps {
   onClick: () => void;
+  fetchPropertyList: () => void;
 }
 
 export interface AddressProps {
@@ -147,11 +149,13 @@ export interface PropertyProps {
   needsAccessibility: boolean;
   checkinTime: string;
   checkoutTime: string;
+  syncStatus: PropertySyncStatus;
 }
 export interface PropertyDetailsProps {
   // [x: string]: any;
   property?: PropertyListItemProps | null;
   onClose: () => void;
+  fetchPropertyList: () => void;
 }
 
 export type DailyPrice = {
@@ -227,4 +231,10 @@ export interface FetchPropertyPayload {
   includeAmenities: boolean;
   includeTags: boolean;
   includePhotos: boolean;
+}
+
+export enum PropertySyncStatus {
+  UNSPECIFIED = 0,
+  PUBLISHED = 1,
+  DELISTED = 2,
 }

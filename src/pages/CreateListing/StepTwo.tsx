@@ -1,11 +1,12 @@
 import PageMeta from "../../components/common/PageMeta";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
 import { getBookingPlaceTypes } from "../../api/Listing.api";
 import { ListTypeProps } from "../../interfaces/listing";
 import { useListingStore } from "../../store/listing.store";
 import ExitButton from "../../components/ExitButton";
+import { toast } from "react-toastify";
 
 const StepTwo: React.FC = () => {
   const [selected, setSelected] = useState<string>("");
@@ -44,6 +45,14 @@ const StepTwo: React.FC = () => {
       });
     }
   }, [selected]);
+
+  const handleNext = () => {
+    if (!selected) {
+      toast.error("Please select a place type");
+      return;
+    }
+    navigate("/create-listing-step-three");
+  };
 
   return (
     <>
@@ -109,9 +118,7 @@ const StepTwo: React.FC = () => {
               Back
             </Button>
 
-            <Link to="/create-listing-step-three">
-              <Button>Next</Button>
-            </Link>
+            <Button onClick={handleNext}>Next</Button>
           </div>
         </div>
       </>
