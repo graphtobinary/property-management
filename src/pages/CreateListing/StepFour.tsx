@@ -2,6 +2,7 @@ import PageMeta from "../../components/common/PageMeta";
 import { Link, useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
 import { lazy } from "react";
+import ExitButton from "../../components/ExitButton";
 
 const AddressPinSelector = lazy(
   () => import("../../components/AddressPinSelector")
@@ -11,10 +12,7 @@ const StepFour: React.FC = () => {
   const navigate = useNavigate();
   return (
     <>
-      <PageMeta
-        title="React.js Calendar Dashboard | TailAdmin - Next.js Admin Dashboard Template"
-        description="This is React.js Calendar Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
-      />
+      <PageMeta title="Manzil" description="Property Management Dashboard" />
 
       <>
         <div className="bg-white p-0 md:p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-0 mb-5 h-full">
@@ -22,9 +20,7 @@ const StepFour: React.FC = () => {
             <h3 className="mb-1 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-2">
               Step 4
             </h3>
-            <Button size="sm" variant="outline" onClick={() => navigate("/")}>
-              Exit
-            </Button>
+            <ExitButton isListingPage />
           </div>
           <div className="flex flex-col w-2/3">
             <span className="text-lg pb-1 text-gray-500 dark:text-gray-400">
@@ -56,11 +52,8 @@ const StepFour: React.FC = () => {
               Back
             </Button>
 
-            <Link
-              to="/create-listing-step-five"
-              className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-primary text-theme-sm hover:bg-primaryDark"
-            >
-              Next
+            <Link to="/create-listing-step-five">
+              <Button>Next</Button>
             </Link>
           </div>
         </div>

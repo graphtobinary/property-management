@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import Loader from "../../Loader/Loader";
 
 interface ButtonProps {
   children: ReactNode; // Button text or content
@@ -10,6 +11,7 @@ interface ButtonProps {
   disabled?: boolean; // Disabled state
   className?: string; // class name
   type?: "submit" | "reset" | "button" | undefined;
+  isLoading?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -21,7 +23,8 @@ const Button: React.FC<ButtonProps> = ({
   onClick,
   className = "",
   disabled = false,
-  type = "button",
+  type = "submit",
+  isLoading = false,
 }) => {
   // Size Classes
   const sizeClasses = {
@@ -32,7 +35,7 @@ const Button: React.FC<ButtonProps> = ({
   // Variant Classes
   const variantClasses = {
     primary:
-      "bg-primary text-white shadow-theme-xs hover:bg-primaryDark disabled:bg-brand-300",
+      "bg-primary text-white shadow-theme-xs hover:bg-primaryDark disabled:bg-primary",
     outline:
       "bg-white text-gray-700 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-white/[0.03] dark:hover:text-gray-300",
   };
@@ -45,12 +48,22 @@ const Button: React.FC<ButtonProps> = ({
         disabled ? "cursor-not-allowed opacity-50" : ""
       }`}
       onClick={onClick}
-      disabled={disabled}
+      disabled={disabled || isLoading}
       type={type}
     >
-      {startIcon && <span className="flex items-center">{startIcon}</span>}
-      {children}
-      {endIcon && <span className="flex items-center">{endIcon}</span>}
+      <>
+        {isLoading ? (
+          <Loader size="small" variant="light" />
+        ) : (
+          <>
+            {startIcon && (
+              <span className="flex items-center">{startIcon}</span>
+            )}
+            {children}
+            {endIcon && <span className="flex items-center">{endIcon}</span>}
+          </>
+        )}
+      </>
     </button>
   );
 };

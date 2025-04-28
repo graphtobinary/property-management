@@ -21,6 +21,7 @@ import { ReactComponent as ManagePropertiesIcon } from "./manage-properties.svg?
 import { ReactComponent as Plus } from "./plus-icon.svg?react";
 import { ReactComponent as MinusIcon } from "./minus-icon.svg?react";
 import { ReactComponent as EmptyBlocksIcon } from "./empty-blocks.svg?react";
+import { ReactComponent as CrossIcon } from "./cross.svg?react";
 
 export {
   MoreDotIcon,
@@ -46,4 +47,5 @@ export {
   Plus,
   MinusIcon,
   EmptyBlocksIcon,
+  CrossIcon,
 };

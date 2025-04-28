@@ -1,10 +1,5 @@
-import { FC, ReactNode, FormEvent } from "react";
-
-interface FormProps {
-  onSubmit: (event: FormEvent<HTMLFormElement>) => void;
-  children: ReactNode;
-  className?: string;
-}
+import { FC } from "react";
+import { FormProps } from "../../interfaces";
 
 const Form: FC<FormProps> = ({ onSubmit, children, className }) => {
   return (

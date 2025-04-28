@@ -1,17 +1,25 @@
 import PageMeta from "../../components/common/PageMeta";
 import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MinusIcon, Plus } from "../../icons";
 import Label from "../../components/form/Label";
 import Input from "../../components/form/input/InputField";
+import { useListingStore } from "../../store/listing.store";
+import ExitButton from "../../components/ExitButton";
 
 const StepFive: React.FC = () => {
   const navigate = useNavigate();
   const [guests, setGuests] = useState(4);
   const [errors, setErrors] = useState<string>("");
-  const [propertyName, setPropertyName] = useState("La -Casa the papel");
+  const [propertyName, setPropertyName] = useState("");
   const maxLength = 32;
+  const { listingFormData, setListingFormData } = useListingStore();
+
+  useEffect(() => {
+    if (listingFormData.name) setPropertyName(listingFormData.name);
+    if (listingFormData.guestCapacity) setGuests(listingFormData.guestCapacity);
+  }, [listingFormData]);
 
   const handleSubmit = () => {
     // Reset errors before validation
@@ -28,16 +36,17 @@ const StepFive: React.FC = () => {
     }
 
     // submit form
-    console.log(propertyName, guests, "form submitted");
+    setListingFormData({
+      ...listingFormData,
+      name: propertyName,
+      guestCapacity: guests,
+    });
     navigate("/create-listing-step-six");
   };
 
   return (
     <>
-      <PageMeta
-        title="React.js Calendar Dashboard | TailAdmin - Next.js Admin Dashboard Template"
-        description="This is React.js Calendar Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
-      />
+      <PageMeta title="Manzil" description="Property Management Dashboard" />
 
       <>
         <div className="bg-white p-0 md:p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-0 mb-5 h-full">
@@ -45,9 +54,7 @@ const StepFive: React.FC = () => {
             <h3 className="mb-1 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-2">
               Step 5
             </h3>
-            <Button size="sm" variant="outline" onClick={() => navigate("/")}>
-              Exit
-            </Button>
+            <ExitButton isListingPage />
           </div>
           <div className="flex flex-col w-2/3">
             <span className="text-lg pb-1 text-gray-500 dark:text-gray-400">
@@ -77,7 +84,7 @@ const StepFive: React.FC = () => {
                     <Input
                       type="text"
                       id="input"
-                      placeholder="Enter city"
+                      placeholder="Enter property name"
                       value={propertyName}
                       onChange={(e) => setPropertyName(e.target.value)}
                       maxLength={maxLength}

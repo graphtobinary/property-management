@@ -1,15 +1,43 @@
-import { Link } from "react-router";
+import { useNavigate } from "react-router";
 import PageMeta from "../components/common/PageMeta";
 import PropertyList from "../components/PropertyList";
 import { Plus } from "../icons";
+import Button from "../components/ui/button/Button";
+import { useListingStore } from "../store/listing.store";
+import { getPropertyTempId } from "../api/Listing.api";
+import { useEffect } from "react";
 
 const ManageProperties: React.FC = () => {
+  const { listingFormData, setListingFormData, clearListingStore } =
+    useListingStore();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    clearListingStore();
+  }, []);
+
+  const handlePropertyTempId = async () => {
+    try {
+      const { propertyId } = (await getPropertyTempId()) as {
+        propertyId: string;
+      };
+      navigateToCreateListing(propertyId);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const navigateToCreateListing = (propertyId: string) => {
+    setListingFormData({
+      ...listingFormData,
+      propertyTempId: propertyId,
+    });
+    navigate("/create-listing-step-one");
+  };
+
   return (
     <>
-      <PageMeta
-        title="React.js Calendar Dashboard | TailAdmin - Next.js Admin Dashboard Template"
-        description="This is React.js Calendar Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
-      />
+      <PageMeta title="Manzil" description="Property Management Dashboard" />
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <h2
           className="text-xl font-myriad font-bold text-gray-800 dark:text-white/90"
@@ -19,12 +47,14 @@ const ManageProperties: React.FC = () => {
         </h2>
         <div className="flex justify-end mb-3">
           <div className="flex">
-            <Link
-              to="/create-listing-step-one"
-              className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-primary text-theme-sm hover:bg-primary"
+            <Button
+              onClick={handlePropertyTempId}
+              size="sm"
+              variant="primary"
+              startIcon={<Plus className="size-5" />}
             >
-              <Plus stroke="#fff" /> <span className="pl-1"> Add Property</span>
-            </Link>
+              Add Property
+            </Button>
           </div>
         </div>
       </div>

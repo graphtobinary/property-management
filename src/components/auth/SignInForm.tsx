@@ -1,52 +1,56 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router";
 import { EyeCloseIcon, EyeIcon } from "../../icons";
 import Label from "../form/Label";
 import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
 import Button from "../ui/button/Button";
-import { useAuthStore } from "../../store/auth.store";
 import { validateEmail } from "../../utils/utils";
-
-interface ErrorTypes {
-  email?: string;
-  password?: string;
-}
+import { getUser, loginUser } from "../../api/User.api";
+import { SigninFormProps, Token } from "../../interfaces/auth";
+import { AUTH_COOKIES, setCookie } from "../../utils/cookie";
+import { AclUserProps } from "../../interfaces";
+import { useAuthStore } from "../../store/auth.store";
+import useUserStore from "../../store/user.store";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
-  const [errors, setErrors] = useState<ErrorTypes>({
+  const [errors, setErrors] = useState<SigninFormProps>({
     email: "",
     password: "",
   });
 
   const navigate = useNavigate();
-  const login = useAuthStore((state) => state.login);
 
-  const [, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true); // Initially disabled
+
+  const { setToken } = useAuthStore();
+  const { setUser } = useUserStore();
+
+  // Enable button when both email & password are filled
+  useEffect(() => {
+    setIsButtonDisabled(!(email.trim() && password.trim()));
+  }, [email, password]);
 
   const handleSignIn = useCallback(
     async (e: { preventDefault: () => void }) => {
       e.preventDefault();
-      // Reset errors before validation
-      const newErrors: ErrorTypes = {};
+      const newErrors: SigninFormProps = {};
 
-      // Email validation
       if (!email.trim()) {
         newErrors.email = "Email is required";
       } else if (!validateEmail(email)) {
         newErrors.email = "This is an invalid email address.";
       }
 
-      // Password validation
       if (!password.trim()) {
         newErrors.password = "Password is required";
       }
 
-      // Set errors if any
       if (Object.keys(newErrors).length > 0) {
         setErrors(newErrors);
         return;
@@ -54,23 +58,26 @@ export default function SignInForm() {
 
       try {
         setLoading(true);
-        await login(email, password);
-        navigate("/");
-      } catch (error) {
-        console.error(error);
+        const response = (await loginUser({ email, password })) as Token;
+        if (response.accessToken) {
+          setCookie(AUTH_COOKIES.ACCESS_TOKEN, response.accessToken);
+          setCookie(AUTH_COOKIES.REFRESH_TOKEN, response.refreshToken);
+          setToken(response.accessToken);
+          const { aclUser } = (await getUser()) as AclUserProps;
+          setUser(aclUser);
+          navigate(
+            aclUser?.tenant?.tenantBusinessType ? "/" : "/tell-us-about-you"
+          );
+        }
+      } catch {
+        setErrors({ password: "Invalid email or password" });
       } finally {
         setLoading(false);
       }
     },
-    [email, password, login, navigate]
+    [email, password, navigate]
   );
 
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setEmail(value);
-  };
-
-  // if (loading) return null;
   return (
     <div className="flex flex-col flex-1">
       <div className="w-full max-w-md pt-10 mx-auto"></div>
@@ -89,30 +96,32 @@ export default function SignInForm() {
               <div className="space-y-6">
                 <div>
                   <Label>
-                    Email <span className="text-error-500">*</span>{" "}
+                    Email <span className="text-error-500">*</span>
                   </Label>
                   <Input
                     placeholder="info@gmail.com"
-                    onChange={handleEmailChange}
-                    error={Boolean(errors?.email ?? false)}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    error={Boolean(errors?.email)}
                     hint={errors.email}
                   />
                 </div>
                 <div>
                   <Label>
-                    Password <span className="text-error-500">*</span>{" "}
+                    Password <span className="text-error-500">*</span>
                   </Label>
                   <div className="relative">
                     <Input
                       type={showPassword ? "text" : "password"}
                       placeholder="Enter your password"
+                      value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      error={Boolean(errors?.password ?? false)}
+                      error={Boolean(errors?.password)}
                       hint={errors.password}
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                      className="absolute z-30 cursor-pointer right-4 top-3"
                     >
                       {showPassword ? (
                         <EyeIcon className="fill-gray-500 dark:fill-gray-400 size-5" />
@@ -130,7 +139,7 @@ export default function SignInForm() {
                     </span>
                   </div>
                   <Link
-                    to="/reset-password"
+                    to="/forgot-password"
                     className="text-sm text-primary hover:text-primary dark:text-primary"
                   >
                     Forgot password?
@@ -141,6 +150,8 @@ export default function SignInForm() {
                     className="w-full bg-primary hover:bg-primaryDark"
                     size="sm"
                     type="submit"
+                    isLoading={isLoading}
+                    disabled={isButtonDisabled} // Button disabled initially
                   >
                     Sign in
                   </Button>
@@ -150,7 +161,7 @@ export default function SignInForm() {
 
             <div className="mt-5">
               <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
-                Don&apos;t have an account? {""}
+                Don&apos;t have an account?{" "}
                 <Link
                   to="/signup"
                   className="text-primary hover:text-primary dark:text-primary"

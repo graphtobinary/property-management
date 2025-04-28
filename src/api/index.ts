@@ -1,0 +1,109 @@
+import ApiException from "./Api.exception";
+import { getHeaders, isBrowser, replaceParamInString } from "../utils/utils";
+import { toast } from "react-toastify";
+
+export const GetCookie = (name: string): string | undefined => {
+  if (typeof document === "undefined") {
+    return undefined;
+  }
+  const nameEQ = name + "=";
+  const ca = document?.cookie.split(";");
+  for (let i = 0; i < ca.length; i++) {
+    const c = ca[i].trim();
+    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length);
+  }
+  return undefined;
+};
+
+interface FetchOptions extends RequestInit {
+  headers?: HeadersInit;
+}
+
+interface Params {
+  [key: string]: unknown;
+  isAbsUrl?: boolean;
+}
+
+const doCall = async (
+  uri: string,
+  params: Params = {},
+  option: FetchOptions = { headers: {} }
+): Promise<unknown> => {
+  const { isAbsUrl, ...restParams } = params;
+  uri = replaceParamInString(uri, restParams);
+
+  let url = "";
+  if (isAbsUrl) {
+    url = uri;
+  } else if (isBrowser()) {
+    url = import.meta.env.VITE_BASE_API_ENDPOINT + uri;
+  } else {
+    url = import.meta.env.VITE_BASE_API_ENDPOINT + uri.replace(/^\/api/, "");
+  }
+
+  const headers: HeadersInit = {
+    ...getHeaders(),
+    ...option.headers,
+  };
+
+  try {
+    const response = await fetch(url, { ...option, headers });
+
+    if (!response.ok) {
+      const res = await response.json();
+      const message =
+        res?.message ||
+        res?.error?.message ||
+        `Request: ${uri} ${response.statusText}`;
+
+      throw new ApiException(message, response.status, res);
+    }
+
+    const contentType = response.headers.get("content-type") || "";
+    if (contentType.includes("application/json")) {
+      return response.json();
+    }
+    if (
+      [
+        "application/pdf",
+        "application/octet-stream",
+        "text/csv",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      ].some((type) => contentType.includes(type))
+    ) {
+      return response.url;
+    }
+    return response.text();
+  } catch (error) {
+    if (error instanceof ApiException) {
+      toast.error(error?.message || "Something went wrong!");
+    } else {
+      toast.error("Network error. Please try again.");
+    }
+    // throw error; // still rethrow so local catch() can also handle if needed
+  }
+};
+
+export const doGet = (
+  uri: string,
+  params: Params = {},
+  options: FetchOptions = {}
+): Promise<unknown> => doCall(uri, params, options);
+
+export const doPost = (
+  uri: string,
+  params: Params = {},
+  options: FetchOptions = {}
+): Promise<unknown> => doCall(uri, params, { ...options, method: "POST" });
+
+export const doPatch = (
+  uri: string,
+  params: Params = {},
+  options: FetchOptions = {}
+): Promise<unknown> => doCall(uri, params, { ...options, method: "PATCH" });
+
+export const doDelete = (
+  uri: string,
+  params: Params = {},
+  options: FetchOptions = {}
+): Promise<unknown> => doCall(uri, params, { ...options, method: "DELETE" });

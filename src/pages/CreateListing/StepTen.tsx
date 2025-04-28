@@ -1,29 +1,21 @@
 import PageMeta from "../../components/common/PageMeta";
-import { useNavigate } from "react-router";
-import Button from "../../components/ui/button/Button";
 import { lazy } from "react";
+import ExitButton from "../../components/ExitButton";
 
 const HouseRulesForm = lazy(() => import("../../components/HouseRulesForm"));
 
 const StepTen: React.FC = () => {
-  const navigate = useNavigate();
-
   return (
     <>
-      <PageMeta
-        title="React.js Calendar Dashboard | TailAdmin - Next.js Admin Dashboard Template"
-        description="This is React.js Calendar Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
-      />
+      <PageMeta title="Manzil" description="Property Management Dashboard" />
 
       <>
-        <div className="bg-white p-0 md:p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-0 mb-5 h-full">
+        <div className="flex flex-col bg-white p-0 md:p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-0 h-full">
           <div className="flex justify-between">
             <h3 className="mb-1 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-2">
               Step 10
             </h3>
-            <Button size="sm" variant="outline" onClick={() => navigate("/")}>
-              Exit
-            </Button>
+            <ExitButton isListingPage />
           </div>
           <div className="flex flex-col w-2/3">
             <span className="text-lg pb-1 text-gray-500 dark:text-gray-400">
@@ -35,16 +27,15 @@ const StepTen: React.FC = () => {
               plus 5 or more photos. Then you'll create a title and description.
             </span>
           </div>
-          <div className="flex flex-col ">
+          <div className="flex flex-col flex-1">
             <span className="mb-3 text-base font-semibold text-gray-800 dark:text-white/90">
               House rules
             </span>
-            <div className=" gap-4 md:gap-6 ">
-              <div className="col-span-12 space-y-12 ">
-                {/*  */}
-                <HouseRulesForm />
-                {/*  */}
-              </div>
+
+            <div className="flex flex-col flex-1">
+              {/*  */}
+              <HouseRulesForm />
+              {/*  */}
             </div>
           </div>
         </div>

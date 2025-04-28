@@ -1,8 +1,11 @@
 import PageMeta from "../../components/common/PageMeta";
 import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
-import { lazy, useState } from "react";
-import { PropertyImageProps } from "../../components/UploadPropertyPhotos/UploadPropertyPhotos";
+import { lazy, useEffect, useState } from "react";
+import { PropertyImageProps } from "../../interfaces";
+import { useListingStore } from "../../store/listing.store";
+import ExitButton from "../../components/ExitButton";
+import { updateUploadedImages, uploadImages } from "../../api/Listing.api";
 
 const UploadPropertyPhotos = lazy(
   () => import("../../components/UploadPropertyPhotos")
@@ -19,24 +22,118 @@ const StepEleven: React.FC = () => {
     } else {
       setError("");
     }
-    console.log("form submitted", images);
+    // console.log("form submitted", images);
     navigate("/create-listing-step-twelve");
   };
 
-  const handleImageUpload = (data: PropertyImageProps[], isRemove = false) => {
+  const { listingFormData, setListingFormData } = useListingStore();
+  const uploadMedia = async (media: { url: string; id: string }) => {
+    if (!listingFormData?.propertyTempId) {
+      console.error("Missing propertyTempId for image upload");
+      return;
+    }
+
+    try {
+      const fileResponse = await fetch(media.url);
+      const blob = await fileResponse.blob();
+
+      const extension = blob.type.split("/")[1];
+      const filename = media.id.includes(".")
+        ? media.id
+        : `${media.id}.${extension}`;
+      const file = new File([blob], filename, { type: blob.type });
+
+      const formData = new FormData();
+      formData.append("file", file);
+      if (listingFormData.isUpdateListing) {
+        const res = (await updateUploadedImages(
+          formData,
+          listingFormData.propertyTempId
+        )) as {
+          imageId: string;
+        };
+        setImages((prevImages) =>
+          prevImages.map((item) => {
+            if (item.id === media.id) {
+              return { ...item, id: res.imageId };
+            } else return item;
+          })
+        );
+
+        return res;
+      } else {
+        const data = (await uploadImages(
+          formData,
+          listingFormData.propertyTempId
+        )) as {
+          imageId: string;
+        };
+        setImages((prevImages) =>
+          prevImages.map((item) => {
+            if (item.id === media.id) {
+              return { ...item, id: data.imageId };
+            } else return item;
+          })
+        );
+
+        // Update store with the new photo while preserving existing photos
+        setListingFormData((prev) => ({
+          ...prev,
+          photos: [
+            ...(prev.photos || []),
+            {
+              id: data.imageId || media.id,
+              imagePath: media.url,
+            },
+          ],
+        }));
+        return data;
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+    }
+  };
+
+  const handleImageUpload = async (
+    data: PropertyImageProps[],
+    isRemove = false
+  ) => {
     if (isRemove) {
       setImages(data);
     } else {
       setImages((prevImages) => [...prevImages, ...data]);
+      // data.forEach((image) => uploadMedia({ url: image.url, id: image.id }));
+      for (const image of data) {
+        await uploadMedia({ url: image.url, id: image.id });
+      }
     }
   };
 
+  useEffect(() => {
+    if (listingFormData?.photos?.length > 0) {
+      setImages((prev) => {
+        // Create a new array of images from listingFormData.photos
+        const newImages =
+          listingFormData?.photos?.map((image) => ({
+            id: image.id,
+            url: listingFormData.isUpdateListing
+              ? `${import.meta.env.VITE_CDN_URL}${image?.imagePath}`
+              : image?.imagePath,
+          })) || [];
+
+        // Filter out any new images whose id already exists in prev
+        const filteredNewImages = newImages.filter(
+          (newImage) => !prev.some((prevImage) => prevImage.id === newImage.id)
+        );
+
+        // Return the updated state, combining previous images with the new unique images
+        return [...prev, ...filteredNewImages];
+      });
+    }
+  }, [listingFormData]);
   return (
     <>
-      <PageMeta
-        title="React.js Calendar Dashboard | TailAdmin - Next.js Admin Dashboard Template"
-        description="This is React.js Calendar Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
-      />
+      <PageMeta title="Manzil" description="Property Management Dashboard" />
 
       <>
         <div className="bg-white p-0 md:p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-0 mb-5 h-full">
@@ -44,9 +141,7 @@ const StepEleven: React.FC = () => {
             <h3 className="mb-1 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-2">
               Step 11
             </h3>
-            <Button size="sm" variant="outline" onClick={() => navigate("/")}>
-              Exit
-            </Button>
+            <ExitButton isListingPage />
           </div>
           <div className="flex flex-col w-2/3">
             <span className="text-lg pb-1 text-gray-500 dark:text-gray-400">

@@ -1,41 +1,57 @@
 import PageMeta from "../../components/common/PageMeta";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
-const categories = [
-  {
-    id: 1,
-    name: "Peaceful",
-  },
-  {
-    id: 2,
-    name: "Spacious",
-  },
-  {
-    id: 3,
-    name: "Unique",
-  },
-  {
-    id: 4,
-    name: "Pet Friendly",
-  },
-  {
-    id: 5,
-    name: "Family Friendly",
-  },
-  {
-    id: 6,
-    name: "Stylish",
-  },
-  {
-    id: 7,
-    name: "Good For Couples",
-  },
-];
+import { createProperty, getTags, updateProperty } from "../../api/Listing.api";
+import { ListTypeProps } from "../../interfaces/listing";
+import { useListingStore } from "../../store/listing.store";
+import { Modal } from "../../components/ui/modal";
+import { CheckLineIcon, Plus } from "../../icons";
+import { useModal } from "../../hooks/useModal";
+import ExitButton from "../../components/ExitButton";
+import { ListingFormDataProps } from "../../interfaces";
+import { toast } from "react-toastify";
+
 const StepTwelve: React.FC = () => {
-  const [selected, setSelected] = useState([1]);
+  const [selected, setSelected] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [highlights, setHighlights] = useState<ListTypeProps[]>([]);
   const navigate = useNavigate();
-  const handleSelect = (id: number) => {
+  const { listingFormData, setListingFormData, clearListingStore } =
+    useListingStore();
+  const { isOpen, openModal, closeModal } = useModal();
+
+  useEffect(() => {
+    fetchPropertyTypeList();
+  }, []);
+
+  const fetchPropertyTypeList = async () => {
+    try {
+      const { tags } = (await getTags()) as {
+        tags: ListTypeProps[];
+      };
+      setHighlights(tags);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (selected) {
+      setListingFormData({
+        ...listingFormData,
+        tagIds: selected,
+      });
+    }
+  }, [selected]);
+
+  useEffect(() => {
+    if (listingFormData?.tagIds.length) {
+      setSelected(listingFormData.tagIds);
+    }
+  }, [listingFormData]);
+
+  const handleSelect = (id: string) => {
     setSelected((prev) => {
       let newSelectedItem = [...prev];
       if (prev.includes(id)) {
@@ -46,22 +62,62 @@ const StepTwelve: React.FC = () => {
       return newSelectedItem;
     });
   };
+
+  const handleSubmit = async () => {
+    if (selected.length === 0) {
+      toast.error("Please select at least one highlight");
+      return;
+    }
+    try {
+      setLoading(true);
+
+      // Use the actual type instead of typeof a value
+      let newListingData: Partial<ListingFormDataProps> = {
+        ...listingFormData,
+      };
+
+      const isUpdate = listingFormData.isUpdateListing;
+
+      // Remove the flag in both cases
+      delete newListingData.isUpdateListing;
+      delete newListingData.photos;
+      if (isUpdate) {
+        // Update case
+        newListingData = {
+          ...newListingData,
+          propertyNanoId: listingFormData.propertyTempId,
+        } as Partial<typeof listingFormData>;
+        delete newListingData.propertyTempId;
+        const updateRes = await updateProperty(newListingData);
+        if (updateRes) {
+          toast.success("Property updated successfully!");
+          navigate("/manage-properties");
+        }
+      } else {
+        // Create case
+        const createResponce = await createProperty(newListingData);
+        if (createResponce) {
+          openModal();
+          clearListingStore();
+        }
+      }
+    } catch (error) {
+      console.error("Submission error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <>
-      <PageMeta
-        title="React.js Calendar Dashboard | TailAdmin - Next.js Admin Dashboard Template"
-        description="This is React.js Calendar Dashboard page for TailAdmin - React.js Tailwind CSS Admin Dashboard Template"
-      />
-
+      <PageMeta title="Manzil" description="Property Management Dashboard" />
       <>
         <div className="bg-white p-0 md:p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-0 mb-5">
           <div className="flex justify-between">
             <h3 className="mb-1 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-2">
               Step 12
             </h3>
-            <Button size="sm" variant="outline" onClick={() => navigate("/")}>
-              Exit
-            </Button>
+            <ExitButton isListingPage />
           </div>
           <div className="flex flex-col w-2/3">
             <span className="text-lg pb-1 text-gray-500 dark:text-gray-400">
@@ -81,21 +137,21 @@ const StepTwelve: React.FC = () => {
             <div className="grid grid-cols-12 gap-4 md:gap-6">
               <div className="col-span-12 space-y-12 ">
                 {/*  */}
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-4 md:gap-6">
-                  {categories.map((category) => (
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-5 md:gap-6 pb-16">
+                  {highlights?.map((category: ListTypeProps) => (
                     <div
                       key={category.id}
                       onClick={() => handleSelect(category.id)}
                       className={`border  bg-white shadow-lg cursor-pointer ${
                         selected.includes(category.id)
-                          ? "border-black"
+                          ? "border-primary"
                           : "border-none"
                       }`}
                     >
                       {/* Product Image Section */}
                       <div className="relative">
                         <img
-                          src="https://demo.tailadmin.com/src/images/grid-image/image-01.png" // Replace with the actual product image URL
+                          src="images/product/placeholder-thumb.jpg" // Replace with the actual product image URL
                           alt="Nike Air Force 1 NDESTRUKT"
                           className="w-full "
                         />
@@ -115,19 +171,66 @@ const StepTwelve: React.FC = () => {
             </div>
           </div>
         </div>
-        <div className="flex justify-end mb-3">
+        <div className="flex justify-end mb-3 fixed bottom-2 right-6">
           <div className="flex gap-2">
-            <Button size="sm" variant="outline" onClick={() => navigate(-1)}>
+            <Button
+              isLoading={loading}
+              size="sm"
+              variant="outline"
+              onClick={() => navigate(-1)}
+            >
               Back
             </Button>
-            <Link
-              to="/create-listing-step-thirteen"
-              className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-primary text-theme-sm hover:bg-primaryDark"
-            >
-              Next
-            </Link>
+
+            <Button onClick={handleSubmit}>
+              {listingFormData.isUpdateListing
+                ? "Update Property"
+                : "Complete Registration"}
+            </Button>
           </div>
         </div>
+        <Modal
+          isOpen={isOpen}
+          onClose={closeModal}
+          className="max-w-[700px] p-6 lg:p-10"
+        >
+          <div className="flex flex-col items-center justify-center  p-6">
+            {/* Success Icon */}
+            <div className="flex items-center justify-center w-20 h-20 rounded-full bg-green-700">
+              <CheckLineIcon width={50} height={50} />
+            </div>
+
+            {/* Heading */}
+            <h2 className="mt-4 text-xl font-semibold text-gray-900">
+              Property Listed
+            </h2>
+
+            {/* Description */}
+            <p className="mt-2 text-center text-gray-500 text-sm max-w-sm">
+              Congratulations! Your property has been listed. It can be found in
+              the manage properties panel for final publishing.
+            </p>
+
+            {/* Buttons */}
+            <div className="mt-6 flex gap-4">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => navigate("/manage-properties")}
+              >
+                Done for Now
+              </Button>
+              <Button
+                size="sm"
+                variant="primary"
+                onClick={() => navigate("/create-listing-step-one")}
+                startIcon={<Plus className="size-5" />}
+              >
+                Add Another
+              </Button>
+            </div>
+          </div>
+        </Modal>
       </>
     </>
   );

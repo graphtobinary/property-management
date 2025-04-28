@@ -1,251 +1,103 @@
-import { Link } from "react-router";
 import { Plus } from "../../icons";
 import Button from "../ui/button/Button";
 import PropertyCard from "./PropertyCard";
-import { lazy, Suspense, useState } from "react";
-import { AnimatePresence } from "framer-motion";
-// PropertyDetails
+import { lazy, Suspense, useEffect, useState } from "react";
+import { getPropertyList, getPropertyTempId } from "../../api/Listing.api";
+import { useNavigate } from "react-router";
+import { useListingStore } from "../../store/listing.store";
+import { PropertyListItemProps } from "../../interfaces/listing";
+import AnimatedSidebar from "../AnimatedSidebar";
 const PropertyDetails = lazy(() => import("./PropertyDetails"));
 
-const properties = [
-  {
-    title: "The Royal Lotus Inn",
-    address: "C211, Z-One, Patia, Bhubaneswar",
-    price: "₹2,345",
-    thumbnail: "https://demo.tailadmin.com/src/images/grid-image/image-01.png",
-    details: {
-      type: "2 Bhk",
-      furnishing: "Fully Furnished",
-      area: "324 sq mtr",
-      guests: 4,
-      bathrooms: 3,
-      kingBedrooms: 2,
-      queenBedrooms: 2,
-      kitchen: 1,
-      amenities: ["TV", "Refrigerator", "Wifi", "15 more"],
-      tags: ["Family Friendly", "Stylish", "+2 more"],
-    },
-  },
-  {
-    title: "The Serene Palace",
-    address: "C211, Z-One, Patia, Bhubaneswar",
-    price: "₹2,345",
-    thumbnail: "https://demo.tailadmin.com/src/images/grid-image/image-01.png",
-    details: {
-      type: "2 Bhk",
-      furnishing: "Fully Furnished",
-      area: "324 sq mtr",
-      guests: 4,
-      bathrooms: 3,
-      kingBedrooms: 2,
-      queenBedrooms: 2,
-      kitchen: 1,
-      amenities: ["TV", "Refrigerator", "Wifi", "15 more"],
-      tags: ["Family Friendly", "Stylish", "+2 more"],
-    },
-  },
-  {
-    title: "The Heritage Haven",
-    address: "C211, Z-One, Patia, Bhubaneswar",
-    price: "₹2,345",
-    thumbnail: "https://demo.tailadmin.com/src/images/grid-image/image-01.png",
-    details: {
-      type: "2 Bhk",
-      furnishing: "Fully Furnished",
-      area: "324 sq mtr",
-      guests: 4,
-      bathrooms: 3,
-      kingBedrooms: 2,
-      queenBedrooms: 2,
-      kitchen: 1,
-      amenities: ["TV", "Refrigerator", "Wifi", "15 more"],
-      tags: ["Family Friendly", "Stylish", "+2 more"],
-    },
-  },
-  {
-    title: "The Tranquil Retreat",
-    address: "C211, Z-One, Patia, Bhubaneswar",
-    price: "₹2,345",
-    thumbnail: "https://demo.tailadmin.com/src/images/grid-image/image-01.png",
-    details: {
-      type: "2 Bhk",
-      furnishing: "Fully Furnished",
-      area: "324 sq mtr",
-      guests: 4,
-      bathrooms: 3,
-      kingBedrooms: 2,
-      queenBedrooms: 2,
-      kitchen: 1,
-      amenities: ["TV", "Refrigerator", "Wifi", "15 more"],
-      tags: ["Family Friendly", "Stylish", "+2 more"],
-    },
-  },
-  {
-    title: "The Majestic Abode",
-    address: "C211, Z-One, Patia, Bhubaneswar",
-    price: "₹2,345",
-    thumbnail: "https://demo.tailadmin.com/src/images/grid-image/image-01.png",
-    details: {
-      type: "2 Bhk",
-      furnishing: "Fully Furnished",
-      area: "324 sq mtr",
-      guests: 4,
-      bathrooms: 3,
-      kingBedrooms: 2,
-      queenBedrooms: 2,
-      kitchen: 1,
-      amenities: ["TV", "Refrigerator", "Wifi", "15 more"],
-      tags: ["Family Friendly", "Stylish", "+2 more"],
-    },
-  },
-  {
-    title: "The Creative Oasis",
-    address: "C211, Z-One, Patia, Bhubaneswar",
-    price: "₹2,345",
-    thumbnail: "https://demo.tailadmin.com/src/images/grid-image/image-01.png",
-    details: {
-      type: "2 Bhk",
-      furnishing: "Fully Furnished",
-      area: "324 sq mtr",
-      guests: 4,
-      bathrooms: 3,
-      kingBedrooms: 2,
-      queenBedrooms: 2,
-      kitchen: 1,
-      amenities: ["TV", "Refrigerator", "Wifi", "15 more"],
-      tags: ["Family Friendly", "Stylish", "+2 more"],
-    },
-  },
-  {
-    title: "The Genius Suite",
-    address: "C211, Z-One, Patia, Bhubaneswar",
-    price: "₹2,345",
-    thumbnail: "https://demo.tailadmin.com/src/images/grid-image/image-01.png",
-    details: {
-      type: "2 Bhk",
-      furnishing: "Fully Furnished",
-      area: "324 sq mtr",
-      guests: 4,
-      bathrooms: 3,
-      kingBedrooms: 2,
-      queenBedrooms: 2,
-      kitchen: 1,
-      amenities: ["TV", "Refrigerator", "Wifi", "15 more"],
-      tags: ["Family Friendly", "Stylish", "+2 more"],
-    },
-  },
-  {
-    title: "The Visionary Lounge",
-    address: "C211, Z-One, Patia, Bhubaneswar",
-    price: "₹2,345",
-    thumbnail: "https://demo.tailadmin.com/src/images/grid-image/image-01.png",
-    details: {
-      type: "2 Bhk",
-      furnishing: "Fully Furnished",
-      area: "324 sq mtr",
-      guests: 4,
-      bathrooms: 3,
-      kingBedrooms: 2,
-      queenBedrooms: 2,
-      kitchen: 1,
-      amenities: ["TV", "Refrigerator", "Wifi", "15 more"],
-      tags: ["Family Friendly", "Stylish", "+2 more"],
-    },
-  },
-  {
-    title: "The Spice Haven",
-    address: "C211, Z-One, Patia, Bhubaneswar",
-    price: "₹2,345",
-    thumbnail: "https://demo.tailadmin.com/src/images/grid-image/image-01.png",
-    details: {
-      type: "2 Bhk",
-      furnishing: "Fully Furnished",
-      area: "324 sq mtr",
-      guests: 4,
-      bathrooms: 3,
-      kingBedrooms: 2,
-      queenBedrooms: 2,
-      kitchen: 1,
-      amenities: ["TV", "Refrigerator", "Wifi", "15 more"],
-      tags: ["Family Friendly", "Stylish", "+2 more"],
-    },
-  },
-  {
-    title: "The Curry Palace",
-    address: "C211, Z-One, Patia, Bhubaneswar",
-    price: "₹2,345",
-    thumbnail: "https://demo.tailadmin.com/src/images/grid-image/image-01.png",
-    details: {
-      type: "2 Bhk",
-      furnishing: "Fully Furnished",
-      area: "324 sq mtr",
-      guests: 4,
-      bathrooms: 3,
-      kingBedrooms: 2,
-      queenBedrooms: 2,
-      kitchen: 1,
-      amenities: ["TV", "Refrigerator", "Wifi", "15 more"],
-      tags: ["Family Friendly", "Stylish", "+2 more"],
-    },
-  },
-  {
-    title: "The Saffron Retreat",
-    address: "C211, Z-One, Patia, Bhubaneswar",
-    price: "₹2,345",
-    thumbnail: "https://demo.tailadmin.com/src/images/grid-image/image-01.png",
-    details: {
-      type: "2 Bhk",
-      furnishing: "Fully Furnished",
-      area: "324 sq mtr",
-      guests: 4,
-      bathrooms: 3,
-      kingBedrooms: 2,
-      queenBedrooms: 2,
-      kitchen: 1,
-      amenities: ["TV", "Refrigerator", "Wifi", "15 more"],
-      tags: ["Family Friendly", "Stylish", "+2 more"],
-    },
-  },
-];
-
 const PropertyList: React.FC = () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [selectedProperty, setSelectedProperty] = useState<any | null>(null);
+  const [selectedProperty, setSelectedProperty] =
+    useState<PropertyListItemProps | null>(null);
+  const { listingFormData, setListingFormData, clearListingStore } =
+    useListingStore();
+  const navigate = useNavigate();
+  const [propertyList, setPropertyList] = useState<
+    PropertyListItemProps[] | []
+  >([]);
+
+  useEffect(() => {
+    fetchPropertyList();
+  }, []);
+
+  const handlePropertyTempId = async () => {
+    try {
+      clearListingStore();
+      const { propertyId } = (await getPropertyTempId()) as {
+        propertyId: string;
+      };
+
+      setListingFormData({
+        ...listingFormData,
+        propertyTempId: propertyId,
+      });
+      navigate("/create-listing-step-one");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const fetchPropertyList = async () => {
+    try {
+      const formData = {
+        pagination: {
+          page: 1,
+          limit: 10,
+        },
+      };
+      const { properties } = (await getPropertyList(formData)) as {
+        properties: PropertyListItemProps[];
+      };
+      setPropertyList(properties);
+      // console.log(properties);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleClose = () => {
     setTimeout(() => setSelectedProperty(null), 100); // Wait for animation to finish
+    clearListingStore();
   };
 
   return (
     <>
       <div className="min-h-screen flex flex-col gap-4">
-        {properties.map((property, index) => (
+        {propertyList?.map((property, index) => (
           <PropertyCard
             key={index}
             {...property}
+            imagePath={
+              property.imagePath
+                ? `${import.meta.env.VITE_CDN_URL}${property.imagePath}`
+                : ""
+            }
             onClick={() => setSelectedProperty(property)}
+            fetchPropertyList={fetchPropertyList}
           />
         ))}
-        <AnimatePresence>
-          {selectedProperty && (
-            <Suspense fallback={<h2>Loading...</h2>}>
-              <PropertyDetails
-                property={selectedProperty}
-                onClose={handleClose}
-              />
-            </Suspense>
-          )}
-        </AnimatePresence>
+        <AnimatedSidebar isOpen={!!selectedProperty} onClose={handleClose}>
+          <Suspense fallback={<h2>Loading...</h2>}>
+            <PropertyDetails
+              property={selectedProperty}
+              onClose={handleClose}
+              fetchPropertyList={fetchPropertyList}
+            />
+          </Suspense>
+        </AnimatedSidebar>
 
         <div className="flex justify-center mt-6">
-          <Link to="/create-listing-step-one">
-            <Button variant="primary">
-              <span className="text-lg">
-                <Plus stroke="#fff" />
-              </span>{" "}
-              Add Another Property
-            </Button>
-          </Link>
+          <Button
+            variant="primary"
+            onClick={handlePropertyTempId}
+            size="sm"
+            startIcon={<Plus className="size-5" />}
+          >
+            Add Another Property
+          </Button>
         </div>
       </div>
     </>

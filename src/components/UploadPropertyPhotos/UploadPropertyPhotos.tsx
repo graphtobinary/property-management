@@ -1,9 +1,10 @@
 import { useDropzone } from "react-dropzone";
-
-export interface PropertyImageProps {
-  id: string;
-  url: string;
-}
+import { PropertyImageProps } from "../../interfaces";
+import {
+  deletePropertyImageById,
+  deletePropertyImageByImageId,
+} from "../../api/Listing.api";
+import { useListingStore } from "../../store/listing.store";
 
 const UploadPropertyPhotos: React.FC<{
   images: PropertyImageProps[];
@@ -11,6 +12,7 @@ const UploadPropertyPhotos: React.FC<{
   error?: boolean;
   hint?: string;
 }> = ({ images, handleImageUpload, error, hint }) => {
+  const { listingFormData, setListingFormData } = useListingStore();
   const onDrop = (acceptedFiles: File[]) => {
     const newImages: PropertyImageProps[] = acceptedFiles.map((file) => ({
       id: URL.createObjectURL(file), // Unique ID for preview
@@ -20,7 +22,26 @@ const UploadPropertyPhotos: React.FC<{
     handleImageUpload(newImages);
   };
 
-  const removeImage = (id: string) => {
+  const removeImage = async (id: string) => {
+    try {
+      if (listingFormData.isUpdateListing) {
+        const formData = {
+          propertyPhotoId: id,
+        };
+        await deletePropertyImageById(formData);
+      } else {
+        const formData = {
+          imageId: id,
+        };
+        await deletePropertyImageByImageId(formData);
+      }
+      setListingFormData({
+        ...listingFormData,
+        photos: listingFormData.photos.filter((item) => item.id !== id),
+      });
+    } catch (error) {
+      console.log("Image Delete Error: ", error);
+    }
     handleImageUpload(
       images.filter((image) => image.id !== id),
       true
@@ -30,10 +51,10 @@ const UploadPropertyPhotos: React.FC<{
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      "image/png": [],
+      // "image/png": [],
       "image/jpeg": [],
-      "image/webp": [],
-      "image/svg+xml": [],
+      // "image/webp": [],
+      // "image/svg+xml": [],
     },
     multiple: true, // Enable multiple image selection
   });
@@ -107,7 +128,8 @@ const UploadPropertyPhotos: React.FC<{
               {isDragActive ? "Drop Files Here" : "Drag & Drop Files Here"}
             </h4>
             <span className="text-center mb-5 block w-full max-w-[290px] text-sm text-gray-700 dark:text-gray-400">
-              Drag and drop your PNG, JPG, WebP, SVG images here or browse
+              {/* Drag and drop your PNG, JPG, WebP, SVG images here or browse */}
+              Drag and drop your JPG images here or browse
             </span>
             <span className="font-medium underline text-theme-sm text-primary">
               Browse Files

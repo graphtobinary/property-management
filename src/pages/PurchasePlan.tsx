@@ -1,20 +1,19 @@
 import React from "react";
 import Button from "../components/ui/button/Button";
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import { CheckCircleIcon } from "../icons";
+import { PricingCardProps } from "../interfaces";
+import ExitButton from "../components/ExitButton";
 
 // Subscription details component
 const SubscriptionDetails: React.FC = () => {
-  const navigate = useNavigate();
   return (
     <div className="bg-white p-0 md:p-5 dark:border-gray-800 dark:bg-white/[0.03] lg:p-0 mb-5">
       <div className="flex justify-between">
         <h3 className="mb-1 text-lg font-semibold text-gray-800 dark:text-white/90 lg:mb-2">
           Subscription & Billing Details
         </h3>
-        <Button size="sm" variant="outline" onClick={() => navigate("/")}>
-          Exit
-        </Button>
+        <ExitButton />
       </div>
       <div className="mt-2 w-full md:w-1/2 bg-gray-100 p-4 rounded-lg shadow">
         <div className="flex justify-between">
@@ -44,14 +43,6 @@ const SubscriptionDetails: React.FC = () => {
 };
 
 // Pricing card component
-interface PricingCardProps {
-  title: string;
-  subtitle: string;
-  features: string[];
-  isPremium?: boolean;
-  isCurrent?: boolean;
-}
-
 const PricingCard: React.FC<PricingCardProps> = ({
   title,
   subtitle,

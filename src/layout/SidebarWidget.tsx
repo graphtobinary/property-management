@@ -1,11 +1,23 @@
 import { useRef, useState } from "react";
-import { useAuthStore } from "../store/auth.store";
 import useOutsideClick from "../hooks/useOutsideClick";
+import { AUTH_COOKIES, removeCookie } from "../utils/cookie";
+import { Link, useNavigate } from "react-router";
+import useUserStore from "../store/user.store";
+import Button from "../components/ui/button/Button";
 
 export default function SidebarWidget() {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
-  const logout = useAuthStore((state) => state.logout);
+  const navigate = useNavigate();
+  const { clearUserStore } = useUserStore();
+  const { user } = useUserStore();
+
+  const logout = () => {
+    removeCookie(AUTH_COOKIES.ACCESS_TOKEN);
+    removeCookie(AUTH_COOKIES.REFRESH_TOKEN);
+    clearUserStore();
+    navigate("/signin");
+  };
 
   useOutsideClick(userMenuRef, () => setIsUserDropdownOpen(false));
   return (
@@ -20,12 +32,9 @@ export default function SidebarWidget() {
         <p className="mb-4 text-gray-500 text-theme-sm dark:text-gray-400">
           Get access to all the features to manage your properties effortlessly
         </p>
-        <a
-          href="/purchase-plan"
-          className="flex items-center justify-center p-3 font-medium text-white rounded-lg bg-primary text-theme-sm hover:bg-primary"
-        >
-          Purchase Plan
-        </a>
+        <Link to="/purchase-plan">
+          <Button variant="primary">Purchase Plan</Button>
+        </Link>
       </div>
       <div className="relative" ref={userMenuRef}>
         {/* User Profile Button */}
@@ -38,10 +47,10 @@ export default function SidebarWidget() {
           </span>
           <div>
             <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-              Property Manager
+              {user?.tenant?.firstName} {user?.tenant?.lastName}
             </span>
             <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
-              propertymanager@gmail.com
+              {user?.email}
             </span>
           </div>
         </div>

@@ -1,163 +1,307 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import Button from "../ui/button/Button";
-import { motion } from "framer-motion";
-import { ChevronLeftIcon } from "../../icons";
+import {
+  PropertyDetailsProps,
+  PhotosProps,
+  PropertySyncStatus,
+} from "../../interfaces/listing";
+import useOutsideClick from "../../hooks/useOutsideClick";
+import ServicesList from "../ServicesList";
+import { usePropertyDetails } from "../../hooks/usePropertyDetails";
+import Loader from "../Loader/Loader";
+import { useListingStore } from "../../store/listing.store";
+import { useNavigate } from "react-router";
+import { delistProperty, publishProperty } from "../../api/Listing.api";
+import { toast } from "react-toastify";
+const PropertyDetails: React.FC<PropertyDetailsProps> = ({
+  property,
+  onClose,
+  fetchPropertyList,
+}) => {
+  const { propertyAddress } = { ...property };
+  const navigate = useNavigate();
+  const { listingFormData, setListingFormData, clearListingStore } =
+    useListingStore();
+  const {
+    propertyDetails,
+    imagesList,
+    amenitiesList,
+    tagsList,
+    roomsList,
+    loading,
+    fetchProperty,
+  } = usePropertyDetails();
 
-interface PropertyDetailsProps {
-  property: {
-    name: string;
-    location: string;
-    price: string;
-    thumbnail: string;
-    details: {
-      type: string;
-      furnishing: string;
-      area: string;
-      guests: number;
-      bathrooms: number;
-      kingBedrooms: number;
-      queenBedrooms: number;
-      kitchen: number;
-      amenities: string[];
-      tags: string[];
-    };
+  useEffect(() => {
+    if (property?.id) {
+      const formData = {
+        propertyId: property?.id,
+        includeRooms: true,
+        includeAmenities: true,
+        includeTags: true,
+        includePhotos: true,
+      };
+      fetchProperty(formData);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (propertyDetails) {
+      clearListingStore();
+      setListingFormData({
+        ...listingFormData,
+        // property related data
+        isUpdateListing: true,
+        propertyTempId: propertyDetails.nanoId,
+        propertyTypeId: propertyDetails.propertyType.id,
+        bookingPlaceTypeId: propertyDetails.bookingPlaceType.id,
+        address: {
+          countryId: propertyDetails.propertyAddress.countryId,
+          addressLine1: propertyDetails.propertyAddress.addressLine1,
+          addressLine2: propertyDetails.propertyAddress.addressLine2,
+          landmark: propertyDetails.propertyAddress.landmark,
+          city: propertyDetails.propertyAddress.city,
+          // state: propertyDetails.propertyAddress.state,
+          zipCode: propertyDetails.propertyAddress.zipCode,
+          latitude: propertyDetails.propertyAddress.latitude,
+          longitude: propertyDetails.propertyAddress.longitude,
+        },
+        bhkTypeId: propertyDetails.bhkType.id,
+        furnishingTypeId: propertyDetails.furnishingType.id,
+        guestCapacity: propertyDetails.guestCapacity,
+        areaInSqMeter: propertyDetails.areaInSqMeter,
+        pricePerNight: propertyDetails.pricePerNight,
+        checkinTime: propertyDetails.checkinTime,
+        checkoutTime: propertyDetails.checkoutTime,
+        ...(propertyDetails.petAllowed && {
+          petAllowed: propertyDetails.petAllowed,
+        }),
+        ...(propertyDetails.needsAccessibility && {
+          needsAccessibility: propertyDetails.needsAccessibility,
+        }),
+        ...(propertyDetails.smokingAllowed && {
+          smokingAllowed: propertyDetails.smokingAllowed,
+        }),
+        name: propertyDetails.name,
+        description: propertyDetails.description,
+        // other data
+        photos: imagesList,
+        roomDetails: roomsList.map((room) => ({
+          roomTypeId: room.roomType.id,
+          quantity: room.quantity,
+        })),
+        amenityIds: amenitiesList
+          .map((item) => item.amenity?.id)
+          .filter((id): id is string => Boolean(id)),
+        tagIds: tagsList
+          .map((item) => item.tag?.id)
+          .filter((id): id is string => Boolean(id)),
+      });
+    }
+  }, [propertyDetails, imagesList, amenitiesList, tagsList, roomsList]);
+
+  const handleEdit = async () => {
+    navigate("/create-listing-step-one");
   };
-  onClose: () => void;
-}
 
-const PropertyDetails: React.FC<PropertyDetailsProps> = ({ onClose }) => {
+  const handlePublish = async () => {
+    if (property?.id) {
+      const formData = {
+        propertyId: property?.id,
+        includeRooms: true,
+        includeAmenities: true,
+        includeTags: true,
+        includePhotos: true,
+      };
+      try {
+        await publishProperty({ propertyId: property.id });
+        fetchProperty(formData);
+        fetchPropertyList();
+        toast.success("Property published successfully");
+      } catch (error) {
+        console.log("Publish Property Error: ", error);
+      }
+    }
+  };
+
+  const handleDelist = async () => {
+    if (property?.id) {
+      const formData = {
+        propertyId: property?.id,
+        includeRooms: true,
+        includeAmenities: true,
+        includeTags: true,
+        includePhotos: true,
+      };
+      try {
+        await delistProperty({ propertyId: property.id });
+        fetchProperty(formData);
+        fetchPropertyList();
+        toast.success("Property delisted successfully");
+      } catch (error) {
+        console.log("Delist Property Error: ", error);
+      }
+    }
+  };
+
+  const sidebarRef = useRef<HTMLDivElement | null>(null);
+  useOutsideClick(sidebarRef, () => {
+    onClose();
+  });
+  if (loading)
+    return (
+      <div className="flex w-full h-full justify-center items-center">
+        <Loader size="large" />
+      </div>
+    );
+  const currentSyncStatus =
+    propertyDetails?.syncStatus ?? PropertySyncStatus.UNSPECIFIED;
   return (
-    <div className="fixed inset-0 bg-black/[0.6] bg-opacity-50 flex justify-end z-999999">
-      <motion.div
-        initial={{ x: "100%" }} // Start off-screen to the right
-        animate={{ x: 0 }} // Slide in from right
-        exit={{ x: "100%" }} // Slide out to right
-        transition={{ type: "tween", duration: 0.3 }} // Smooth transition
-        className="w-[40%] h-full bg-white shadow-lg p-6 overflow-visible  relative"
-      >
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 -left-4 text-gray-500 hover:text-black bg-gray-400 shadow w-8 h-8 rounded-full z-10 flex justify-center items-center"
-        >
-          <ChevronLeftIcon />
-        </button>
-
-        <div className="">
-          {/* Title & Price */}
-          <div className="flex justify-between items-center mb-4">
-            <div>
-              <h2 className="text-lg font-semibold">The Royal Lotus Inn</h2>
-              <p className="text-gray-500 text-xs font-light">
-                C211, Z-One, Patia, Bhubaneswar
-              </p>
-            </div>
-            <div className=" bg-gray-100 p-2">
-              <p className="text-gray-500 text-xs font-thin">
-                Your price per night
-              </p>
-              <p className="text-md">₹2,345</p>
-            </div>
+    <>
+      <div className="">
+        {/* Title & Price */}
+        <div className="flex justify-between items-center mb-4">
+          <div>
+            <h2 className="text-lg font-semibold">{property?.name}</h2>
+            <p className="text-gray-500 text-xs font-light">
+              {`${propertyAddress?.addressLine1}, ${propertyAddress?.addressLine2}, ${propertyAddress?.city} ${propertyAddress?.zipCode}`}
+            </p>
           </div>
-
-          {/* Property Info */}
-          <div className="grid grid-cols-3 gap-2 mb-4">
-            <div className="bg-gray-100 p-3 rounded-md text-center flex flex-col">
-              <span className="text-xs text-gray-500 font-thin">
-                Property Type
-              </span>
-              <span className="text-sm">2 Bhk</span>
-            </div>
-            <div className="bg-gray-100 p-3 rounded-md text-center flex flex-col">
-              <span className="text-xs text-gray-500 font-thin">
-                Furnishing Type
-              </span>
-              <span className="text-sm">Fully Furnished</span>
-            </div>
-            <div className="bg-gray-100 p-3 rounded-md text-center flex flex-col">
-              <span className="text-xs text-gray-500 font-thin">Area</span>
-              <span className="text-sm">324 sq mtr</span>
-            </div>
-          </div>
-
-          {/* Image Placeholder */}
-          <div className="grid grid-cols-2 gap-2 mb-4">
-            <div className="bg-gray-200 h-24 rounded-lg"></div>
-            <div className="bg-gray-200 h-24 rounded-lg"></div>
-            <div className="bg-gray-200 h-24 rounded-lg"></div>
-            <div className="bg-gray-200 h-24 rounded-lg"></div>
-          </div>
-
-          {/* Description */}
-          <p className="text-gray-600 text-sm mb-4">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua.
-          </p>
-
-          {/* Features */}
-          <div className="grid grid-cols-3 gap-2 mb-4">
-            <div className="bg-gray-100 p-3 rounded-md text-center flex flex-col">
-              <span className="text-sm">4</span>
-              <span className="text-xs text-gray-500 font-thin"> Guests</span>
-            </div>
-            <div className="bg-gray-100 p-3 rounded-md text-center flex flex-col">
-              <span className="text-sm">3</span>
-              <span className="text-xs text-gray-500 font-thin">Bathrooms</span>
-            </div>
-            <div className="bg-gray-100 p-3 rounded-md text-center flex flex-col">
-              <span className="text-sm">2</span>
-              <span className="text-xs text-gray-500 font-thin">
-                King Size Bedrooms
-              </span>
-            </div>
-            <div className="bg-gray-100 p-3 rounded-md text-center flex flex-col">
-              <span className="text-sm">2</span>
-              <span className="text-xs text-gray-500 font-thin">
-                Queen Size Bedrooms
-              </span>
-            </div>
-            <div className="bg-gray-100 p-3 rounded-md text-center flex flex-col">
-              <span className="text-sm">2</span>
-              <span className="text-xs text-gray-500 font-thin">Kitchen</span>
-            </div>
-          </div>
-          <hr className="my-3 border-gray-300" />
-          {/* Amenities */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            <span className="bg-gray-200 px-3 py-1 text-sm rounded-md">TV</span>
-            <span className="bg-gray-200 px-3 py-1 text-sm rounded-md">
-              Refrigerator
-            </span>
-            <span className="bg-gray-200 px-3 py-1 text-sm rounded-md">
-              Wifi
-            </span>
-            <span className="text-xs text-gray-500 font-light py-1">
-              +15 more
-            </span>
-          </div>
-
-          <hr className="my-3 border-gray-300" />
-          {/* Tags */}
-          <div className="flex flex-wrap gap-2 mb-6">
-            <span className="bg-gray-200 text-sm px-3 py-1 rounded-md">
-              Family Friendly
-            </span>
-            <span className="bg-gray-200 text-sm px-3 py-1 rounded-md">
-              Stylish
-            </span>
-            <span className="text-xs text-gray-500 font-light py-1">
-              +2 more
-            </span>
-          </div>
-          {/* Buttons */}
-          <div className="flex justify-end gap-2 absolute bottom-5 right-5">
-            <Button variant="outline">Edit</Button>
-            <Button variant="outline">Delist</Button>
-            <Button variant="primary">Publish Property</Button>
+          <div className=" bg-gray-100 p-2">
+            <p className="text-gray-500 text-xs font-thin">
+              Your price per night
+            </p>
+            <p className="text-md">{property?.pricePerNight}</p>
           </div>
         </div>
-      </motion.div>
-    </div>
+
+        {/* Property Info */}
+        <div className="grid grid-cols-3 gap-2 mb-4">
+          <div className="bg-gray-100 p-3 rounded-md text-center flex flex-col">
+            <span className="text-xs text-gray-500 font-thin">
+              Property Type
+            </span>
+            <span className="text-sm">{propertyDetails?.bhkType?.name}</span>
+          </div>
+          <div className="bg-gray-100 p-3 rounded-md text-center flex flex-col">
+            <span className="text-xs text-gray-500 font-thin">
+              Furnishing Type
+            </span>
+            <span className="text-sm">
+              {propertyDetails?.furnishingType?.name}
+            </span>
+          </div>
+          <div className="bg-gray-100 p-3 rounded-md text-center flex flex-col">
+            <span className="text-xs text-gray-500 font-thin">Area</span>
+            <span className="text-sm">
+              {propertyDetails?.areaInSqMeter} sq mtr
+            </span>
+          </div>
+        </div>
+
+        {/* Image Placeholder */}
+        <div className="grid grid-cols-2 gap-2 mb-4">
+          {imagesList?.length > 0 &&
+            imagesList.map((image: PhotosProps) => (
+              <img
+                key={image.id}
+                src={`${import.meta.env.VITE_CDN_URL}${image?.imagePath}`}
+                alt="Property"
+                className="w-full h-full object-cover rounded-md"
+              />
+            ))}
+        </div>
+
+        {/* Description */}
+        <p className="text-gray-600 text-sm mb-4">
+          {propertyDetails?.description}
+        </p>
+
+        {/* Features */}
+        <div className="grid grid-cols-3 gap-2 mb-4">
+          <div className="bg-gray-100 p-3 rounded-md text-center flex flex-col">
+            <span className="text-sm">{propertyDetails?.guestCapacity}</span>
+            <span className="text-xs text-gray-500 font-thin"> Guests</span>
+          </div>
+          {roomsList.slice(0, 4)?.map((room, i) => (
+            <div
+              key={`${room.id}-${i}`}
+              className="bg-gray-100 p-3 rounded-md text-center flex flex-col"
+            >
+              <span className="text-sm">{room.quantity}</span>
+              <span className="text-xs text-gray-500 font-thin">
+                {room.roomType.name}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <hr className="my-3 border-gray-300" />
+        {/* Amenities */}
+        <ServicesList listData={amenitiesList} />
+        {/* <div className="flex flex-wrap gap-2 mb-4">
+            {amenityVisibleItems?.map((amenity: AmenityProps) => (
+              <span
+                key={amenity.id}
+                className="bg-gray-200 px-3 py-1 text-sm rounded-md"
+              >
+                {amenity.amenity.name}
+              </span>
+            ))}
+            {amenitiesList.length > 4 && (
+              <span className="text-xs text-gray-500 font-light py-1">
+                {amenityMoreText}
+              </span>
+            )}
+          </div> */}
+
+        <hr className="my-3 border-gray-300" />
+        {/* Tags */}
+        <ServicesList isTags listData={tagsList} />
+        {/* <div className="flex flex-wrap gap-2 mb-6">
+            {tagsVisibleItems?.map((tag: TagsProps) => (
+              <span
+                key={tag.id}
+                className="bg-gray-200 text-sm px-3 py-1 rounded-md"
+              >
+                {tag.tag.name}
+              </span>
+            ))}
+            {tagsList.length > 4 && (
+              <span className="text-xs text-gray-500 font-light py-1">
+                {tagsMoreText}
+              </span>
+            )}
+          </div> */}
+        {/* Buttons */}
+        <div className="flex justify-end gap-2 bottom-5 right-5">
+          {(currentSyncStatus === PropertySyncStatus.UNSPECIFIED ||
+            currentSyncStatus === PropertySyncStatus.DELISTED) && (
+            <Button size="sm" variant="outline" onClick={handleEdit}>
+              Edit
+            </Button>
+          )}
+
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handleDelist}
+            disabled={currentSyncStatus !== PropertySyncStatus.PUBLISHED}
+          >
+            Delist
+          </Button>
+
+          <Button
+            size="sm"
+            variant="primary"
+            onClick={handlePublish}
+            disabled={currentSyncStatus === PropertySyncStatus.PUBLISHED}
+          >
+            Publish Property
+          </Button>
+        </div>
+      </div>
+    </>
   );
 };
 
