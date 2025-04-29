@@ -1,22 +1,19 @@
 import { useRef, useState } from "react";
 import useOutsideClick from "../hooks/useOutsideClick";
-import { AUTH_COOKIES, removeCookie } from "../utils/cookie";
 import { Link } from "react-router";
 import useUserStore from "../store/user.store";
 import Button from "../components/ui/button/Button";
 
-export default function SidebarWidget() {
+export default function SidebarWidget({
+  openModal,
+}: {
+  openModal: () => void;
+}) {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
-  const { clearUserStore } = useUserStore();
+  // const { clearUserStore } = useUserStore();
   const { user } = useUserStore();
-
-  const logout = () => {
-    removeCookie(AUTH_COOKIES.ACCESS_TOKEN);
-    removeCookie(AUTH_COOKIES.REFRESH_TOKEN);
-    clearUserStore();
-    window.location.href = "/signin";
-  };
+  // const { isOpen, openModal, closeModal } = useModal();
 
   useOutsideClick(userMenuRef, () => setIsUserDropdownOpen(false));
   return (
@@ -61,7 +58,7 @@ export default function SidebarWidget() {
               <li>
                 <button
                   className="block w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
-                  onClick={() => logout()}
+                  onClick={() => openModal()}
                 >
                   Logout
                 </button>

@@ -15,6 +15,11 @@ import {
 import { useSidebar } from "../context/SidebarContext";
 import SidebarWidget from "./SidebarWidget";
 import AppLogo from "../components/AppLogo/AppLogo";
+import { Modal } from "../components/ui/modal";
+import { useModal } from "../hooks/useModal";
+import Button from "../components/ui/button/Button";
+import { AUTH_COOKIES, removeCookie } from "../utils/cookie";
+import useUserStore from "../store/user.store";
 
 type NavItem = {
   name: string;
@@ -91,6 +96,7 @@ const othersItems: NavItem[] = [
 
 const AppSidebar: React.FC = () => {
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
+  const { isOpen, openModal, closeModal } = useModal();
   const location = useLocation();
 
   const [openSubmenu, setOpenSubmenu] = useState<{
@@ -279,10 +285,18 @@ const AppSidebar: React.FC = () => {
       ))}
     </ul>
   );
+  const { clearUserStore } = useUserStore();
+  const logout = () => {
+    removeCookie(AUTH_COOKIES.ACCESS_TOKEN);
+    removeCookie(AUTH_COOKIES.REFRESH_TOKEN);
+    clearUserStore();
+    window.location.href = "/signin";
+  };
 
   return (
-    <aside
-      className={`fixed mt-20 md:mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
+    <>
+      <aside
+        className={`fixed mt-20 md:mt-16 flex flex-col lg:mt-0 top-0 px-5 left-0 bg-white dark:bg-gray-900 dark:border-gray-800 text-gray-900 h-screen transition-all duration-300 ease-in-out z-50 border-r border-gray-200 
         ${
           isExpanded || isMobileOpen
             ? "w-[290px]"
@@ -292,17 +306,17 @@ const AppSidebar: React.FC = () => {
         }
         ${isMobileOpen ? "translate-x-0" : "-translate-x-full"}
         lg:translate-x-0`}
-      onMouseEnter={() => !isExpanded && setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <AppLogo
-        isExpanded={isExpanded}
-        isHovered={isHovered}
-        isMobileOpen={isMobileOpen}
-        hiddenOnMobile
-        // isHidden
-      />
-      {/* <div
+        onMouseEnter={() => !isExpanded && setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
+        <AppLogo
+          isExpanded={isExpanded}
+          isHovered={isHovered}
+          isMobileOpen={isMobileOpen}
+          hiddenOnMobile
+          // isHidden
+        />
+        {/* <div
         className={`py-4 hidden md:flex ${
           !isExpanded && !isHovered ? "lg:justify-center" : "justify-start"
         }`}
@@ -336,41 +350,73 @@ const AppSidebar: React.FC = () => {
           )}
         </Link>
       </div> */}
-      <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
-        <nav className="mb-6">
-          <div className="flex flex-col gap-4">
-            <div>
-              <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
-                  !isExpanded && !isHovered
-                    ? "lg:justify-center"
-                    : "justify-start"
-                }`}
-              >
-                {isExpanded || isHovered || isMobileOpen ? (
-                  ""
-                ) : (
-                  <HorizontaLDots className="size-6" />
-                )}
-              </h2>
-              {renderMenuItems(navItems, "main")}
+        <div className="flex flex-col overflow-y-auto duration-300 ease-linear no-scrollbar">
+          <nav className="mb-6">
+            <div className="flex flex-col gap-4">
+              <div>
+                <h2
+                  className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
+                    !isExpanded && !isHovered
+                      ? "lg:justify-center"
+                      : "justify-start"
+                  }`}
+                >
+                  {isExpanded || isHovered || isMobileOpen ? (
+                    ""
+                  ) : (
+                    <HorizontaLDots className="size-6" />
+                  )}
+                </h2>
+                {renderMenuItems(navItems, "main")}
+              </div>
+              <div className="">
+                <h2
+                  className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
+                    !isExpanded && !isHovered
+                      ? "lg:justify-center"
+                      : "justify-start"
+                  }`}
+                ></h2>
+              </div>
             </div>
-            <div className="">
-              <h2
-                className={`mb-4 text-xs uppercase flex leading-[20px] text-gray-400 ${
-                  !isExpanded && !isHovered
-                    ? "lg:justify-center"
-                    : "justify-start"
-                }`}
-              ></h2>
-            </div>
+          </nav>
+        </div>
+        <div className=" absolute bottom-24 md:flex flex-col">
+          {isExpanded || isHovered || isMobileOpen ? (
+            <SidebarWidget openModal={openModal} />
+          ) : null}
+        </div>
+      </aside>
+      <Modal
+        isOpen={isOpen}
+        onClose={closeModal}
+        className="max-w-[400px] p-6 lg:p-10"
+      >
+        <div className="flex flex-col items-center justify-center  p-6">
+          {/* Success Icon */}
+
+          {/* Heading */}
+          <h2 className="mt-4 text-xl font-semibold text-gray-900">
+            Are you sure?
+          </h2>
+
+          {/* Description */}
+          <p className="mt-2 text-center text-gray-500 text-sm max-w-sm">
+            Do you want to logout?
+          </p>
+
+          {/* Buttons */}
+          <div className="mt-6 flex gap-4">
+            <Button size="sm" variant="outline" onClick={logout}>
+              {"Yes, Logout"}
+            </Button>
+            <Button size="sm" variant="primary" onClick={closeModal}>
+              Cancel
+            </Button>
           </div>
-        </nav>
-      </div>
-      <div className=" absolute bottom-24 md:flex flex-col">
-        {isExpanded || isHovered || isMobileOpen ? <SidebarWidget /> : null}
-      </div>
-    </aside>
+        </div>
+      </Modal>
+    </>
   );
 };
 
