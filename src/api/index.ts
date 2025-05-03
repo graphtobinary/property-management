@@ -76,7 +76,10 @@ const doCall = async (
     return response.text();
   } catch (error) {
     if (error instanceof ApiException) {
-      toast.error(error?.message || "Something went wrong!");
+      toast.error(error?.message || "Something went wrong!", {
+        toastId: "api-error",
+      });
+      throw error;
     } else {
       toast.error("Network error. Please try again.");
     }

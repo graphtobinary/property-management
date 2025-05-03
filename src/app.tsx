@@ -31,6 +31,7 @@ import TermsConditions from "./pages/TermsConditions";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import ResetPassword from "./pages/AuthPages/ResetPassword";
 import ForgotPassword from "./pages/AuthPages/ForgotPassword";
+import { useEffect } from "react";
 
 // PrivateRoute component to handle authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
@@ -43,7 +44,11 @@ const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   return user ? <>{children}</> : <Navigate to="/signin" replace />;
 };
 export default function App() {
-  const { user, loading } = useUser();
+  const { user, loading, getUserData } = useUser();
+
+  useEffect(() => {
+    getUserData();
+  }, []);
 
   if (loading) {
     return (
