@@ -7,9 +7,10 @@ import { ListTypeProps } from "../../interfaces/listing";
 import { useListingStore } from "../../store/listing.store";
 import ExitButton from "../../components/ExitButton";
 import { toast } from "react-toastify";
-
+import useUserStore from "../../store/user.store";
 const StepTwo: React.FC = () => {
   const [selected, setSelected] = useState<string>("");
+  const { subscription } = useUserStore();
   const [bookingPlaceTypeList, setBookingPlaceTypeList] = useState<
     ListTypeProps[] | []
   >([]);
@@ -45,6 +46,12 @@ const StepTwo: React.FC = () => {
       });
     }
   }, [selected]);
+
+  useEffect(() => {
+    if (subscription?.isExpired) {
+      navigate("/");
+    }
+  }, [subscription?.isExpired]);
 
   const handleNext = () => {
     if (!selected) {

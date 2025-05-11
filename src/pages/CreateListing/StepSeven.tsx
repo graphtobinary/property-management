@@ -1,12 +1,20 @@
 import PageMeta from "../../components/common/PageMeta";
-import { lazy } from "react";
+import { lazy, useEffect } from "react";
 import ExitButton from "../../components/ExitButton";
-
+import { useNavigate } from "react-router";
+import useUserStore from "../../store/user.store";
 const DynamicRoomSelector = lazy(
   () => import("../../components/DynamicRoomSelector")
 );
 
 const StepSeven: React.FC = () => {
+  const navigate = useNavigate();
+  const { subscription } = useUserStore();
+  useEffect(() => {
+    if (subscription?.isExpired) {
+      navigate("/");
+    }
+  }, [subscription?.isExpired]);
   return (
     <>
       <PageMeta title="Manzil" description="Property Management Dashboard" />

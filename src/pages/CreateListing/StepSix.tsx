@@ -5,13 +5,19 @@ import TextArea from "../../components/form/input/TextArea";
 import { useEffect, useState } from "react";
 import { useListingStore } from "../../store/listing.store";
 import ExitButton from "../../components/ExitButton";
-
+import useUserStore from "../../store/user.store";
 const StepSix: React.FC = () => {
   const [description, setDescription] = useState("");
   const [errors, setErrors] = useState<string>("");
   const navigate = useNavigate();
   const maxLength = 500;
   const { listingFormData, setListingFormData } = useListingStore();
+  const { subscription } = useUserStore();
+  useEffect(() => {
+    if (subscription?.isExpired) {
+      navigate("/");
+    }
+  }, [subscription?.isExpired]);
 
   useEffect(() => {
     if (listingFormData.description)

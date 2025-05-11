@@ -7,6 +7,7 @@ import { getPropertyTypes } from "../../api/Listing.api";
 import { ListTypeProps } from "../../interfaces/listing";
 import ExitButton from "../../components/ExitButton";
 import { toast } from "react-toastify";
+import useUserStore from "../../store/user.store";
 
 const StepOne: React.FC = () => {
   const { listingFormData, setListingFormData } = useListingStore();
@@ -14,6 +15,14 @@ const StepOne: React.FC = () => {
   const [propertyTypeList, setPropertyTypeList] = useState<
     ListTypeProps[] | []
   >([]);
+
+  const { subscription } = useUserStore();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (subscription?.isExpired) {
+      navigate("/");
+    }
+  }, [subscription?.isExpired]);
 
   useEffect(() => {
     if (listingFormData?.propertyTypeId) {
@@ -44,8 +53,6 @@ const StepOne: React.FC = () => {
       });
     }
   }, [selected]);
-
-  const navigate = useNavigate();
 
   const handleNext = () => {
     if (!selected) {

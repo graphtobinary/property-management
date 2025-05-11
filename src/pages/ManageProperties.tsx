@@ -6,8 +6,9 @@ import Button from "../components/ui/button/Button";
 import { useListingStore } from "../store/listing.store";
 import { getPropertyTempId } from "../api/Listing.api";
 import { useEffect } from "react";
-
+import useUserStore from "../store/user.store";
 const ManageProperties: React.FC = () => {
+  const { subscription } = useUserStore();
   const { listingFormData, setListingFormData, clearListingStore } =
     useListingStore();
   const navigate = useNavigate();
@@ -34,6 +35,12 @@ const ManageProperties: React.FC = () => {
     });
     navigate("/create-listing-step-one");
   };
+
+  useEffect(() => {
+    if (subscription?.isExpired) {
+      navigate("/");
+    }
+  }, [subscription?.isExpired]);
 
   return (
     <>

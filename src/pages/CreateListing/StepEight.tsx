@@ -7,12 +7,19 @@ import { ListTypeProps } from "../../interfaces/listing";
 import { useListingStore } from "../../store/listing.store";
 import ExitButton from "../../components/ExitButton";
 import { toast } from "react-toastify";
-
+import useUserStore from "../../store/user.store";
 const StepEight: React.FC = () => {
   const [selected, setSelected] = useState<string[]>([]);
   const [amenitiesList, setAmenitiesList] = useState<ListTypeProps[] | []>([]);
   const { listingFormData, setListingFormData } = useListingStore();
   const navigate = useNavigate();
+  const { subscription } = useUserStore();
+
+  useEffect(() => {
+    if (subscription?.isExpired) {
+      navigate("/");
+    }
+  }, [subscription?.isExpired]);
 
   useEffect(() => {
     fetchAmenityList();

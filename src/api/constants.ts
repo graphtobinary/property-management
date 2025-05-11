@@ -38,6 +38,13 @@ const API_CONSTANTS = {
     "/property.service.v1.PropertyService/DeletePropertyPhoto",
   PUBLISH_PROPERTY: "/property.service.v1.PropertyService/PublishProperty",
   DELIST_PROPERTY: "/property.service.v1.PropertyService/DelistProperty",
+  GET_SUBSCRIPTIONS:
+    "/subscription.service.v1.SubscriptionService/GetSubscriptions",
+  GET_PLAN_AND_PRICE: "/subscription.service.v1.PlanService/GetPlanAndPrice",
+  CREATE_PAYMENT_SESSION:
+    "/subscription.service.v1.SubscriptionService/CreatePaymentSession",
+  SUBSCRIPTION_CANCEL:
+    "/subscription.service.v1.SubscriptionService/SubscriptionCancel",
 };
 
 export default API_CONSTANTS;

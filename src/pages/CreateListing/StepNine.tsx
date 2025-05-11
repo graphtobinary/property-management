@@ -6,12 +6,19 @@ import Input from "../../components/form/input/InputField";
 import { useEffect, useState } from "react";
 import { useListingStore } from "../../store/listing.store";
 import ExitButton from "../../components/ExitButton";
+import useUserStore from "../../store/user.store";
 
 const StepNine: React.FC = () => {
   const navigate = useNavigate();
   const [price, setPrice] = useState<number>();
   const [errors, setErrors] = useState<string>("");
   const { listingFormData, setListingFormData } = useListingStore();
+  const { subscription } = useUserStore();
+  useEffect(() => {
+    if (subscription?.isExpired) {
+      navigate("/");
+    }
+  }, [subscription?.isExpired]);
 
   useEffect(() => {
     if (listingFormData?.pricePerNight) {

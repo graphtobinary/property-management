@@ -32,7 +32,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import ResetPassword from "./pages/AuthPages/ResetPassword";
 import ForgotPassword from "./pages/AuthPages/ForgotPassword";
 import { useEffect } from "react";
-
+import ManageSubscription from "./pages/ManageSubscription";
 // PrivateRoute component to handle authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { user } = useUserStore();
@@ -123,6 +123,8 @@ export default function App() {
           <Route path="/calendar" element={<Calendar />} />
           <Route path="calendar/:id" element={<CalendarDetails />} />
           <Route path="/manage-properties" element={<ManageProperties />} />
+          <Route path="/purchase-plan" element={<PurchasePlan />} />
+          <Route path="/manage-subscription" element={<ManageSubscription />} />
         </Route>
         <Route path="/tell-us-about-you" element={<UpdateUserProfile />} />
         {/* Create Listing Routes */}
@@ -145,7 +147,6 @@ export default function App() {
           <Route path="/create-listing-step-ten" element={<StepTen />} />
           <Route path="/create-listing-step-eleven" element={<StepEleven />} />
           <Route path="/create-listing-step-twelve" element={<StepTwelve />} />
-          <Route path="/purchase-plan" element={<PurchasePlan />} />
         </Route>
 
         {/* Other Routes */}

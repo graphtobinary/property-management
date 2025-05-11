@@ -1,5 +1,5 @@
 import { FormEvent, ReactNode } from "react";
-import { UserProfileProps } from "./user";
+import { UserProfileProps, UserSubscription } from "./user";
 import { EventInput } from "@fullcalendar/core/index.js";
 import { PhotosProps } from "./listing";
 
@@ -23,6 +23,7 @@ export interface ResetPasswordProps {
 
 export interface AclUserProps {
   aclUser: UserProfileProps;
+  subscription: UserSubscription;
 }
 
 export interface CountryItemProps {
@@ -158,7 +159,9 @@ export interface ListingFormDataProps {
 export interface ListingState {
   listingFormData: ListingFormDataProps;
   setListingFormData: (
-    data: ListingFormDataProps | ((prev: ListingFormDataProps) => ListingFormDataProps)
+    data:
+      | ListingFormDataProps
+      | ((prev: ListingFormDataProps) => ListingFormDataProps)
   ) => void;
   clearListingStore: () => void;
 }
@@ -217,4 +220,29 @@ export interface PriceEntryProps {
 export interface ExitButtonProps {
   isListingPage?: boolean;
   link?: string;
+}
+
+export interface Transaction {
+  id: string;
+  date: string;
+  type: string;
+  amount: string;
+  nextBillingDate: string;
+}
+
+export enum BillingCycle {
+  UNSPECIFIED = 0,
+  MONTHLY = 1,
+  YEARLY = 2,
+}
+
+export interface PlanDetails {
+  planId: number;
+  planPriceId: number;
+  billingCycle: number; // You may use an enum if this maps to specific cycles like Monthly, Yearly, etc.
+  price: number;
+  monthlyPrice: number;
+  currencyCode: string; // e.g., "AED"
+  offerText: string;
+  description: string;
 }

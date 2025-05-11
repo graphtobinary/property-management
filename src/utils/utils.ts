@@ -208,3 +208,11 @@ export const isPastDate = (inputDate: string | Date): boolean => {
 
   return dateToCheck < today;
 };
+
+export const getRemainingDays = (date: string) => {
+  const today = new Date();
+  const nextBillingDate = new Date(date);
+  const diffTime = nextBillingDate.getTime() - today.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays;
+};

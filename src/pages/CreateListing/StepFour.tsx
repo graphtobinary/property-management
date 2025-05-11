@@ -1,15 +1,21 @@
 import PageMeta from "../../components/common/PageMeta";
 import { Link, useNavigate } from "react-router";
 import Button from "../../components/ui/button/Button";
-import { lazy } from "react";
+import { lazy, useEffect } from "react";
 import ExitButton from "../../components/ExitButton";
-
+import useUserStore from "../../store/user.store";
 const AddressPinSelector = lazy(
   () => import("../../components/AddressPinSelector")
 );
 
 const StepFour: React.FC = () => {
   const navigate = useNavigate();
+  const { subscription } = useUserStore();
+  useEffect(() => {
+    if (subscription?.isExpired) {
+      navigate("/");
+    }
+  }, [subscription?.isExpired]);
   return (
     <>
       <PageMeta title="Manzil" description="Property Management Dashboard" />

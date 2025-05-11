@@ -11,7 +11,7 @@ const useUser = () => {
   const [loading, setLoading] = useState(true);
   const [useData, setUserData] = useState<UserProfileProps | null>(null);
   const [error, setError] = useState<IApiException | null>(null);
-  const { setUser, clearUserStore } = useUserStore();
+  const { setUser, setSubscription, clearUserStore } = useUserStore();
   const { setToken } = useAuthStore();
   const token = getCookie(AUTH_COOKIES.ACCESS_TOKEN) || "";
 
@@ -32,6 +32,7 @@ const useUser = () => {
       const result = (await getUser()) as AclUserProps;
       if (result?.aclUser) {
         setUser(result.aclUser);
+        setSubscription(result.subscription);
         setUserData(result.aclUser);
       }
     } catch (e) {

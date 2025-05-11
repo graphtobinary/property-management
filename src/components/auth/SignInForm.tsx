@@ -29,7 +29,7 @@ export default function SignInForm() {
   const [isButtonDisabled, setIsButtonDisabled] = useState(true); // Initially disabled
 
   const { setToken } = useAuthStore();
-  const { setUser } = useUserStore();
+  const { setUser, setSubscription } = useUserStore();
 
   // Enable button when both email & password are filled
   useEffect(() => {
@@ -63,8 +63,9 @@ export default function SignInForm() {
           setCookie(AUTH_COOKIES.ACCESS_TOKEN, response.accessToken);
           setCookie(AUTH_COOKIES.REFRESH_TOKEN, response.refreshToken);
           setToken(response.accessToken);
-          const { aclUser } = (await getUser()) as AclUserProps;
+          const { aclUser, subscription } = (await getUser()) as AclUserProps;
           setUser(aclUser);
+          setSubscription(subscription);
           navigate(
             aclUser?.tenant?.tenantBusinessType ? "/" : "/tell-us-about-you"
           );

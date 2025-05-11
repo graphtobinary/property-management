@@ -14,6 +14,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@checkout.com/checkout-web-components": "^0.6.0-beta",
     "@fullcalendar/core": "^6.1.15",
     "@fullcalendar/daygrid": "^6.1.15",
     "@fullcalendar/interaction": "^6.1.15",

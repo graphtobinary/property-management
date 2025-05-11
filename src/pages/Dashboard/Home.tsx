@@ -7,6 +7,7 @@ import useUserStore from "../../store/user.store";
 import { useListingStore } from "../../store/listing.store";
 import Button from "../../components/ui/button/Button";
 import { getPropertyTempId } from "../../api/Listing.api";
+import { toast } from "react-toastify";
 
 const EcommerceMetrics = lazy(
   () => import("../../components/ecommerce/EcommerceMetrics")
@@ -26,7 +27,12 @@ export default function Home() {
   const { listingFormData, setListingFormData, clearListingStore } =
     useListingStore();
 
+  const { subscription } = useUserStore();
   const handlePropertyTempId = async () => {
+    if (subscription?.isExpired) {
+      toast.error("Please upgrade to continue.");
+      return;
+    }
     try {
       clearListingStore();
       const { propertyId } = (await getPropertyTempId()) as {
