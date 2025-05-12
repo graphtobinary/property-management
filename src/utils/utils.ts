@@ -214,5 +214,5 @@ export const getRemainingDays = (date: string) => {
   const nextBillingDate = new Date(date);
   const diffTime = nextBillingDate.getTime() - today.getTime();
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-  return diffDays;
+  return diffDays < 0 ? 0 : diffDays;
 };

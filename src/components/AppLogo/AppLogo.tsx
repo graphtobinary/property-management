@@ -30,7 +30,7 @@ const AppLogo = ({
               className="dark:hidden"
               src="/images/logo/manzil-logo.svg"
               alt="Logo"
-              width={90}
+              width={120}
               height={60}
             />
 
@@ -38,7 +38,7 @@ const AppLogo = ({
               className="hidden dark:block"
               src="/images/logo/manzil-logo.svg"
               alt="Logo"
-              width={90}
+              width={120}
               height={60}
             />
           </>

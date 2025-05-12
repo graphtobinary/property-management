@@ -85,7 +85,7 @@ export default function Verification() {
                 </div>
               ) : (
                 <div className="flex flex-col flex-1 w-full max-w-md mx-auto justify-center">
-                  {!isSuccess ? (
+                  {isSuccess ? (
                     <Alert
                       variant="success"
                       title="Email verified Successful"

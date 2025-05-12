@@ -71,7 +71,6 @@ const CalendarDetails: React.FC = () => {
 
   useEffect(() => {
     if (JSON.stringify(events) !== JSON.stringify(allEvents)) {
-      console.log(allEvents, "allEvents");
       setEvents(allEvents);
     }
   }, [allEvents]);

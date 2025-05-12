@@ -10,6 +10,7 @@ import { AclUserProps, UpdateUserDataProps } from "../../interfaces";
 import useCountries from "../../hooks/useCountries";
 import useUserStore from "../../store/user.store";
 import { IApiException } from "../../api/Api.exception";
+import PhoneInput from "./PhoneInput";
 
 const INIT_FORM_ELEMENTS = {
   country: "",
@@ -100,7 +101,6 @@ export default function UpdateUserForm() {
         phoneNumber: formValues.phoneNumber,
         approxNumOfListings: formValues.approxNumOfListings,
       };
-
       try {
         setLoading(true);
         await patchUser(formData);
@@ -114,10 +114,15 @@ export default function UpdateUserForm() {
     }
   };
 
+  const countriesIso = [
+    { value: "+966", label: "+966" },
+    { value: "+971", label: "+971" },
+  ];
+
   const handleRadioChange = (value: string) => {
     setOwnerType(value);
   };
-  // console.log(errors);
+
   return (
     <>
       <div className="flex flex-col flex-1">
@@ -209,8 +214,9 @@ export default function UpdateUserForm() {
                 <Label>
                   Mobile Number<span className="text-error-500">*</span>
                 </Label>
-                <Input
+                <PhoneInput
                   type="number"
+                  countries={countriesIso}
                   placeholder="Enter mobile"
                   onChange={(e) => handleChange("phoneNumber", e.target.value)}
                   error={Boolean(errors?.phoneNumber ?? false)}

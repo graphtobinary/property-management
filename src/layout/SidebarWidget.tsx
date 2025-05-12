@@ -6,26 +6,19 @@ import Button from "../components/ui/button/Button";
 
 export default function SidebarWidget({
   openModal,
-  openUpgradeModal,
 }: {
   openModal: () => void;
   openUpgradeModal: () => void;
 }) {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
-  // const { clearUserStore } = useUserStore();
-  const { user, subscription } = useUserStore();
-  // const { isOpen, openModal, closeModal } = useModal();
+  const { user } = useUserStore();
 
   useOutsideClick(userMenuRef, () => setIsUserDropdownOpen(false));
 
   const navigate = useNavigate();
   const handleManageSubscription = () => {
-    if (subscription?.isExpired) {
-      openUpgradeModal();
-    } else {
-      navigate("/manage-subscription");
-    }
+    navigate("/manage-subscription");
   };
   return (
     <>
@@ -39,10 +32,10 @@ export default function SidebarWidget({
             <img src="/images/user/owner.jpg" alt="User" />
           </span>
           <div>
-            <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
+            <span className="block font-medium text-white text-theme-sm dark:text-gray-400">
               {user?.tenant?.firstName} {user?.tenant?.lastName}
             </span>
-            <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
+            <span className="mt-0.5 block text-theme-xs text-white dark:text-gray-400">
               {user?.email}
             </span>
           </div>

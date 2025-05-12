@@ -33,6 +33,7 @@ import ResetPassword from "./pages/AuthPages/ResetPassword";
 import ForgotPassword from "./pages/AuthPages/ForgotPassword";
 import { useEffect } from "react";
 import ManageSubscription from "./pages/ManageSubscription";
+import OrderStatus from "./pages/OrderStatus";
 // PrivateRoute component to handle authentication
 const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
   const { user } = useUserStore();
@@ -127,6 +128,7 @@ export default function App() {
           <Route path="/manage-subscription" element={<ManageSubscription />} />
         </Route>
         <Route path="/tell-us-about-you" element={<UpdateUserProfile />} />
+        <Route path="/order-status" element={<OrderStatus />} />
         {/* Create Listing Routes */}
         <Route
           element={

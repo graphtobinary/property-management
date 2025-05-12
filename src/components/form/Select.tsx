@@ -63,7 +63,7 @@ const Select: React.FC<SelectProps> = ({
             );
           })}
         </select>
-        <span className="pointer-events-none absolute top-1/2 right-4 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
+        <span className="pointer-events-none absolute top-1/2 right-2 z-30 -translate-y-1/2 text-gray-500 dark:text-gray-400">
           <svg
             className="stroke-current"
             width="20"

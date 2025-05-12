@@ -23,6 +23,9 @@ import { ReactComponent as MinusIcon } from "./minus-icon.svg?react";
 import { ReactComponent as EmptyBlocksIcon } from "./empty-blocks.svg?react";
 import { ReactComponent as CrossIcon } from "./cross.svg?react";
 import { ReactComponent as SparklesIcon } from "./sparkles.svg?react";
+import { ReactComponent as FailedIcon } from "./failedIcon.svg?react";
+import { ReactComponent as SuccessIcon } from "./successIcon.svg?react";
+import { ReactComponent as PendingIcon } from "./pendingIcon.svg?react";
 
 export {
   MoreDotIcon,
@@ -50,4 +53,7 @@ export {
   EmptyBlocksIcon,
   CrossIcon,
   SparklesIcon,
+  FailedIcon,
+  SuccessIcon,
+  PendingIcon,
 };

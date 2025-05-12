@@ -8,7 +8,7 @@ import Button from "../components/ui/button/Button";
 import { useModal } from "../hooks/useModal";
 import { cancelSubscription } from "../api/subscription.api";
 import useUser from "../hooks/useUser";
-import { useEffect } from "react";
+
 const ManageSubscription: React.FC = () => {
   const { subscription } = useUserStore();
 
@@ -35,11 +35,6 @@ const ManageSubscription: React.FC = () => {
     }
   };
   const navigate = useNavigate();
-  useEffect(() => {
-    if (subscription?.isExpired) {
-      navigate("/");
-    }
-  }, [subscription?.isExpired]);
 
   return (
     <>
@@ -60,14 +55,25 @@ const ManageSubscription: React.FC = () => {
               days.
             </p>
           </div>
-          <Button
-            onClick={openModal}
-            variant="outline"
-            size="sm"
-            disabled={subscription?.isSubscriptionCanceled}
-          >
-            Cancel Subscription
-          </Button>
+          {subscription?.isExpired ||
+          subscription?.plan.name === "Free Plan" ? (
+            <Button
+              onClick={() => {
+                navigate("/purchase-plan");
+              }}
+            >
+              Upgrade to Premium Plan
+            </Button>
+          ) : (
+            <Button
+              onClick={openModal}
+              variant="outline"
+              size="sm"
+              disabled={subscription?.isSubscriptionCanceled}
+            >
+              Cancel Subscription
+            </Button>
+          )}
         </div>
         <TransactionsTable />
         <div className="flex justify-between flex-col gap-5">

@@ -857,3 +857,31 @@ span.flatpickr-weekday,
 .fc-daygrid-day-events{
   align-items: center;
 }
+.menu-item-active{
+  @apply text-white bg-gray-700;
+}
+.menu-item-inactive{
+  color: #9fa0aa;
+}
+
+.menu-item-inactive:hover{
+  @apply bg-gray-700 text-white;
+}
+.menu-item-icon-inactive:hover{
+  @apply bg-gray-700 text-white;
+}
+
+.menu-item-icon-inactive {
+  color: #9fa0aa;
+  &:is(:where(.group):hover *) {
+      @media (hover: hover) {
+          color: #fff;
+      }
+  }
+}
+.menu-item-icon-active{
+  @apply text-white;
+}
+.spin-slow{
+  animation: spin-slow 1s linear infinite;
+}

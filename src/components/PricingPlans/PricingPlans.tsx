@@ -3,7 +3,6 @@ import { getPlanAndPrice } from "../../api/subscription.api";
 import { BillingCycle, PlanDetails } from "../../interfaces";
 import BenefitCard from "./BenefitCard";
 import PaymentCTA from "./PaymentCTA";
-import Loader from "../Loader/Loader";
 const benefits = [
   {
     title: "Benefit 1",
@@ -23,7 +22,6 @@ const benefits = [
 ];
 
 const PricingPlans: React.FC = () => {
-  const [loading, setLoading] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState<PlanDetails>();
   const [plans, setPlans] = useState<PlanDetails[]>([]);
 
@@ -42,13 +40,6 @@ const PricingPlans: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center w-screen h-screen bg-black/50 absolute top-0 left-0 z-99999">
-        <Loader />
-      </div>
-    );
-  }
   return (
     <>
       <div className="rounded-xl p-6 bg-white">
@@ -76,9 +67,9 @@ const PricingPlans: React.FC = () => {
               <div className="flex justify-between items-center border-b border-gray-200 pb-4">
                 <div className="flex flex-row gap-2 items-center">
                   <h3 className="text-lg font-semibold">{plan?.description}</h3>
-                  {BillingCycle.YEARLY === plan?.billingCycle && (
+                  {plan?.offerText && (
                     <div className="flex items-center bg-orange-100 text-primary text-xs font-semibold px-2 rounded ml-2 h-4">
-                      25% Saving
+                      {plan?.offerText}
                     </div>
                   )}
                 </div>
@@ -95,8 +86,8 @@ const PricingPlans: React.FC = () => {
               </div>
               <div className="text-sm text-gray-500">
                 {BillingCycle.YEARLY === plan?.billingCycle
-                  ? "per month. Billed annually"
-                  : "per month"}
+                  ? "Annually"
+                  : "Monthly"}
               </div>
 
               {/* {plan?.details && ( */}
@@ -127,7 +118,6 @@ const PricingPlans: React.FC = () => {
                 <PaymentCTA
                   planId={plan?.planId}
                   planPriceId={plan?.planPriceId}
-                  setLoading={setLoading}
                 />
               )}
             </div>

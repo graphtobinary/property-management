@@ -246,3 +246,12 @@ export interface PlanDetails {
   offerText: string;
   description: string;
 }
+
+export interface PhoneInputProps {
+  countries: CountryItemProps[];
+  placeholder?: string;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  type?: "text" | "number" | "email" | "password" | "date" | "time" | string;
+  error?: boolean;
+  hint?: string;
+}

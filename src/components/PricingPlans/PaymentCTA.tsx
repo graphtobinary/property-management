@@ -9,19 +9,16 @@ import { useModal } from "../../hooks/useModal";
 import { useNavigate } from "react-router";
 import Loader from "../Loader/Loader";
 import useUser from "../../hooks/useUser";
-import { toast } from "react-toastify";
-
+import { useState } from "react";
 export default function PaymentCTA({
   planId,
   planPriceId,
-  setLoading,
 }: {
   planId: number;
   planPriceId: number;
-  setLoading: (loading: boolean) => void;
 }) {
   const { getUserData } = useUser();
-
+  const [isLoading, setIsLoading] = useState(false);
   const { isOpen, openModal, closeModal } = useModal();
   const navigate = useNavigate();
   const handlePayment = async () => {
@@ -31,6 +28,7 @@ export default function PaymentCTA({
       planPriceId,
     };
     try {
+      setIsLoading(true);
       const response = await createPaymentSession(formData);
       const { checkoutData } = response as { checkoutData: string };
 
@@ -46,13 +44,15 @@ export default function PaymentCTA({
           },
           onPaymentCompleted: (_component, paymentResponse) => {
             console.log("Create Payment with PaymentId: ", paymentResponse.id);
-            handlePaymentSuccess();
+            handlePaymentSuccess(paymentResponse.id);
+            setIsLoading(false);
           },
           onChange: () => {},
           onError: (component, error) => {
             console.log("onError", error, "Component", component.type);
-            toast.error(error?.message);
             closeModal();
+            setIsLoading(false);
+            navigate(`/order-status`);
           },
         });
         const flowComponent = checkout.create("flow");
@@ -63,11 +63,12 @@ export default function PaymentCTA({
       }
     } catch (error) {
       console.error("Error creating payment session", error);
+      setIsLoading(false);
     }
   };
 
-  const handlePaymentSuccess = () => {
-    setLoading(true);
+  const handlePaymentSuccess = (id: string) => {
+    navigate(`/order-status?orderId=${id}`);
     closeModal();
     setTimeout(() => {
       getUserData().then(() => {
@@ -79,11 +80,12 @@ export default function PaymentCTA({
   return (
     <>
       <Button
-        className="mt-6"
+        className="mt-6 min-w-[200px]"
         size="sm"
         variant="primary"
         onClick={handlePayment}
-        // onClick={openModal}
+        disabled={isLoading}
+        isLoading={isLoading}
       >
         Proceed To Payment
       </Button>
