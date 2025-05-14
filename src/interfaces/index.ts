@@ -255,3 +255,10 @@ export interface PhoneInputProps {
   error?: boolean;
   hint?: string;
 }
+
+export enum SubscriptionTxnStatus {
+  UNSPECIFIED = 0,
+  INITIATED = 1,
+  COMPLETED = 2,
+  FAILED = 3,
+}

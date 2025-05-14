@@ -48,11 +48,11 @@ const ManageSubscription: React.FC = () => {
               !
             </p>
             <p className="text-sm text-gray-500 mt-1">
-              Your next billing cycle is in{" "}
-              {subscription?.subscriptionEndDate
-                ? getRemainingDays(subscription.subscriptionEndDate)
-                : 0}{" "}
-              days.
+              {getRemainingDays(subscription?.subscriptionEndDate || "") === 0
+                ? "Your subscription has expired"
+                : `Your next billing cycle is in ${getRemainingDays(
+                    subscription?.subscriptionEndDate || ""
+                  )} days.`}
             </p>
           </div>
           {subscription?.isExpired ||

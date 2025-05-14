@@ -27,7 +27,8 @@ interface Params {
 const doCall = async (
   uri: string,
   params: Params = {},
-  option: FetchOptions = { headers: {} }
+  option: FetchOptions = { headers: {} },
+  showErrorToast: boolean = true
 ): Promise<unknown> => {
   const { isAbsUrl, ...restParams } = params;
   uri = replaceParamInString(uri, restParams);
@@ -75,38 +76,47 @@ const doCall = async (
     }
     return response.text();
   } catch (error) {
-    if (error instanceof ApiException) {
-      toast.error(error?.message || "Something went wrong!", {
-        toastId: "api-error",
-      });
-      throw error;
-    } else {
-      toast.error("Network error. Please try again.");
+    if (showErrorToast) {
+      if (error instanceof ApiException) {
+        toast.error(error?.message || "Something went wrong!", {
+          toastId: "api-error",
+        });
+        throw error;
+      } else {
+        toast.error("Network error. Please try again.");
+      }
     }
-    // throw error; // still rethrow so local catch() can also handle if needed
+    throw error; // still rethrow so local catch() can also handle if needed
   }
 };
 
 export const doGet = (
   uri: string,
   params: Params = {},
-  options: FetchOptions = {}
-): Promise<unknown> => doCall(uri, params, options);
+  options: FetchOptions = {},
+  showErrorToast: boolean = true
+): Promise<unknown> => doCall(uri, params, options, showErrorToast);
 
 export const doPost = (
   uri: string,
   params: Params = {},
-  options: FetchOptions = {}
-): Promise<unknown> => doCall(uri, params, { ...options, method: "POST" });
+  options: FetchOptions = {},
+  showErrorToast: boolean = true
+): Promise<unknown> =>
+  doCall(uri, params, { ...options, method: "POST" }, showErrorToast);
 
 export const doPatch = (
   uri: string,
   params: Params = {},
-  options: FetchOptions = {}
-): Promise<unknown> => doCall(uri, params, { ...options, method: "PATCH" });
+  options: FetchOptions = {},
+  showErrorToast: boolean = true
+): Promise<unknown> =>
+  doCall(uri, params, { ...options, method: "PATCH" }, showErrorToast);
 
 export const doDelete = (
   uri: string,
   params: Params = {},
-  options: FetchOptions = {}
-): Promise<unknown> => doCall(uri, params, { ...options, method: "DELETE" });
+  options: FetchOptions = {},
+  showErrorToast: boolean = true
+): Promise<unknown> =>
+  doCall(uri, params, { ...options, method: "DELETE" }, showErrorToast);

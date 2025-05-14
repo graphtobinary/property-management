@@ -45,6 +45,8 @@ const API_CONSTANTS = {
     "/subscription.service.v1.SubscriptionService/CreatePaymentSession",
   SUBSCRIPTION_CANCEL:
     "/subscription.service.v1.SubscriptionService/SubscriptionCancel",
+  GET_CURRENT_PAYMENT_STATUS:
+    "/subscription.service.v1.SubscriptionService/GetCurrentPaymentStatus",
 };
 
 export default API_CONSTANTS;

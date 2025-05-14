@@ -8,7 +8,6 @@ import { Modal } from "../ui/modal";
 import { useModal } from "../../hooks/useModal";
 import { useNavigate } from "react-router";
 import Loader from "../Loader/Loader";
-import useUser from "../../hooks/useUser";
 import { useState } from "react";
 export default function PaymentCTA({
   planId,
@@ -17,7 +16,6 @@ export default function PaymentCTA({
   planId: number;
   planPriceId: number;
 }) {
-  const { getUserData } = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const { isOpen, openModal, closeModal } = useModal();
   const navigate = useNavigate();
@@ -70,11 +68,6 @@ export default function PaymentCTA({
   const handlePaymentSuccess = (id: string) => {
     navigate(`/order-status?orderId=${id}`);
     closeModal();
-    setTimeout(() => {
-      getUserData().then(() => {
-        navigate("/manage-subscription");
-      });
-    }, 10000);
   };
 
   return (

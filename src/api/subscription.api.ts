@@ -58,3 +58,17 @@ export const getPlanAndPrice = () => {
     }
   );
 };
+
+export const getCurrentPaymentStatus = (formData: { paymentId: string }) => {
+  return doPost(
+    API_CONSTANTS.GET_CURRENT_PAYMENT_STATUS,
+    {},
+    {
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    },
+    false
+  );
+};
