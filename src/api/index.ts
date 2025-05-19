@@ -78,7 +78,11 @@ const doCall = async (
   } catch (error) {
     if (showErrorToast) {
       if (error instanceof ApiException) {
-        toast.error(error?.message || "Something went wrong!", {
+        const errorMessage =
+          error?.message === "Unauthorized"
+            ? "Your session has expired. Please log in again."
+            : "Something went wrong!";
+        toast.error(errorMessage, {
           toastId: "api-error",
         });
         throw error;
